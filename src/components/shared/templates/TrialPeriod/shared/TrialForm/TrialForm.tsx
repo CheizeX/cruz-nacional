@@ -65,7 +65,7 @@ export const TrialForm: FC = () => {
     try {
       const axiosConfig: AxiosRequestConfig = {
         baseURL: process.env.NEXT_PUBLIC_REST_API_URL,
-        url: '/trial',
+        url: '/general',
         method: 'post',
         data: {
           companyName: values.companyName,
