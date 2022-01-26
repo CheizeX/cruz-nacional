@@ -9,8 +9,6 @@ import {
   StyledClientAndAgentAvatars,
   StyledNameAndDialog,
   StyledTimeAndState,
-  StyledLabel,
-  StyledLabelsContainer,
 } from './PendingsChatItem.styles';
 import {
   SelectedUserProps,
@@ -190,7 +188,7 @@ export const PendingsChatItem: FC<
                   </div>
                 </StyledTimeAndState>
               </StyledPendingChatItem>
-              {chat.tags && (
+              {/* {chat.tags && (
                 <StyledLabelsContainer>
                   {chat.tags.map((tag: Tag, index: number) => (
                     <StyledLabel color={tag.color} key={index.toString()}>
@@ -198,7 +196,7 @@ export const PendingsChatItem: FC<
                     </StyledLabel>
                   ))}
                 </StyledLabelsContainer>
-              )}
+              )} */}
             </StyledPendingWrapper>
           ))}
     </StyledPendingChatsContainer>

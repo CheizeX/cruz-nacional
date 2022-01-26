@@ -52,7 +52,7 @@ export const SectionFacebookComponent: FC<ISectionFacebook> = ({
   const showAlert = useToastContext();
   const [datosAuth, setDatosAuth] = useState<IConfirmAuthFacebook>();
   const [selectedComponent, setSelectedComponent] = useState<number>(1);
-  const [isActiveCheckbox, setIsActiveCheckbox] = useState<number>(0);
+  const [isActiveCheckbox, setIsActiveCheckbox] = useState<number>(-1);
   const firebaseConfig = {
     apiKey: 'AIzaSyCo-2GSdU6J7KnCRiVCWBhRw3VMtgvFGWg',
     authDomain: 'social-auth-385e3.firebaseapp.com',
@@ -105,7 +105,6 @@ export const SectionFacebookComponent: FC<ISectionFacebook> = ({
         setIsSectionWebChat(false);
         const result = await sendAuthFacebook(datosAuth);
         setConfirmationAccounth(true);
-        // console.log(result);
         showAlert?.addToast({
           alert: Toast.SUCCESS,
           title: 'Perfecto!',

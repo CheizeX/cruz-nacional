@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
 import {
   StyledWrapper,
@@ -50,6 +51,7 @@ export const FilterReviewDate = ({
           const currentMonth = await readReviewChats('0', 'currentMonth');
           if (currentMonth.success === false) {
             dispatch(setReviewChatsFinished([]));
+            dispatch(setReviewDatePicker('Este Mes'));
           } else {
             dispatch(setReviewChatsFinished(currentMonth));
             dispatch(setReviewDatePicker('Este Mes'));
@@ -57,9 +59,14 @@ export const FilterReviewDate = ({
           }
         } else if (id === 2) {
           const lastMonth = await readReviewChats('0', 'lastMonth');
-          dispatch(setReviewDatePicker('Mes Anterior'));
-          dispatch(setReviewChatsFinished(lastMonth));
-          setIsComponentVisible(false);
+          if (lastMonth.success === false) {
+            dispatch(setReviewChatsFinished([]));
+            dispatch(setReviewDatePicker('Mes Anterior'));
+          } else {
+            dispatch(setReviewDatePicker('Mes Anterior'));
+            dispatch(setReviewChatsFinished(lastMonth));
+            setIsComponentVisible(false);
+          }
         } else {
           setChartDatePicker(1);
         }

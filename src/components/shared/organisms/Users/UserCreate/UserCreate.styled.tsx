@@ -284,3 +284,4 @@ export const StyledVisualRadiosContainer = styled.div`
     transform: translateX(-20px);
   }
 `;
+export const StyledLabel = styled.div``;

@@ -104,7 +104,7 @@ export const ReviewChart: FC<IPropsReview> = ({
         <div>
           <button
             type="button"
-            disabled={reviewChats.length < 1}
+            // disabled={reviewChats.length < 1}
             onClick={handleClick}>
             <BadgeMolecule
               leftIcon={() => <SVGIcon iconFile="/icons/candelar_alt.svg" />}>

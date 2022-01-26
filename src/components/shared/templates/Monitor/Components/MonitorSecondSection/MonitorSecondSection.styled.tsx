@@ -71,6 +71,7 @@ export const StyledHeaderFirstSection = styled.div`
     z-index: 1;
   }
 `;
+
 export const WrapperFirtSectionCard = styled.div`
   display: flex;
   justify-content: space-around;
@@ -141,6 +142,98 @@ export const StyledAgentActive = styled.div`
   background-color: ${({ theme }) => theme.Colors.green[4]};
   border: 2px solid ${({ theme }) => theme.Colors.grays[10]};
 `;
+export const TooltipTextName = styled.span`
+  width: 100%;
+`;
+export const TooltipBoxName = styled.div`
+  position: absolute;
+  top: calc(100% + 15px);
+  visibility: hidden;
+  color: transparent;
+  background-color: transparent;
+  width: 100%;
+  min-width: max-content;
+  padding: 5px 5px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  transition: visibility 0.5s, color 0.5s, background-color 0.5s, width 0.5s,
+    padding 0.5s ease-in-out;
+  &:before {
+    content: '';
+    width: 0;
+    height: 0;
+    left: 40px;
+    top: -10px;
+    position: absolute;
+    border: 10px solid transparent;
+    transform: rotate(135deg);
+    transition: border 0.3s ease-in-out;
+  }
+`;
+
+export const StyledToolTipCardName = styled.span`
+  position: relative;
+  & ${TooltipTextName}:hover + ${TooltipBoxName} {
+    visibility: visible;
+    color: #fff;
+    background-color: ${({ theme }) => theme.Colors.purples[3]};
+    z-index: 1;
+    width: 100%;
+    padding: 8px 8px;
+    &:before {
+      border-color: transparent transparent
+        ${({ theme }) => theme.Colors.purples[3]}
+        ${({ theme }) => theme.Colors.purples[3]};
+    }
+  }
+`;
+export const TooltipTextEmail = styled.span`
+  width: 100%;
+`;
+export const TooltipBoxEmail = styled.div`
+  position: absolute;
+  top: calc(100% + 15px);
+  visibility: hidden;
+  color: transparent;
+  background-color: transparent;
+  width: 100%;
+  min-width: max-content;
+  padding: 5px 5px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  transition: visibility 0.5s, color 0.5s, background-color 0.5s, width 0.5s,
+    padding 0.5s ease-in-out;
+  &:before {
+    content: '';
+    width: 0;
+    height: 0;
+    left: 40px;
+    top: -10px;
+    position: absolute;
+    border: 10px solid transparent;
+    transform: rotate(135deg);
+    transition: border 0.3s ease-in-out;
+  }
+`;
+
+export const StyledToolTipCardEmail = styled.span`
+  position: relative;
+  & ${TooltipTextEmail}:hover + ${TooltipBoxEmail} {
+    visibility: visible;
+    color: #fff;
+    background-color: ${({ theme }) => theme.Colors.purples[3]};
+    z-index: 1;
+    width: 100%;
+    padding: 8px 8px;
+    &:before {
+      border-color: transparent transparent
+        ${({ theme }) => theme.Colors.purples[3]}
+        ${({ theme }) => theme.Colors.purples[3]};
+    }
+  }
+`;
 
 export const WrapperSecondSectionAgent = styled.div`
   width: 304px;
@@ -185,7 +278,7 @@ export const WrapperSecondSectionAgent = styled.div`
       & > :nth-child(2) {
         display: flex;
         flex-direction: column;
-        width: 130px;
+        width: 100%;
         justify-content: flex-end;
         margin-left: 17px;
         margin-bottom: 4px;
@@ -203,10 +296,13 @@ export const WrapperSecondSectionAgent = styled.div`
           width: 100%;
         }
         & > :nth-child(3) {
-          color: ${({ theme }) => theme.Colors.grays[3]};
-          font-weight: ${({ theme }) => theme.fontWeight[400]};
-          font-size: ${({ theme }) => theme.fontSize[12]};
-          line-height: 14px;
+          & > span {
+            color: ${({ theme }) => theme.Colors.grays[3]};
+            font-weight: ${({ theme }) => theme.fontWeight[400]};
+            font-size: ${({ theme }) => theme.fontSize[12]};
+            line-height: 14px;
+            position: relative;
+          }
         }
       }
     }

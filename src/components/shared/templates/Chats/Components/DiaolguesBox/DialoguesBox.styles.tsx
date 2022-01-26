@@ -25,7 +25,6 @@ export const StyledUserDialogue = styled.div`
   width: 49%;
   margin: 5px 0;
   transition: all 1s ease;
-
   & > :first-child {
     display: flex;
     flex-direction: column;
@@ -152,6 +151,42 @@ export const StyledUserDialogue = styled.div`
       padding: 10px;
       font-weight: 400;
     }
+  }
+`;
+export const StyledCopyToClipboardUser = styled.span`
+  position: relative;
+  top: -12px;
+  right: -10px;
+  max-width: 20px;
+  height: 20px;
+  &:hover {
+    cursor: pointer;
+    & > svg {
+      color: ${({ theme }) => theme.Colors.purples[2]};
+    }
+  }
+  & > svg {
+    width: 15px;
+    height: 20px;
+    color: ${({ theme }) => theme.Colors.grays[8]};
+  }
+`;
+export const StyledCopyToClipboardAgent = styled.span`
+  position: relative;
+  top: -12px;
+  left: -10px;
+  max-width: 20px;
+  height: 20px;
+  &:hover {
+    cursor: pointer;
+    & > svg {
+      color: ${({ theme }) => theme.Colors.grays[10]};
+    }
+  }
+  & > svg {
+    width: 15px;
+    height: 20px;
+    color: ${({ theme }) => theme.Colors.grays[8]};
   }
 `;
 
