@@ -293,9 +293,10 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
     showPredefinedTexts ? 'visible' : 'hidden'};
 
   position: absolute;
-  width: 350px;
-  height: 250px;
-  bottom: 60px;
+  left: 3px;
+  max-width: 899px;
+  height: 500px;
+  bottom: 61px;
   box-shadow: 0px 0px 5px ${({ theme }) => theme.Colors.grays[8]};
   border-radius: 10px;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
@@ -308,11 +309,13 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    height: 40px;
+    height: fit-content;
     border-radius: 5px;
     padding-left: 5px;
     & > span {
       margin-left: 5px;
+      text-align: left;
+      /* height: fit-content; */
     }
     &:hover {
       background-color: ${({ theme }) => theme.Colors.grays[9]};
