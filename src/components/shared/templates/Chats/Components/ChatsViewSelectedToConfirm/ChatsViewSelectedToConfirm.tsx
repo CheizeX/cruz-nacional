@@ -111,30 +111,30 @@ export const ChatsViewSelectedToConfirm: FC<
   const chatToTalkWithUserNumber = chatToTalkWithUser?.client.clientId;
 
   const handleSetUserToOnConversation = async () => {
-    if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
-      try {
-        await baseRestApi.patch(
-          `/chats/initConversation/${chatToSetInConversationId}`,
-          {
-            accessToken,
-          },
-        );
-        setUserSelected(userSelected as any);
-        setActiveByDefaultTab(1);
-      } catch (error) {
-        showAlert?.addToast({
-          alert: Toast.ERROR,
-          title: 'ERROR',
-          message: `INIT-CONVERSATION-ERROR ${error}`,
-        });
-      }
-    } else {
+    // if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
+    try {
+      await baseRestApi.patch(
+        `/chats/initConversation/${chatToSetInConversationId}`,
+        {
+          accessToken,
+        },
+      );
+      setUserSelected(userSelected as any);
+      setActiveByDefaultTab(1);
+    } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
-        title: 'Máximo de chats alcanzado',
-        message: `Solo puedes tener ${userDataInState?.maxChatsOnConversation} chats activos`,
+        title: 'ERROR',
+        message: `INIT-CONVERSATION-ERROR ${error}`,
       });
     }
+    // } else {
+    //   showAlert?.addToast({
+    //     alert: Toast.ERROR,
+    //     title: 'Máximo de chats alcanzado',
+    //     message: `Solo puedes tener ${userDataInState?.maxChatsOnConversation} chats activos`,
+    //   });
+    // }
   };
 
   const handleEnterToSendMessage = async (
