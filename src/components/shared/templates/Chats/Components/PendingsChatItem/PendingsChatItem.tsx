@@ -9,8 +9,11 @@ import {
   StyledClientAndAgentAvatars,
   StyledNameAndDialog,
   StyledTimeAndState,
+  // StyledLabel,
+  // StyledLabelsContainer,
 } from './PendingsChatItem.styles';
 import {
+  IPropsStringName,
   SelectedUserProps,
   SortingProps,
   TabProps,
@@ -25,18 +28,28 @@ import {
   setSortedByLastDate,
 } from '../../../../../../redux/slices/live-chat/pending-chats';
 import { Channels, Chat } from '../../../../../../models/chat/chat';
-import { Tag } from '../../../../../../models/tags/tag';
+// import { Tag } from '../../../../../../models/tags/tag';
 
 export const PendingsChatItem: FC<
-  SelectedUserProps & SortingProps & TabProps & LiveChatSliceInterface
-> = ({ setUserSelected, userSelected, setActiveByDefaultTab, sortedChats }) => {
+  SelectedUserProps &
+    SortingProps &
+    TabProps &
+    LiveChatSliceInterface &
+    IPropsStringName
+> = ({
+  setUserSelected,
+  userSelected,
+  setActiveByDefaultTab,
+  sortedChats,
+  searchByName,
+}) => {
   const dispatch = useAppDispatch();
   const { chatsPendings } = useAppSelector(
     (state) => state.liveChat.chatsPendings,
   );
-  const { tagsToFilter, channelsToFilter } = useAppSelector(
-    (state) => state.optionsToFilterChats,
-  );
+  // const { tagsToFilter, channelsToFilter } = useAppSelector(
+  //   (state) => state.optionsToFilterChats,
+  // );
 
   const [timeLapse, setTimeLapse] = React.useState(Date.now());
 
@@ -88,26 +101,28 @@ export const PendingsChatItem: FC<
           .filter(
             (user) =>
               //  Filtro para los canales y etiquetas
-              (tagsToFilter.length > 0 &&
-                channelsToFilter.length > 0 &&
-                channelsToFilter?.includes(user.channel) &&
-                user.tags.filter((tag: Tag) => tagsToFilter?.includes(tag.name))
-                  .length > 0) ||
-              (tagsToFilter.length === 0 &&
-                channelsToFilter.length > 0 &&
-                channelsToFilter?.includes(user.channel)) ||
-              (tagsToFilter.length > 0 &&
-                channelsToFilter.length === 0 &&
-                user.tags?.some((tag: Tag) =>
-                  tagsToFilter.includes(tag.name),
-                )) ||
-              (tagsToFilter.length === 0 &&
-                channelsToFilter.length === 0 &&
-                chatsPendings),
-            // user.client.name
-            //   .toLowerCase()
-            //   .includes(searchByName.toLowerCase()) ||
-            // user.client.clientId.replace(/[.,-]/g, '').includes(searchByName),
+              // (tagsToFilter.length > 0 &&
+              //   channelsToFilter.length > 0 &&
+              //   channelsToFilter?.includes(user.channel) &&
+              //   user.tags.filter((tag: Tag) => tagsToFilter?.includes(tag.name))
+              //     .length > 0) ||
+              // (tagsToFilter.length === 0 &&
+              //   channelsToFilter.length > 0 &&
+              //   channelsToFilter?.includes(user.channel)) ||
+              // (tagsToFilter.length > 0 &&
+              //   channelsToFilter.length === 0 &&
+              //   user.tags?.some((tag: Tag) =>
+              //     tagsToFilter.includes(tag.name),
+              //   )) ||
+              // (tagsToFilter.length === 0 &&
+              //   channelsToFilter.length === 0 &&
+              //   chatsPendings),
+              //--------------------------------------------------------
+              // validacion si existe el name o clientId en los chats pendientes
+              user.client.name
+                .toLowerCase()
+                .includes(searchByName.toLowerCase()) ||
+              user.client.clientId.replace(/[,-]/g, '').includes(searchByName),
           )
           .map((chat: Chat) => (
             <StyledPendingWrapper

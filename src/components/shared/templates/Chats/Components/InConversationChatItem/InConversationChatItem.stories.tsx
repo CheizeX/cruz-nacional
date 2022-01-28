@@ -6,6 +6,7 @@ storiesOf('Ailalia/Templates/Chats/Components', module).add(
   () => {
     return (
       <InConversationChatItem
+        searchByName=""
         showOnlyPausedChats={false}
         setShowOnlyPausedChats={() => {}}
         setChatInputDialogue={() => {}}

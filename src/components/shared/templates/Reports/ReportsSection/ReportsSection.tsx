@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, useEffect } from 'react';
 import axios from 'axios';
 import { IType } from '../Components/LeftPanelReports/LeftPanel.interface';
@@ -158,7 +159,7 @@ export const ReportsSection: FC = () => {
   };
   useEffect(() => {
     getInfoAgents();
-  });
+  }, []);
   return (
     <StyledWrapperReports>
       <LeftPanelReports

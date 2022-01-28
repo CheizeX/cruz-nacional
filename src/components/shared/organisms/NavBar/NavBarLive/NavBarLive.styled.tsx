@@ -126,12 +126,27 @@ export const Wrapper = styled.div`
 `;
 
 export const StyledAgentStatusSropdown = styled.div`
-  width: 230px;
+  width: 240px;
   background: ${({ theme }) => theme.Colors.grays[10]};
   border-radius: 10px;
-  height: 128px;
+  height: 156px;
   box-shadow: 0px 0px 7px 0px #0000004a;
   padding: 14px 0 0 18px;
+  & > :nth-child(4) {
+    & > :nth-child(2) {
+      & > div {
+        & * {
+          & > svg {
+            & > g {
+              & > path {
+                fill: ${({ theme }) => theme.Colors.grays[10]};
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 
 export const NotificationStyledNavBar = styled.div`
@@ -174,6 +189,11 @@ export const TriggerElement = styled.div<INavBarLiveProps>`
       null,
     ) ||
     mySelector(
+      statusChecked === 'En Pausa - En llamado',
+      theme.Colors.orange[3],
+      null,
+    ) ||
+    mySelector(
       statusChecked === 'En Pausa - Almuerzo',
       theme.Colors.orange[3],
       null,
@@ -195,6 +215,7 @@ export const TriggerElement = styled.div<INavBarLiveProps>`
       & > div {
         & > svg {
           padding: 1px;
+
           & > path {
             fill: ${({ theme }) => theme.Colors.grays[10]};
           }

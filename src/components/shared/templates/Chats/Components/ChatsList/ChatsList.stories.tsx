@@ -4,6 +4,8 @@ import { ChatsList } from './ChatsList';
 storiesOf('Ailalia/Templates/Chats/Components', module).add('ChatsList', () => {
   return (
     <ChatsList
+      onChangeSearchName={() => null}
+      searchByName=""
       showOnlyPausedChats
       setShowOnlyPausedChats={() => {}}
       checkedTags={[1, 2]}

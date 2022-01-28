@@ -177,6 +177,19 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps> = ({
                 <SVGIcon iconFile="/icons/toile.svg" />
                 <Text color="black">En Pausa - Baño</Text>
               </WrapperChackedAgent>
+              {/* Se agrego una nueva opción de status  */}
+              <WrapperChackedAgent
+                position="two"
+                onClick={() =>
+                  handleClickStatus('En Pausa - En llamado', 3, 'CALL')
+                }>
+                <StyledButton focusCheck={activoCheck === 3}>
+                  <StyledRadio focusCheck={activoCheck === 3} />
+                </StyledButton>
+                <SVGIcon iconFile="/icons/calling.svg" />
+                <Text color="black">En Pausa - En llamada</Text>
+              </WrapperChackedAgent>
+              {/* ---------------------------------------------- */}
             </StyledAgentStatusSropdown>
           </Dropdown>
           <LiveTriggerElement>

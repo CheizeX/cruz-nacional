@@ -21,6 +21,8 @@ import {
   DropZoneDisplayedProps,
   ChatInputDialogueProps,
   ShowOnlyPaused,
+  IPropsSearchByName,
+  IPropsStringName,
 } from '../../ChatsSection/ChatsSection.interface';
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
 import {
@@ -36,8 +38,8 @@ export const ChatsList: FC<
     ChatInputDialogueProps &
     FilterChannelsProps &
     FilterChannel &
-    // IPropsSearchByName &
-    // IPropsStringName &
+    IPropsSearchByName &
+    IPropsStringName &
     ShowOnlyPaused
 > = ({
   setUserSelected,
@@ -54,6 +56,8 @@ export const ChatsList: FC<
   setCheckedTags,
   setShowOnlyPausedChats,
   showOnlyPausedChats,
+  onChangeSearchName,
+  searchByName,
 }) => {
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
@@ -84,7 +88,7 @@ export const ChatsList: FC<
                 isPendings
                 setSortedChats={setSortedChats}
                 sortedChats={sortedChats || false}
-                // onChangeSearchName={onChangeSearchName}
+                onChangeSearchName={onChangeSearchName}
               />
               <PendingsChatItem
                 chatsPendings={chatsPendings}
@@ -93,7 +97,8 @@ export const ChatsList: FC<
                 setSortedChats={setSortedChats}
                 sortedChats={sortedChats || false}
                 setActiveByDefaultTab={setActiveByDefaultTab}
-                // searchByName={searchByName}
+                // string del input de busqueda.
+                searchByName={searchByName}
               />
             </StyledPendingsRender>
           </StyledPendings>
@@ -108,7 +113,8 @@ export const ChatsList: FC<
                 channel={channel}
                 setSortedChats={setSortedChats}
                 sortedChats={sortedChats || false}
-                // onChangeSearchName={onChangeSearchName}
+                // funcion para setear el string que realiza la busqueda por (telefono, email y name).
+                onChangeSearchName={onChangeSearchName}
               />
               <InConversationChatItem
                 showOnlyPausedChats={showOnlyPausedChats}
@@ -120,8 +126,7 @@ export const ChatsList: FC<
                 setActiveByDefaultTab={setActiveByDefaultTab}
                 setDropZoneDisplayed={setDropZoneDisplayed}
                 setChatInputDialogue={setChatInputDialogue}
-
-                // searchByName={searchByName}
+                searchByName={searchByName}
               />
             </StyledInConversationRender>
           </StyledInConversation>
@@ -141,7 +146,7 @@ export const ChatsList: FC<
                 isPendings
                 setSortedChats={setSortedChats}
                 sortedChats={sortedChats || false}
-                // onChangeSearchName={onChangeSearchName}
+                onChangeSearchName={onChangeSearchName}
               />
               <PendingsChatItem
                 chatsPendings={chatsPendings}
@@ -150,7 +155,7 @@ export const ChatsList: FC<
                 setSortedChats={setSortedChats}
                 sortedChats={sortedChats || false}
                 setActiveByDefaultTab={setActiveByDefaultTab}
-                // searchByName={searchByName}
+                searchByName={searchByName}
               />
             </StyledPendingsRender>
           </StyledPendings>
@@ -165,7 +170,7 @@ export const ChatsList: FC<
                 channel={channel}
                 setSortedChats={setSortedChats}
                 sortedChats={sortedChats || false}
-                // onChangeSearchName={onChangeSearchName}
+                onChangeSearchName={onChangeSearchName}
               />
               <InConversationChatItem
                 showOnlyPausedChats={showOnlyPausedChats}
@@ -177,7 +182,7 @@ export const ChatsList: FC<
                 setActiveByDefaultTab={setActiveByDefaultTab}
                 setDropZoneDisplayed={setDropZoneDisplayed}
                 setChatInputDialogue={setChatInputDialogue}
-                // searchByName={searchByName}
+                searchByName={searchByName}
               />
             </StyledInConversationRender>
           </StyledInConversation>

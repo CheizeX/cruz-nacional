@@ -15,7 +15,7 @@ export const preDefinedTextsObject = [
   },
   {
     id: '3',
-    text: 'Para poder agendar, necesitamos los siguientes datos: NOMBRE COMPLETO / RUT / CORREO / TELÉFONO / FECHA DE NACIMIENTO',
+    text: 'Para poder agendar su hora, necesitamos que complete sus datos en https://bit.ly/3g3m2zp para agilizar el proceso. Agradecería su confirmación una vez realizado el mismo.',
   },
   {
     id: '4',

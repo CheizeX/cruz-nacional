@@ -1,7 +1,9 @@
 export enum UserStatus {
   AVAILABLE = 'AVAILABLE',
+  DISCONNECTED = 'DISCONNECTED',
   BATHROOM = 'BATHROOM',
   LUNCH = 'LUNCH',
+  CALL = 'CALL',
   ALL = 'ALL',
 }
 

@@ -31,6 +31,13 @@ export const AgentStatus = [
     name: 'En Pausa - Baño',
     icon: 'toile',
   },
+  {
+    id: 4,
+    position: 'four',
+    status: UserStatus.CALL,
+    name: 'En Pausa - En llamada',
+    icon: 'calling',
+  },
 ];
 export const FilterAgentsState: FC<FilterAgentsStateProps & FilterByState> = ({
   filterByState,

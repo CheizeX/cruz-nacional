@@ -27,12 +27,12 @@ export interface ShowOnlyPaused {
 }
 
 // TYPE para las funciones de busqueda por nombre y rut
-// export interface IPropsSearchByName {
-//   onChangeSearchName: (e: React.ChangeEvent<HTMLInputElement>) => void;
-// }
-// export interface IPropsStringName {
-//   searchByName: string;
-// }
+export interface IPropsSearchByName {
+  onChangeSearchName: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+export interface IPropsStringName {
+  searchByName: string;
+}
 
 export interface TabProps {
   setActiveByDefaultTab: React.Dispatch<SetStateAction<number>>;

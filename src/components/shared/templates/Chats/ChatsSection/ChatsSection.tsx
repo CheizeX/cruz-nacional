@@ -66,17 +66,20 @@ export const ChatsSection: FC<
   const [chatInputDialogue, setChatInputDialogue] = useState<string>('');
   const [dropZoneDisplayed, setDropZoneDisplayed] = useState<boolean>(false);
   const [emojisDisplayed, setEmojisDisplayed] = React.useState<boolean>(false);
-  // const [searchByName, setSearchByName] = useState<string>('');
+
+  // state para guardar el string para realizar la busqueda(email, name o telefono).
+  const [searchByName, setSearchByName] = useState<string>('');
+  // -------------------------------------------------------------------------
   const [showPredefinedTexts, setShowPredefinedTexts] =
     React.useState<boolean>(false);
   const [findDialogueInChat, setFindDialogueInChat] =
     React.useState<string>('');
 
-  // Funcion para buscar por nombre y rut
-  // const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchByName(event.target.value);
-  // };
-  // Fución para buscar por Rut
+  // Funcion para buscar por nombre, email o telefono
+  const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchByName(event.target.value);
+  };
+  // ---------------------------------
 
   // --------------- <<< WEB SOCKET EVENTS >>> -----------------
   // Escucha los chats de usuarios o agentes según el parámetro que se le pase
@@ -216,8 +219,8 @@ export const ChatsSection: FC<
         setDropZoneDisplayed={setDropZoneDisplayed}
         setChatInputDialogue={setChatInputDialogue}
         // Funciones para realizar busqueda de nombre y rut
-        // onChangeSearchName={onChangeSearchName}
-        // searchByName={searchByName}
+        onChangeSearchName={onChangeSearchName}
+        searchByName={searchByName}
       />
 
       {!userSelected ? (

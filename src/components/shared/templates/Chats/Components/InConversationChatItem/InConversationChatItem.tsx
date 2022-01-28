@@ -18,6 +18,7 @@ import {
   DropZoneDisplayedProps,
   ChatInputDialogueProps,
   ShowOnlyPaused,
+  IPropsStringName,
 } from '../../ChatsSection/ChatsSection.interface';
 import {
   StyledInConversationChatItem,
@@ -50,6 +51,7 @@ export const InConversationChatItem: FC<
     TabProps &
     DropZoneDisplayedProps &
     ChatInputDialogueProps &
+    IPropsStringName &
     ShowOnlyPaused
 > = ({
   setUserSelected,
@@ -57,6 +59,7 @@ export const InConversationChatItem: FC<
   setActiveByDefaultTab,
   sortedChats,
   showOnlyPausedChats,
+  searchByName,
 }) => {
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
@@ -64,9 +67,9 @@ export const InConversationChatItem: FC<
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
-  const { tagsToFilter, channelsToFilter } = useAppSelector(
-    (state) => state.optionsToFilterChats,
-  );
+  // const { tagsToFilter, channelsToFilter } = useAppSelector(
+  //   (state) => state.optionsToFilterChats,
+  // );
 
   const [timeLapse, setTimeLapse] = React.useState(Date.now());
 
@@ -106,30 +109,30 @@ export const InConversationChatItem: FC<
         chatsOnConversation
           .filter(
             (user) =>
-              (tagsToFilter.length > 0 &&
-                channelsToFilter.length > 0 &&
-                channelsToFilter?.includes(user.channel) &&
-                user.tags.filter((tag: Tag) => tagsToFilter?.includes(tag.name))
-                  .length > 0) ||
-              (tagsToFilter.length === 0 &&
-                channelsToFilter.length > 0 &&
-                channelsToFilter?.includes(user.channel)) ||
-              (tagsToFilter.length > 0 &&
-                channelsToFilter.length === 0 &&
-                user.tags?.some((tag: Tag) =>
-                  tagsToFilter.includes(tag.name),
-                )) ||
-              (tagsToFilter.length === 0 &&
-                channelsToFilter.length === 0 &&
-                chatsOnConversation),
+              // (tagsToFilter.length > 0 &&
+              //   channelsToFilter.length > 0 &&
+              //   channelsToFilter?.includes(user.channel) &&
+              //   user.tags.filter((tag: Tag) => tagsToFilter?.includes(tag.name))
+              //     .length > 0) ||
+              // (tagsToFilter.length === 0 &&
+              //   channelsToFilter.length > 0 &&
+              //   channelsToFilter?.includes(user.channel)) ||
+              // (tagsToFilter.length > 0 &&
+              //   channelsToFilter.length === 0 &&
+              //   user.tags?.some((tag: Tag) =>
+              //     tagsToFilter.includes(tag.name),
+              //   )) ||
+              // (tagsToFilter.length === 0 &&
+              //   channelsToFilter.length === 0 &&
+              //   chatsOnConversation),
+              //-------------------------------------------------------------------
+              // validacion si existe el name o clientId en los chats en Conversación
+              user.client.name
+                .toLowerCase()
+                .includes(searchByName.toLowerCase()) ||
+              user.client.clientId.replace(/[,-]/g, '').includes(searchByName),
           )
           .filter((user) => (showOnlyPausedChats ? user.isPaused : user))
-          // filtro de busqueda por nombre y rut
-          //     user.client.name
-          //       .toLowerCase()
-          //       .includes(searchByName.toLowerCase()) ||
-          //     user.client.clientId.replace(/[.,-]/g, '').includes(searchByName),
-          // )
           .map((chat: Chat) => (
             <StyledInConversationWrapper
               focusedItem={chat.client.clientId === userSelected}

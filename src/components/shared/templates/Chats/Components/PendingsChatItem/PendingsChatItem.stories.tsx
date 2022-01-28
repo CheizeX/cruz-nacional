@@ -6,6 +6,7 @@ storiesOf('Ailalia/Templates/Chats/Components', module).add(
   () => {
     return (
       <PendingsChatItem
+        searchByName=""
         chatsPendings={[]}
         setUserSelected={() => null}
         setSortedChats={() => null}

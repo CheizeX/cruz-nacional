@@ -1,21 +1,23 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import {
   StyledChatsListHeader,
   StyledChatsListHeaderLeft,
+  StyledSearch,
   StyledUsersCounter,
+  WrapperSearch,
 } from './ChatsListHeader.styles';
 import {
   SortUsers,
   ChatsListHeaderProps,
   ShowOnlyPaused,
+  IPropsSearchByName,
 } from '../../ChatsSection/ChatsSection.interface';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../redux/hook/hooks';
-import { ChatFilter } from '../ChatsFilter/ChatFilter/ChatFilter';
 import {
   FilterChannelsProps,
   FilterChannel,
@@ -27,18 +29,19 @@ export const ChatsListHeader: FC<
     ChatsListHeaderProps &
     FilterChannelsProps &
     FilterChannel &
+    IPropsSearchByName &
     ShowOnlyPaused
 > = ({
   setSortedChats,
   sortedChats,
   isPendings,
-  channel,
-  handleCleanChannels,
-  checkedTags,
-  setCheckedTags,
+  // channel,
+  // handleCleanChannels,
+  // checkedTags,
+  // setCheckedTags,
   showOnlyPausedChats,
   setShowOnlyPausedChats,
-  // onChangeSearchName,
+  onChangeSearchName,
 }) => {
   const dispatch = useAppDispatch();
   const { chatsOnConversation } = useAppSelector(
@@ -47,6 +50,7 @@ export const ChatsListHeader: FC<
   const { chatsPendings } = useAppSelector(
     (state) => state.liveChat.chatsPendings,
   );
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isPendings) {
@@ -68,15 +72,17 @@ export const ChatsListHeader: FC<
             : chatsOnConversation?.length || 0}
         </StyledUsersCounter>
       </StyledChatsListHeaderLeft>
-      {/* <WrapperSearch isFocus={isFocus}>
-         <StyledSearch
+      {/* Input de busqueda */}
+      <WrapperSearch isFocus={isFocus}>
+        <StyledSearch
           onChange={onChangeSearchName}
           placeholder="Buscar..."
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
         <SVGIcon iconFile="/icons/search-solid.svg" />
-      </WrapperSearch> */}
+      </WrapperSearch>
+      {/* -------------------------------------------- */}
       {!isPendings && showOnlyPausedChats && (
         <button type="button" onClick={() => setShowOnlyPausedChats(false)}>
           <SVGIcon iconFile="/icons/pause.svg" />
@@ -96,12 +102,13 @@ export const ChatsListHeader: FC<
             <SVGIcon iconFile="/icons/downArrow.svg" />
           )}
         </button>
+        {/*  
         <ChatFilter
           checkedTags={checkedTags}
           setCheckedTags={setCheckedTags}
           handleCleanChannels={handleCleanChannels}
           channel={channel}
-        />
+        /> */}
       </span>
     </StyledChatsListHeader>
   );

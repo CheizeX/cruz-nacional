@@ -29,22 +29,29 @@ export const StyledWrapperCheckedAgent = styled.div<FilterAgentsStateProps>`
     background-color: ${({ position, theme }) =>
       mySelector(position === 'one', theme.Colors.green[4], null) ||
       mySelector(position === 'two', theme.Colors.orange[3], null) ||
-      mySelector(position === 'three', theme.Colors.orange[3], null)};
+      mySelector(position === 'three', theme.Colors.orange[3], null) ||
+      mySelector(position === 'four', theme.Colors.orange[3], null)};
     & > div {
       & * {
         & > svg {
           width: ${({ position }) =>
             mySelector(position === 'one', '13px', null) ||
-            mySelector(position === 'two', '9', null) ||
-            mySelector(position === 'three', '9', null)};
-          height: 11px;
+            mySelector(position === 'two', '9px', null) ||
+            mySelector(position === 'three', '10px', null)};
+          height: 12px;
           margin: ${({ position }) =>
             mySelector(position === 'one', '6px', null) ||
             mySelector(position === 'two', '6.5px', null) ||
-            mySelector(position === 'three', '7.5px', null)};
+            mySelector(position === 'three', '7px', null) ||
+            mySelector(position === 'four', '6.0px', null)};
           & > path {
             fill-opacity: 1;
             fill: ${({ theme }) => theme.Colors.grays[10]};
+          }
+          & > g {
+            & > path {
+              fill: ${({ theme }) => theme.Colors.grays[10]};
+            }
           }
         }
       }
