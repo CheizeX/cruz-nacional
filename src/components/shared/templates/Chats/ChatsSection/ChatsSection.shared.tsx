@@ -15,7 +15,7 @@ export const preDefinedTextsObject = [
   },
   {
     id: '3',
-    text: 'Para poder agendar su hora, necesitamos que complete sus datos en https://bit.ly/3g3m2zp para agilizar el proceso. Agradecería su confirmación una vez realizado el mismo.',
+    text: 'Para poder agendar su hora, necesitamos que complete sus datos en https://bit.ly/3rbbpRl para agilizar el proceso. Agradecería su confirmación una vez realizado el mismo.',
   },
   {
     id: '4',
