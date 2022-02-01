@@ -330,12 +330,13 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
       min-width: 25px;
       min-height: 25px;
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
       color: ${({ theme }) => theme.Colors.grays[5]};
       border-radius: 50%;
       padding: 0;
       margin: 0;
+      font-size: ${({ theme }) => theme.fontSize[12]};
     }
     & > :nth-child(2) {
       display: flex;

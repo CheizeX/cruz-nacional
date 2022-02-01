@@ -488,7 +488,7 @@ export const ChatsViewSelectedToConfirm: FC<
                     onClick={() => {
                       handleClickToSendPredefinidedTexts(text.text);
                     }}>
-                    <span>{text.id}.</span>
+                    <span>{Number(text.id) < 10 ? 0 + text.id : text.id}.</span>
                     <SVGIcon iconFile="/icons/ray.svg" />
                     <Text color="gray" size="12px" key={text.text}>
                       {text.text}
