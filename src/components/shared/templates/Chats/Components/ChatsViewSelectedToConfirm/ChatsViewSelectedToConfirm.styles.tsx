@@ -286,6 +286,7 @@ export const StyledFooterToChat = styled.div<
   }
 `;
 
+// CRUZ-NACIONAL---------------------------------------------------------------------------
 export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
   // set visibility hidden when showPredefinedTexts === true
 
@@ -375,6 +376,7 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
     }
   }
 `;
+// CRUZ-NACIONAL -------------------------------------------------------------
 
 export const StyledFooterPausedButton = styled.button`
   min-width: 230px;

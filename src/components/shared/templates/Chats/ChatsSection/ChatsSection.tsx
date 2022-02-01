@@ -107,7 +107,7 @@ export const ChatsSection: FC<
   // Trae los chats Pendientes
   const wsGetPendingChats = useCallback(async () => {
     socket?.on('getPendingChats', (data: Chat[]) => {
-      setUserSelected('');
+      // setUserSelected('');
       dispatch(setChatsPendings(data));
     });
   }, []);
