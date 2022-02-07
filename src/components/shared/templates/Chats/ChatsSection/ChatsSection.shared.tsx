@@ -23,7 +23,7 @@ export const preDefinedTextsObject = [
   },
   {
     id: '5',
-    text: 'Las horas para toma de muestra son agendadas con anticipación de acuerdo con lo disponible en la agenda. PCR Fonasa: $12.500 - PCR Particular: $25.000 -   Antígeno Covid-19: $19.000',
+    text: 'Las horas para toma de muestra son agendadas con anticipación de acuerdo con lo disponible en la agenda. PCR Fonasa: $12.500 - PCR Particular: $25.000 -  Antígeno Covid-19: $20.000',
   },
   {
     id: '6',
