@@ -74,6 +74,17 @@ export const ChatsSection: FC<
     React.useState<boolean>(false);
   const [findDialogueInChat, setFindDialogueInChat] =
     React.useState<string>('');
+  const [newMessagesInChat, setNewMessagesInChat] = React.useState(
+    {} as {
+      key: string;
+      messageLength: number;
+    },
+  );
+  // Funcion para buscar por nombre y rut
+  // const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchByName(event.target.value);
+  // };
+  // Fución para buscar por Rut
 
   // Funcion para buscar por nombre, email o telefono
   const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +95,7 @@ export const ChatsSection: FC<
   // --------------- <<< WEB SOCKET EVENTS >>> -----------------
   // Escucha los chats de usuarios o agentes según el parámetro que se le pase
   const getNewMessageFromNewUserOrAgent = useCallback(async (event: string) => {
-    socket?.on(event, (data: Chat[]) => {
+    socket?.on(event, async (data: Chat[]) => {
       dispatch(setChatsOnConversation(data));
     });
   }, []);
@@ -114,10 +125,10 @@ export const ChatsSection: FC<
 
   // Trae los chats transferidos
   const wsGetTransferedChats = useCallback(async () => {
-    socket?.on('newTransfer', (data: Chat[]) => {
+    socket?.on('newTransfer', async (data: Chat[]) => {
       dispatch(setChatsOnConversation(data));
     });
-  }, []);
+  }, [dispatch, userSelected]);
 
   // escucha los chats que pasan a on_conversation
   const wsNewChatAssigned = useCallback(async () => {
@@ -142,6 +153,7 @@ export const ChatsSection: FC<
       // router.push('/');
     });
   }, []);
+
   // trae todos los chats que se encuentran ON_CONVERSATION
   const getOnConversationChats = useCallback(async () => {
     try {
@@ -193,8 +205,8 @@ export const ChatsSection: FC<
   }, [socket]);
 
   useEffect(() => {
-    getOnConversationChats();
     getPendingChats();
+    getOnConversationChats();
   }, []);
 
   useEffect(() => {
@@ -204,10 +216,10 @@ export const ChatsSection: FC<
   return (
     <StyledChatsSection>
       <ChatsList
+        setCheckedTags={setCheckedTags}
         setShowOnlyPausedChats={setShowOnlyPausedChats}
         showOnlyPausedChats={showOnlyPausedChats}
         checkedTags={checkedTags}
-        setCheckedTags={setCheckedTags}
         handleCleanChannels={handleCleanChannels}
         channel={channel}
         userSelected={userSelected}
@@ -218,11 +230,12 @@ export const ChatsSection: FC<
         setActiveByDefaultTab={setActiveByDefaultTab}
         setDropZoneDisplayed={setDropZoneDisplayed}
         setChatInputDialogue={setChatInputDialogue}
+        newMessagesInChat={newMessagesInChat}
+        setNewMessagesInChat={setNewMessagesInChat}
         // Funciones para realizar busqueda de nombre y rut
         onChangeSearchName={onChangeSearchName}
         searchByName={searchByName}
       />
-
       {!userSelected ? (
         <ChatsViewNoSelected />
       ) : (
@@ -248,6 +261,8 @@ export const ChatsSection: FC<
           errors={errors}
           setFindDialogueInChat={setFindDialogueInChat}
           findDialogueInChat={findDialogueInChat}
+          newMessagesInChat={newMessagesInChat}
+          setNewMessagesInChat={setNewMessagesInChat}
         />
       )}
 
@@ -275,6 +290,7 @@ export const ChatsSection: FC<
 
         {liveChatPage && liveChatPage === 'EndChat' ? (
           <EndChat
+            setUserSelected={setUserSelected}
             liveChatModal={liveChatModal}
             setLiveChatModal={setLiveChatModal}
           />
@@ -300,6 +316,7 @@ export const ChatsSection: FC<
             setLiveChatPage={setLiveChatPage}
           />
         ) : null}
+
         {liveChatPage && liveChatPage === 'ModalPreviousSession' ? (
           <ModalClosePreviousSession setLiveChatModal={setLiveChatModal} />
         ) : null}

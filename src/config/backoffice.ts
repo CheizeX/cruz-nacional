@@ -39,18 +39,18 @@ export const adminSection: BackofficeSection[] = [
     name: 'Reportes',
     icon: '/icons/reports.svg',
   },
-  // {
-  //   name: 'Canales',
-  //   icon: '/icons/sidebar_chats.svg',
-  // },
-  // {
-  //   name: 'Configuración',
-  //   icon: '/icons/sidebar_configuracion.svg',
-  // },
-  // {
-  //   name: 'Suscripciones',
-  //   icon: '/icons/subscription.svg',
-  // },
+  {
+    name: 'Canales',
+    icon: '/icons/sidebar_chats.svg',
+  },
+  {
+    name: 'Configuración',
+    icon: '/icons/sidebar_configuracion.svg',
+  },
+  {
+    name: 'Suscripciones',
+    icon: '/icons/subscription.svg',
+  },
 ];
 
 export const fullVersionSections: BackofficeSection[] = [];

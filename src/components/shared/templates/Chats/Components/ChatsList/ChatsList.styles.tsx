@@ -30,42 +30,85 @@ export const StyledChatsList = styled.section`
 `;
 
 export const StyledIndicatorOnConversation = styled.span`
-  min-width: 0.625rem;
-  height: 0.625rem;
-  background-color: ${({ theme }) => theme.Colors.orange[2]};
+  min-width: 1.7rem;
+  min-height: 1.5rem;
+  max-width: 2.2rem;
+  width: fit-content;
+  height: fit-content;
+  background-color: ${({ theme }) => theme.Colors.orange[3]};
   z-index: 1;
   position: absolute;
-  right: 1.85rem;
-  top: 2.25rem;
-  border-radius: 50%;
-`;
-
-export const StyledIndicatorPendings = styled.span`
-  min-width: 0.625rem;
-  height: 0.625rem;
-  background-color: ${({ theme }) => theme.Colors.grays[9]};
-  z-index: 1;
-  position: absolute;
-  left: 1.9375rem;
-  top: 2.25rem;
-  border-radius: 50%;
+  right: 0.6rem;
+  top: 0.9rem;
+  border-radius: 0.7rem 0.7rem 0.7rem 0.3rem;
+  font-size: 11px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: ${({ theme }) => theme.fontSize[10]};
-  font-weight: bold;
-  color: ${({ theme }) => theme.Colors.orange[2]};
+  font-weight: 700;
+  color: ${({ theme }) => theme.Colors.grays[10]};
+  outline: ${({ theme }) => theme.Colors.grays[8]};
+  padding: 0.125rem 0.25rem;
+`;
+export const StyledIndicatorOnConversationWarning = styled(
+  StyledIndicatorOnConversation,
+)`
   background-color: ${({ theme }) => theme.Colors.orange[2]};
+`;
+export const StyledIndicatorOnConversationAlarm = styled(
+  StyledIndicatorOnConversation,
+)`
+  animation: blinker 1s infinite;
+  @keyframes blinker {
+    10% {
+      opacity: 0.5;
+    }
+  }
+  background-color: red;
+`;
+
+export const StyledIndicatorPendings = styled.span`
+  min-width: 1.7rem;
+  min-height: 1.5rem;
+  max-width: 2.2rem;
+  width: fit-content;
+  height: fit-content;
+  z-index: 1;
+  position: absolute;
+  left: 0.6rem;
+  top: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme }) => theme.Colors.orange[3]};
+  border-radius: 0.7rem 0.7rem 0.3rem 0.7rem;
+  font-weight: 700;
+  font-size: 11px;
+  color: ${({ theme }) => theme.Colors.grays[10]};
+  outline: ${({ theme }) => theme.Colors.grays[8]};
+  padding: 0.125rem 0.25rem;
+`;
+export const StyledIndicatorPendingsWarning = styled(StyledIndicatorPendings)`
+  background-color: ${({ theme }) => theme.Colors.orange[2]};
+`;
+export const StyledIndicatorPendingsAlarm = styled(StyledIndicatorPendings)`
+  animation: blinker 1s infinite;
+  @keyframes blinker {
+    10% {
+      opacity: 0.5;
+    }
+  }
+  background-color: red;
 `;
 
 export const StyledIndicatorPaused = styled.span`
   font-weight: 900;
-  min-width: 0.7rem;
-  height: 0.7rem;
+  min-width: 0.9rem;
+  height: 1rem;
   z-index: 1;
   position: absolute;
-  right: 150px;
-  top: 2.25rem;
+  right: 149px;
+  top: 2.1rem;
   border-radius: 50%;
   display: flex;
   justify-content: center;

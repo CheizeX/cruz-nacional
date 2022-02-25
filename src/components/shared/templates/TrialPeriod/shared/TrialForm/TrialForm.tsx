@@ -3,6 +3,7 @@ import { FC } from 'react';
 import * as Yup from 'yup';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import axios, { AxiosRequestConfig } from 'axios';
+import { useRouter } from 'next/router';
 import {
   StyledTrialFormContainer,
   StyledTrialFormLayout,
@@ -54,6 +55,8 @@ const initialValues = {
 };
 
 export const TrialForm: FC = () => {
+  const router = useRouter();
+
   const onSubmit = async (values: {
     companyName: string;
     name: string;
@@ -78,9 +81,9 @@ export const TrialForm: FC = () => {
       };
       const { data } = await axios(axiosConfig);
 
-      // if (data.success) {
-      //   router.push(`/redirect/${data.result}`);
-      // }
+      if (data.success) {
+        router.push(`/`);
+      }
 
       console.log(data);
     } catch (error) {

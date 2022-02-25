@@ -36,6 +36,8 @@ import chatIntegrationQRState from './slices/channels/integration-with-qr';
 import listChannelState from './slices/channels/list-channel';
 import chatsHistoryState from './slices/live-chat/chat-history';
 import chatsTodayTransferState from './slices/live-chat/chat-transfer';
+import configurationInfo from './slices/configuration/configuration-info';
+import chatContainerAccountInstagramState from './slices/channels/account-instagram';
 
 const liveChat = combineReducers({
   chatsPendings,
@@ -47,7 +49,6 @@ const liveChat = combineReducers({
   chatsHistoryState,
   chatsTodayTransferState,
 });
-
 const users = combineReducers({
   useQueryState,
   userByIdEditState,
@@ -58,13 +59,11 @@ const users = combineReducers({
   updateContainerTagState,
   userContainerTagState,
 });
-
 const tags = combineReducers({
   tagsQueryState,
   tagEditByIdState,
   tagDeleteByIdState,
 });
-
 const onboarding = combineReducers({
   onboardingState,
   createAccountState,
@@ -77,7 +76,6 @@ const monitor = combineReducers({
   monitorCountAgentsAvailableState,
   infoByAgentState,
 });
-
 const reports = combineReducers({
   reportsQueryState,
   reportsAgentsQueryState,
@@ -89,6 +87,7 @@ const channel = combineReducers({
   chatContainerAuthFacebookState,
   chatIntegrationQRState,
   listChannelState,
+  chatContainerAccountInstagramState,
 });
 
 export const store = configureStore({
@@ -109,6 +108,7 @@ export const store = configureStore({
     activeTab,
     optionsToFilterChats,
     channel,
+    configurationInfo,
   },
 });
 

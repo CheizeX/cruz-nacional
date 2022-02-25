@@ -16,6 +16,11 @@ storiesOf('Ailalia/Templates/Chats/Components', module).add('ChatsList', () => {
       setSortedChats={() => null}
       setActiveByDefaultTab={() => null}
       setDropZoneDisplayed={() => null}
+      newMessagesInChat={{
+        key: '',
+        messageLength: 0,
+      }}
+      setNewMessagesInChat={() => null}
     />
   );
 });

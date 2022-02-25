@@ -5,6 +5,8 @@ import { IBackOfficeProps } from '../../components/shared/organisms/NavBar/BackO
 import { IPropsAgents } from '../../components/shared/templates/Dashboard/Components/Agents/Agents.interface';
 import { FilterChannel } from '../../components/shared/templates/Chats/Components/ChatsFilter/ChatFilter/ChatFilter.interface';
 import { BackofficeLayout } from '../../components/shared/organisms/BackofficeLayout/BackofficeLayout';
+import { websocketContext } from '../../chat';
+import { useAppSelector } from '../../redux/hook/hooks';
 
 const BackofficePage: NextPage<
   IBackOfficeProps & CollapseSidebar & IPropsAgents & FilterChannel
@@ -21,6 +23,13 @@ const BackofficePage: NextPage<
   checkedTags,
   setCheckedTags,
 }) => {
+  const socket: any = React.useContext(websocketContext);
+
+  const { userDataInState } = useAppSelector(
+    (state) => state.userAuthCredentials,
+  );
+  socket.emit('joinSupervisorRooms', userDataInState?.companyId);
+
   return (
     <BackofficeLayout
       checkedTags={checkedTags}

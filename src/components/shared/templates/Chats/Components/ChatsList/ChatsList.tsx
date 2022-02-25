@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable sonarjs/cognitive-complexity */
 import { FC } from 'react';
 import { Tabs } from '../../../../organisms/Tabs/Tabs';
@@ -13,6 +14,10 @@ import {
   StyledIndicatorOnConversation,
   StyledIndicatorPendings,
   StyledIndicatorPaused,
+  StyledIndicatorPendingsWarning,
+  StyledIndicatorPendingsAlarm,
+  StyledIndicatorOnConversationWarning,
+  StyledIndicatorOnConversationAlarm,
 } from './ChatsList.styles';
 import {
   TabProps,
@@ -21,6 +26,7 @@ import {
   DropZoneDisplayedProps,
   ChatInputDialogueProps,
   ShowOnlyPaused,
+  MessagesViewedOrNot,
   IPropsSearchByName,
   IPropsStringName,
 } from '../../ChatsSection/ChatsSection.interface';
@@ -38,9 +44,10 @@ export const ChatsList: FC<
     ChatInputDialogueProps &
     FilterChannelsProps &
     FilterChannel &
+    ShowOnlyPaused &
+    MessagesViewedOrNot &
     IPropsSearchByName &
-    IPropsStringName &
-    ShowOnlyPaused
+    IPropsStringName
 > = ({
   setUserSelected,
   userSelected,
@@ -56,6 +63,8 @@ export const ChatsList: FC<
   setCheckedTags,
   setShowOnlyPausedChats,
   showOnlyPausedChats,
+  setNewMessagesInChat,
+  newMessagesInChat,
   onChangeSearchName,
   searchByName,
 }) => {
@@ -68,8 +77,36 @@ export const ChatsList: FC<
 
   return (
     <StyledChatsList>
-      {chatsOnConversation?.length > 0 && <StyledIndicatorOnConversation />}
-      {chatsPendings?.length > 0 && <StyledIndicatorPendings />}
+      {chatsOnConversation?.length > 0 && chatsOnConversation?.length < 10 ? (
+        <StyledIndicatorOnConversation>
+          {chatsOnConversation.length}
+        </StyledIndicatorOnConversation>
+      ) : chatsOnConversation?.length >= 10 &&
+        chatsOnConversation?.length < 100 ? (
+        <StyledIndicatorOnConversationWarning>
+          {chatsOnConversation?.length}
+        </StyledIndicatorOnConversationWarning>
+      ) : chatsOnConversation?.length >= 100 ? (
+        <StyledIndicatorOnConversationAlarm>
+          {chatsOnConversation?.length > 999
+            ? '999+'
+            : chatsOnConversation?.length}
+        </StyledIndicatorOnConversationAlarm>
+      ) : null}
+      {chatsPendings?.length > 0 && chatsPendings?.length < 10 ? (
+        <StyledIndicatorPendings>
+          {chatsPendings.length}
+        </StyledIndicatorPendings>
+      ) : chatsPendings?.length >= 10 && chatsPendings?.length < 100 ? (
+        <StyledIndicatorPendingsWarning>
+          {chatsPendings?.length}
+        </StyledIndicatorPendingsWarning>
+      ) : chatsPendings?.length >= 100 ? (
+        <StyledIndicatorPendingsAlarm>
+          {chatsPendings?.length > 999 ? '999+' : chatsPendings?.length}
+        </StyledIndicatorPendingsAlarm>
+      ) : null}
+
       {chatsOnConversation?.length > 0 &&
         chatsOnConversation.some((chat) => chat.isPaused) && (
           <StyledIndicatorPaused>| |</StyledIndicatorPaused>
@@ -126,6 +163,8 @@ export const ChatsList: FC<
                 setActiveByDefaultTab={setActiveByDefaultTab}
                 setDropZoneDisplayed={setDropZoneDisplayed}
                 setChatInputDialogue={setChatInputDialogue}
+                newMessagesInChat={newMessagesInChat}
+                setNewMessagesInChat={setNewMessagesInChat}
                 searchByName={searchByName}
               />
             </StyledInConversationRender>
@@ -182,6 +221,8 @@ export const ChatsList: FC<
                 setActiveByDefaultTab={setActiveByDefaultTab}
                 setDropZoneDisplayed={setDropZoneDisplayed}
                 setChatInputDialogue={setChatInputDialogue}
+                newMessagesInChat={newMessagesInChat}
+                setNewMessagesInChat={setNewMessagesInChat}
                 searchByName={searchByName}
               />
             </StyledInConversationRender>

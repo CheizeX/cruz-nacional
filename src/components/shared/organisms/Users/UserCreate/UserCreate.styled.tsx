@@ -230,9 +230,11 @@ export const StyledRealFunctionalRadiosContainer = styled.div`
     height: 24px;
   }
   & > :first-child {
+    cursor: pointer;
     transform: translate(8px, 1px);
   }
   & > :last-child {
+    cursor: pointer;
     transform: translate(120px, 1px);
   }
 `;
@@ -275,13 +277,18 @@ export const StyledRadioPurple = styled(StyledRadioGray)`
 
 export const StyledVisualRadiosContainer = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: start;
   align-items: center;
   font-size: ${({ theme }) => theme.fontSize[12]};
   color: ${({ theme }) => theme.Colors.grays[3]};
   font-weight: ${({ theme }) => theme.fontWeight[400]};
-  & span {
+
+  & > button {
+    cursor: pointer;
+    z-index: 2;
     transform: translateX(-20px);
   }
+  & span {
+    /* transform: translateX(-20px); */
+  }
 `;
-export const StyledLabel = styled.div``;

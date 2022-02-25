@@ -24,6 +24,12 @@ import { DecodedToken } from '../../../../../models/users/user';
 import { MyAccountSidebarOrganism } from '../../MyAccountSidebar/MyAccountSidebar';
 import useDisplayElementOrNot from '../../../../../hooks/use-display-element-or-not';
 import useLocalStorage from '../../../../../hooks/use-local-storage';
+import {
+  getBusinessHoursData,
+  getConfigurationData,
+  getGeneralConfigurationData,
+  getListOfRestrictions,
+} from '../../../../../redux/slices/configuration/configuration-info';
 
 export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const { signOut } = useAuth();
@@ -38,6 +44,9 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const { decodedToken }: any = useJwt(accessToken);
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
+  );
+  const { configurationData, loadingConfigData } = useAppSelector(
+    (state) => state.configurationInfo,
   );
   const handleNavUserDropdown = () => {
     setIsComponentVisible(!isComponentVisible);
@@ -54,7 +63,6 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
       setIsComponentVisible(false);
       dispatch(setUserDataInState({} as DecodedToken));
     } catch (error) {
-      // localStorage.removeItem('AccessToken');
       showAlert?.addToast({
         alert: Toast.ERROR,
         title: 'ERROR',
@@ -62,14 +70,23 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
       });
     }
   };
+
   const profilePicture = userDataInState.urlAvatar
     ? `${userDataInState.urlAvatar}?token=${accessToken}`
     : '';
+
   useEffect(() => {
     if (decodedToken) {
       dispatch(setUserDataInState(decodedToken));
     }
-  }, [decodedToken]);
+    dispatch(getConfigurationData());
+    dispatch(getGeneralConfigurationData());
+  }, [decodedToken, dispatch]);
+
+  useEffect(() => {
+    dispatch(getListOfRestrictions(configurationData));
+    dispatch(getBusinessHoursData(configurationData));
+  }, [loadingConfigData]);
 
   return (
     <>

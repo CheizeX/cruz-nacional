@@ -27,7 +27,7 @@ export const StyledInConversationWrapper = styled.div<StyledPendingWrapperProps>
   padding: 12px 0 0 0;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   &:hover {
-    background-color: ${({ theme }) => theme.Colors.purples[1]};
+    background-color: ${({ theme }) => theme.Colors.purples[2]};
     cursor: pointer;
     box-shadow: 0 0 5px rgb(155, 16, 247);
     & > button {
@@ -136,15 +136,21 @@ export const StyledInConversationChatItem = styled.button`
 export const StyledTimeAndState = styled.div`
   height: 60px;
   width: 77px;
+  position: relative;
   & > :first-child {
     display: flex;
-
+    position: absolute;
+    width: 120px;
+    height: 12px;
+    right: 0;
+    top: -5px;
+    justify-content: flex-end;
     & > div {
       height: 100%;
       margin-top: -2px;
+      width: 14px;
     }
     & > span {
-      transform: translateX(14px);
       align-self: flex-start;
       margin-top: -6px;
       color: ${({ theme }) => theme.Colors.grays[5]};
@@ -190,4 +196,21 @@ export const StyledTimeAndState = styled.div`
       font-weight: ${({ theme }) => theme.fontWeight[700]};
     }
   }
+`;
+
+export const StyledNotViewedMessages = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 23px;
+  width: 23px;
+  border-radius: 50%;
+  color: ${({ theme }) => theme.Colors.grays[10]};
+  font-weight: ${({ theme }) => theme.fontWeight[700]};
+  font-size: ${({ theme }) => theme.fontSize[10]};
+  position: absolute;
+  left: 40px;
+  bottom: 6px;
+  border: 2px solid ${({ theme }) => theme.Colors.grays[10]};
+  background-color: ${({ theme }) => theme.Colors.purples[1]};
 `;

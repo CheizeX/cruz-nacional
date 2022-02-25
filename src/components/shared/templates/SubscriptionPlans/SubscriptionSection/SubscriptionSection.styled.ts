@@ -1,27 +1,29 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable import/no-cycle */
 import styled from 'styled-components';
-import { SubscriptionSectionProps } from './SubscriptionSection';
+import { SubscriptionSectionProps } from './SubscriptionSection.interface';
 
 export const StyledSubscriptionSection = styled.section`
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   border-radius: 10px;
   max-width: 1032px;
-  height: 690px;
+  height: fit-content;
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   margin: 0 auto;
+  flex-wrap: wrap;
+  flex-direction: row;
 `;
 
 export const StyledSubscriptionSectionHeader = styled.div`
   height: 90px;
   border-radius: 10px 10px 0 0px;
-  border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[9]};
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
   & img {
     margin-left: 20px;
   }
@@ -97,23 +99,28 @@ export const StyledSelectedPlanHeader = styled.div`
       padding-left: 5px;
       font-size: 32px;
       font-weight: 700;
-      color: ${({ theme }) => theme.Colors.purples[3]};
+      color: ${({ theme }) => theme.Colors.green[3]};
+    }
   }
 `;
 
 export const StyledSubscriptionSectionBody = styled.div`
   height: 100%;
-  border-radius: 10px;
+  height: fit-content;
+  border-top: 1px solid ${({ theme }) => theme.Colors.grays[9]};
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
   color: ${({ theme }) => theme.Colors.grays[3]};
-  padding: 10px 0;
   & > div {
     height: 100%;
+    height: fit-content;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-evenly;
+    align-items: center;
     width: 100%;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -125,7 +132,8 @@ export const StyledSubscriptionSectionCard = styled.div<SubscriptionSectionProps
   align-items: center;
   justify-content: space-between;
   width: 300px;
-  height: 340px;
+  height: 380px;
+  margin: 9px 0;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   border-radius: 10px;
   padding: 20px;
@@ -134,8 +142,8 @@ export const StyledSubscriptionSectionCard = styled.div<SubscriptionSectionProps
   ${({ active, theme }) =>
     active &&
     `
-    /* outline: 2px solid ${theme.Colors.purples[1]}; */
-    box-shadow: 0px 2px 5px 3px  ${theme.Colors.purples[3]};
+    outline: 7px solid ${theme.Colors.grays[9]}; 
+    box-shadow: 0px 1px 15px 2px  ${theme.Colors.grays[1]};
   `}
   & > div {
     width: 100%;
@@ -157,14 +165,12 @@ export const StyledSubscriptionSectionCard = styled.div<SubscriptionSectionProps
         height: 24px;
       }
       & > svg {
-        border: 2px solid ${({ theme }) => theme.Colors.grays[8]};
         width: 20px;
         height: 20px;
-        background-color: ${({ theme }) => theme.Colors.grays[8]};
         border: 2px solid ${({ theme }) => theme.Colors.grays[10]};
         background-color: ${({ theme }) => theme.Colors.grays[10]};
         & path {
-          fill: ${({ theme }) => theme.Colors.grays[8]};
+          fill: ${({ theme }) => theme.Colors.green[4]};
           ${({ active, theme }) =>
             active &&
             `
@@ -175,10 +181,21 @@ export const StyledSubscriptionSectionCard = styled.div<SubscriptionSectionProps
       }
     }
   }
-  & > button {
+  & button {
+    min-height: 40px;
     width: 100%;
+    background: ${({ theme }) => theme.Colors.purples[1]};
+    border-radius: 27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: ${({ theme }) => theme.Colors.grays[10]};
     margin-top: 5px;
-    height: 40px;
+    margin-bottom: -5px;
+    font-weight: 600;
+    & :hover {
+      background: ${({ theme }) => theme.Colors.purples[2]};
+    }
   }
 `;
 export const StyledSubscriptionSectionCardHeader = styled.span<SubscriptionSectionProps>`
@@ -207,7 +224,7 @@ export const StyledSubscriptionSectionCardHeader = styled.span<SubscriptionSecti
       active &&
       `
     font-size: 28px;
-    color: ${theme.Colors.purples[3]};
+    color: ${theme.Colors.green[3]};
     &::before {
       // the content of the span is the same as the content of the h1
       font-size: 20px;
@@ -237,19 +254,30 @@ export const StyledSubscriptionSectionEnterpriseCard = styled.div<SubscriptionSe
   border-radius: 10px;
   padding: 0 20px 10px 20px;
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.121);
-  font-size: 14px;
+  font-size: 16px;
   max-width: 633px;
-  max-height: 240px;
   align-self: flex-start;
-  height: 255px;
+  height: 380px;
   ${({ active, theme }) =>
     active &&
     `
-    box-shadow: 0px 2px 5px 3px  ${theme.Colors.purples[3]};
+    outline: 7px solid ${theme.Colors.grays[9]}; 
+    box-shadow: 0px 1px 15px 2px  ${theme.Colors.grays[1]};
   `};
-  & button {
+  & a {
     min-height: 40px;
     width: 100%;
+    background: ${({ theme }) => theme.Colors.purples[1]};
+    border-radius: 27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: ${({ theme }) => theme.Colors.grays[10]};
+    margin-bottom: 5px;
+    font-weight: 600;
+    & :hover {
+      background: ${({ theme }) => theme.Colors.purples[2]};
+    }
   }
 `;
 export const StyledSubscriptionSectionEnterpriseCardHeader = styled.div<SubscriptionSectionProps>`
@@ -284,7 +312,7 @@ export const StyledSubscriptionSectionEnterpriseCardHeader = styled.div<Subscrip
       active &&
       `
       font-size: 28px;
-    color: ${theme.Colors.purples[3]};
+    color: ${theme.Colors.green[3]};
   `}
   }
 `;
@@ -293,9 +321,11 @@ export const StyledSubscriptionSectionEnterpriseCardBody = styled.div<Subscripti
   flex-direction: row;
   align-items: left;
   color: ${({ theme }) => theme.Colors.grays[3]};
-  height: 150px;
+  height: 250px;
   width: 100%;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  line-height: 1.5;
   & > :first-child {
     width: 100%;
     height: 97%;
@@ -323,13 +353,11 @@ export const StyledSubscriptionSectionEnterpriseCardBody = styled.div<Subscripti
             & > svg {
               width: 20px;
               height: 20px;
-              background-color: ${({ theme }) => theme.Colors.grays[8]};
               border-radius: 50%;
-              border: 2px solid ${({ theme }) => theme.Colors.grays[8]};
               border: 2px solid ${({ theme }) => theme.Colors.grays[10]};
               background-color: ${({ theme }) => theme.Colors.grays[10]};
               & path {
-                fill: ${({ theme }) => theme.Colors.grays[8]};
+                fill: ${({ theme }) => theme.Colors.green[4]};
               ${({ active, theme }) =>
                 active &&
                 `

@@ -1,6 +1,8 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { CgClipboard } from 'react-icons/cg';
 import { Text } from '../../../../atoms/Text/Text';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { ButtonMolecule } from '../../../../atoms/Button/Button';
@@ -18,6 +20,7 @@ import {
   Emojis,
   PredefinidedTextsInterface,
   FindDialogueInChatInterface,
+  MessagesViewedOrNot,
 } from '../../ChatsSection/ChatsSection.interface';
 import { DialoguesBox } from '../DiaolguesBox/DialoguesBox';
 import {
@@ -49,6 +52,10 @@ import { setChatToSetOnConversationInStateId } from '../../../../../../redux/sli
 import { RootState } from '../../../../../../redux';
 import { readHistoryChat } from '../../../../../../api/chat';
 import { setChatsHistory } from '../../../../../../redux/slices/live-chat/chat-history';
+import {
+  StyledCopyToClipboardUser,
+  StyledNameAndContactSeparator,
+} from '../DiaolguesBox/DialoguesBox.styles';
 
 export const ChatsViewSelectedToConfirm: FC<
   SelectedUserProps &
@@ -59,7 +66,8 @@ export const ChatsViewSelectedToConfirm: FC<
     DropZoneDisplayedProps &
     Emojis &
     PredefinidedTextsInterface &
-    FindDialogueInChatInterface
+    FindDialogueInChatInterface &
+    MessagesViewedOrNot
 > = ({
   userSelected,
   setUserSelected,
@@ -79,6 +87,7 @@ export const ChatsViewSelectedToConfirm: FC<
   setShowPredefinedTexts,
 }) => {
   const showAlert = useToastContext();
+  const toasts = useToastContext();
 
   const dispatch = useAppDispatch();
   const { userDataInState }: any = useAppSelector(
@@ -91,7 +100,7 @@ export const ChatsViewSelectedToConfirm: FC<
     (state) => state.liveChat.chatsOnConversation,
   );
 
-  const { hasHistory, seccionIsPending, idClient, idChannel } = useSelector(
+  const { idClient, idChannel } = useSelector(
     (state: RootState) => state.liveChat.chatsHistoryState,
   );
 
@@ -110,6 +119,18 @@ export const ChatsViewSelectedToConfirm: FC<
   const chatToTalkWithUserId = chatToTalkWithUser?._id;
   const chatToTalkWithUserNumber = chatToTalkWithUser?.client.clientId;
 
+  const handleCopyTextToClipboard = useCallback(
+    (arg: string) => {
+      navigator.clipboard.writeText(arg);
+      toasts?.addToast({
+        alert: Toast.SUCCESS,
+        title: '',
+        message: `TEXTO COPIADO AL PORTAPAPELES`,
+      });
+    },
+    [toasts],
+  );
+
   const handleSetUserToOnConversation = async () => {
     // if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
     try {
@@ -119,8 +140,8 @@ export const ChatsViewSelectedToConfirm: FC<
           accessToken,
         },
       );
+      setUserSelected(`${userSelected}` as string);
       setActiveByDefaultTab(1);
-      setUserSelected(userSelected as any);
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -128,6 +149,8 @@ export const ChatsViewSelectedToConfirm: FC<
         message: `INIT-CONVERSATION-ERROR ${error}`,
       });
     }
+
+    // }
     // } else {
     //   showAlert?.addToast({
     //     alert: Toast.ERROR,
@@ -140,7 +163,7 @@ export const ChatsViewSelectedToConfirm: FC<
   const handleEnterToSendMessage = async (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && chatInputDialogue !== '') {
       setChatInputDialogue('');
       const bodyObject: Message = {
         from: userDataInState.role,
@@ -295,7 +318,6 @@ export const ChatsViewSelectedToConfirm: FC<
     setLiveChatModal(true);
     setLiveChatPage('EndChat');
     dispatch(setChatsToSendId(chatToTalkWithUserId || ''));
-    setUserSelected('');
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -331,8 +353,6 @@ export const ChatsViewSelectedToConfirm: FC<
     setShowPredefinedTexts(false);
   };
 
-  useEffect(() => {}, [chatToTalkWithUser]);
-
   return (
     <StyledChatsViewSelectedToConfirm>
       <StyledHeaderChatsViewSelectedToConfirm>
@@ -352,18 +372,39 @@ export const ChatsViewSelectedToConfirm: FC<
             <SVGIcon iconFile="/icons/user.svg" />
           )}
           <span>
-            <Text>Cliente</Text>
+            <Text>
+              Cliente
+              {chatsOnConversation?.find(
+                (chat) =>
+                  !!(
+                    chat.client.clientId === userSelected &&
+                    chat.channel === 'WhatsApp'
+                  ) || chat.channel === 'Webchat',
+              ) ? (
+                <StyledCopyToClipboardUser
+                  onClick={() =>
+                    handleCopyTextToClipboard(String(userSelected))
+                  }>
+                  <CgClipboard />
+                </StyledCopyToClipboardUser>
+              ) : null}
+            </Text>
             {chatsOnConversation?.find(
               (chat) => chat.client.clientId === userSelected?.toString(),
             ) && (
               <Text>
                 {chatsOnConversation?.find(
                   (chat) => chat.client.clientId === userSelected,
-                )?.client.name || userSelected}
-                {' - '}
-                {chatsOnConversation?.find(
-                  (chat) => chat.client.clientId === userSelected,
-                )?.client.clientId || userSelected}
+                )?.client.name || userSelected}{' '}
+                <StyledNameAndContactSeparator />{' '}
+                {
+                  chatsOnConversation?.find(
+                    (chat) =>
+                      (chat.client.clientId === userSelected &&
+                        chat.channel === 'WhatsApp') ||
+                      chat.channel === 'Webchat',
+                  )?.client.clientId
+                }
               </Text>
             )}
             {chatsPendings?.find(
@@ -375,14 +416,23 @@ export const ChatsViewSelectedToConfirm: FC<
                 )?.client.name || userSelected}
               </Text>
             )}
+            {
+              chatsOnConversation?.find(
+                (chat) =>
+                  chat.client.clientId === userSelected &&
+                  chat.channel === ('Webchat' || 'WhatsApp'),
+              )?.client.clientId
+            }
           </span>
-          {hasHistory && !seccionIsPending ? (
+          {chatsOnConversation?.find(
+            (user) => user.client.clientId === userSelected,
+          )?.hasHistory && (
             <button
               type="button"
               onClick={() => handleClickHistoryChat(true, 'HistoryChat')}>
               <SVGIcon iconFile="/icons/list_icons.svg" />
             </button>
-          ) : null}
+          )}
         </div>
         {chatsOnConversation?.find(
           (user) =>
@@ -488,7 +538,6 @@ export const ChatsViewSelectedToConfirm: FC<
                     onClick={() => {
                       handleClickToSendPredefinidedTexts(text.text);
                     }}>
-                    <span>{Number(text.id) < 10 ? 0 + text.id : text.id}.</span>
                     <SVGIcon iconFile="/icons/ray.svg" />
                     <Text color="gray" size="12px" key={text.text}>
                       {text.text}
@@ -500,7 +549,6 @@ export const ChatsViewSelectedToConfirm: FC<
             <button type="button" onClick={handleDropZoneDisplayed}>
               <SVGIcon iconFile="/icons/clipper.svg" />
             </button>
-
             {/* <button type="button" onClick={handleSowEmojisButtton}>
               <SVGIcon iconFile="/icons/emojis.svg" />
             </button> */}
@@ -521,7 +569,6 @@ export const ChatsViewSelectedToConfirm: FC<
           <IconButtonMolecule
             onClick={handleClickToSendMessage}
             state={
-              // eslint-disable-next-line no-nested-ternary
               chatInputDialogue === ''
                 ? IconButtonState.DISABLED
                 : sendingMessage === true

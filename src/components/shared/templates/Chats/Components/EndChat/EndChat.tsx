@@ -33,13 +33,17 @@ import {
   useAppSelector,
 } from '../../../../../../redux/hook/hooks';
 import { setChatsOnConversation } from '../../../../../../redux/slices/live-chat/on-conversation-chats';
+import { SelectedUserProps } from '../../ChatsSection/ChatsSection.interface';
 
 interface Values {
   finishedStatus: string;
   feedback: string;
 }
 
-export const EndChat: FC<IEndChatProps> = ({ setLiveChatModal }) => {
+export const EndChat: FC<IEndChatProps & SelectedUserProps> = ({
+  setLiveChatModal,
+  setUserSelected,
+}) => {
   const showAlert = useToastContext();
 
   const dispatch = useAppDispatch();
@@ -86,6 +90,7 @@ export const EndChat: FC<IEndChatProps> = ({ setLiveChatModal }) => {
           ),
         );
       }
+      setUserSelected('');
       setLiveChatModal(false);
       setOpenEndChat(false);
       setReviewConversation('');

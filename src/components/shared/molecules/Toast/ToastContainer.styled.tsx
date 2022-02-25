@@ -6,8 +6,8 @@ export const StyledToastsContainer = styled.div`
   position: absolute;
   top: 30px;
   left: 30px;
-  width: 100vw;
-  height: 0px;
+  max-width: 80vw;
+  height: fit-content;
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@ export const StyledToastsContainer = styled.div`
 
 export const fadeIn = keyframes`
 from {
-  left: 100vw;
+  left: 75vw;
 }
 to {
   left: 0px;

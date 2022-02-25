@@ -80,12 +80,13 @@ export const FilterReviewDate = ({
     };
 
     return (
-      <WrapperReview key={index.toString()}>
+      <WrapperReview
+        key={index.toString()}
+        onClick={() => handleDatePicker(index)}>
         <StyledContainerRadioReview focusRadio={isActive === index}>
           <StyledRadioReview
             focusRadio={isActive === index}
             key={title + index.toString()}
-            onClick={() => handleDatePicker(index)}
           />
         </StyledContainerRadioReview>
         <StyledLabelReview focusRadio={isActive === index}>

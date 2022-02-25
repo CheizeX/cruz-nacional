@@ -25,6 +25,11 @@ const Template: Story<UploadableFile> = ({ id, errors, file }) => (
     file={file}
     errors={errors}
     id={id}
+    setNewMessagesInChat={() => null}
+    newMessagesInChat={{
+      key: '',
+      messageLength: 0,
+    }}
   />
 );
 

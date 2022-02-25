@@ -26,9 +26,9 @@ export const ModalClosePreviousSession: FC<IPropsCloseSession> = ({
           <SVGIcon iconFile="/icons/warning.svg" />
         </div>
         <div>
-          <Text> Se ha iniciado sessión desde otro dispositivo.</Text>
+          <Text> Se ha iniciado sesión desde otro dispositivo.</Text>
           <Text>
-            Si no has iniciado sessión te recomendamos volver a loguearte y
+            Si no has iniciado sesión te recomendamos volver a loguearte y
             cambiar tu contraseña.
           </Text>
         </div>

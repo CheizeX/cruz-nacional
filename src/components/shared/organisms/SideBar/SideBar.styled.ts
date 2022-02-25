@@ -20,9 +20,9 @@ export const StyledSideBar = styled.aside<
   box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   justify-content: flex-start;
-  min-height: 768px;
+  // min-height: 768px;
   min-width: 272px;
   max-width: 272px;
   & * {

@@ -6,8 +6,11 @@ export const StyledChannelList = styled.div`
   background-color: ${({ theme }) => theme.Colors.grays[9]};
   border-radius: 10px;
   margin: 20px auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  & > div {
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
 `;

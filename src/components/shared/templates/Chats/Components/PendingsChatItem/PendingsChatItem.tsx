@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-identical-functions */
 import React, { FC } from 'react';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
@@ -9,8 +8,6 @@ import {
   StyledClientAndAgentAvatars,
   StyledNameAndDialog,
   StyledTimeAndState,
-  // StyledLabel,
-  // StyledLabelsContainer,
 } from './PendingsChatItem.styles';
 import {
   IPropsStringName,
@@ -28,6 +25,7 @@ import {
   setSortedByLastDate,
 } from '../../../../../../redux/slices/live-chat/pending-chats';
 import { Channels, Chat } from '../../../../../../models/chat/chat';
+import { getTimeAgo } from '../../ChatsSection/ChatsSection.shared';
 // import { Tag } from '../../../../../../models/tags/tag';
 
 export const PendingsChatItem: FC<
@@ -51,48 +49,18 @@ export const PendingsChatItem: FC<
   //   (state) => state.optionsToFilterChats,
   // );
 
-  const [timeLapse, setTimeLapse] = React.useState(Date.now());
-
-  const handleClick = (arg: string) => {
-    setUserSelected(arg);
+  const handleClick = (chat: Chat) => {
+    setUserSelected(chat.client.clientId);
     setActiveByDefaultTab(0);
   };
 
   React.useEffect(() => {
-    const intervalToGetActualTime = setInterval(() => {
-      setTimeLapse(Date.now());
-    }, 10000);
-    return () => clearInterval(intervalToGetActualTime);
-  }, []);
-
-  if (sortedChats) {
-    dispatch(setSortedByLastDate());
-  } else {
-    dispatch(setSortedByFirstDate());
-  }
-
-  // <<<--- LOGICA PARA FILTRAR DIFERENTE --->>>>>>>>>>>>>>>>>>
-
-  // const { activeTabInState } = useAppSelector((state) => state.activeTab);
-  // const [fatherActiveTab, setFatherActiveTab] =
-  //   React.useState<string>('Pendientes');
-
-  // React.useEffect(() => {
-  //   if (activeTabInState === 'Pendientes') {
-  //     setFatherActiveTab('Pendientes');
-  //   }
-  //   if (activeTabInState === 'En conversación') {
-  //     setFatherActiveTab('En conversación');
-  //   }
-  // }, [activeTabInState]);
-
-  // const data = useMemo(() => {
-  //   if (!searchByName) return chatsPendings;
-  //   return chatsPendings.filter((agent) =>
-  //     agent.client.name.toLowerCase().includes(searchByName.toLowerCase()),
-  //   );
-  // }, [searchByName]);
-  // console.log(data);
+    if (sortedChats) {
+      dispatch(setSortedByLastDate());
+    } else {
+      dispatch(setSortedByFirstDate());
+    }
+  }, [sortedChats, dispatch]);
 
   return (
     <StyledPendingChatsContainer>
@@ -128,7 +96,7 @@ export const PendingsChatItem: FC<
             <StyledPendingWrapper
               focusedItem={chat.client.clientId === userSelected}
               key={chat.createdAt.toString()}
-              onClick={() => handleClick(chat.client.clientId)}>
+              onClick={() => handleClick(chat)}>
               <StyledPendingChatItem>
                 <StyledClientAndAgentAvatars>
                   {chat.client.profilePic ? (
@@ -151,14 +119,14 @@ export const PendingsChatItem: FC<
                 </StyledClientAndAgentAvatars>
                 <StyledNameAndDialog>
                   <Text>
-                    {(chat.client.name.substr(0, 16) ||
+                    {(chat.client.name.substring(0, 16) ||
                       (chat.client.clientId &&
-                        chat.client.clientId.substr(0, 16))) ??
+                        chat.client.clientId.substring(0, 16))) ??
                       ''}
                   </Text>
                   <Text>
                     {chat.messages &&
-                      chat.messages[chat.messages.length - 1].content.substr(
+                      chat.messages[chat.messages.length - 1].content.substring(
                         0,
                         14,
                       )}
@@ -168,34 +136,7 @@ export const PendingsChatItem: FC<
                 <StyledTimeAndState>
                   <div>
                     <SVGIcon iconFile="/icons/watch.svg" />
-                    {Math.floor(
-                      (timeLapse - new Date(chat.createdAt).getTime()) /
-                        (1000 * 60),
-                    ) > 59 ? (
-                      <Text>
-                        Hace +
-                        {Math.floor(
-                          (timeLapse - new Date(chat.createdAt).getTime()) /
-                            (1000 * 60) /
-                            60,
-                        )}{' '}
-                        hs.
-                      </Text>
-                    ) : (
-                      Math.floor(
-                        (Date.now() - new Date(chat.createdAt).getTime()) /
-                          (1000 * 60),
-                      ) <= 59 && (
-                        <Text>
-                          Hace{' '}
-                          {Math.floor(
-                            (timeLapse - new Date(chat.createdAt).getTime()) /
-                              (1000 * 60),
-                          )}{' '}
-                          min.
-                        </Text>
-                      )
-                    )}
+                    <Text>{getTimeAgo(Number(new Date(chat.createdAt)))}</Text>
                   </div>
                   <div>
                     <div />

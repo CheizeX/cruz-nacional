@@ -69,6 +69,7 @@ export const StyledEndChatBody = styled.div`
     border: transparent;
   }
 `;
+
 export const StyledEndChatFooter = styled.div<IEndChatContainer>`
   width: 100%;
   height: 56px;

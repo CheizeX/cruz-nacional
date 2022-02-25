@@ -111,6 +111,7 @@ export const StyledBodyAddChannel = styled.div`
           }
           & > span {
             color: ${({ theme }) => theme.Colors.grays[1]};
+            line-height: 12px;
           }
         }
       }

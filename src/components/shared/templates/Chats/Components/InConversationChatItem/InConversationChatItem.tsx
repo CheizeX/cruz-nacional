@@ -1,14 +1,12 @@
-/* eslint-disable sonarjs/no-identical-functions */
-/* eslint-disable no-nested-ternary */
-import React, { FC } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import { Channels, Chat } from '../../../../../../models/chat/chat';
 import {
-  StyledLabel,
+  // StyledLabel,
   StyledClientAndAgentAvatars,
   StyledNameAndDialog,
-  StyledLabelsContainer,
+  // StyledLabelsContainer,
 } from '../PendingsChatItem/PendingsChatItem.styles';
 import {
   TabProps,
@@ -18,12 +16,14 @@ import {
   DropZoneDisplayedProps,
   ChatInputDialogueProps,
   ShowOnlyPaused,
+  MessagesViewedOrNot,
   IPropsStringName,
 } from '../../ChatsSection/ChatsSection.interface';
 import {
   StyledInConversationChatItem,
   StyledInConversationContainer,
   StyledInConversationWrapper,
+  StyledNotViewedMessages,
   StyledTimeAndState,
 } from './InConversationChatItem.styles';
 import {
@@ -34,15 +34,13 @@ import {
   setSortedByLastDate,
   setSortedByFirstDate,
 } from '../../../../../../redux/slices/live-chat/on-conversation-chats';
-import { Tag } from '../../../../../../models/tags/tag';
-import { readHistoryChat } from '../../../../../../api/chat';
+// import { Tag } from '../../../../../../models/tags/tag';
 import {
-  setChatsHasHistory,
   setChatsIdChannel,
   setChatsIdClient,
 } from '../../../../../../redux/slices/live-chat/chat-history';
-import { useToastContext } from '../../../../molecules/Toast/useToast';
-import { Toast } from '../../../../molecules/Toast/Toast.interface';
+import { baseRestApi } from '../../../../../../api/base';
+import { getTimeAgo } from '../../ChatsSection/ChatsSection.shared';
 
 export const InConversationChatItem: FC<
   StyledLabelProps &
@@ -52,56 +50,54 @@ export const InConversationChatItem: FC<
     DropZoneDisplayedProps &
     ChatInputDialogueProps &
     IPropsStringName &
-    ShowOnlyPaused
+    ShowOnlyPaused &
+    MessagesViewedOrNot
 > = ({
   setUserSelected,
   userSelected,
-  setActiveByDefaultTab,
+  // setActiveByDefaultTab,
   sortedChats,
   showOnlyPausedChats,
   searchByName,
 }) => {
+  // const { tagsToFilter, channelsToFilter } = useAppSelector(
+  //   (state) => state.optionsToFilterChats,
+  // );
   const dispatch = useAppDispatch();
-  const showAlert = useToastContext();
 
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
-  // const { tagsToFilter, channelsToFilter } = useAppSelector(
-  //   (state) => state.optionsToFilterChats,
-  // );
 
-  const [timeLapse, setTimeLapse] = React.useState(Date.now());
-
-  const handleSendMessageToUser = async (arg: string, channel: string) => {
-    setUserSelected(arg);
-    setActiveByDefaultTab(1);
+  const handleResetNoViewedChats = useCallback(async (id: string) => {
     try {
-      const hasHistory = await readHistoryChat(channel, arg, 'hasHistory');
-      dispatch(setChatsHasHistory(hasHistory));
-      dispatch(setChatsIdChannel(channel));
-      dispatch(setChatsIdClient(arg));
-    } catch (err) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `No se puede establecer la conexión con el servidor`,
-      });
+      await baseRestApi.patch(
+        `${process.env.NEXT_PUBLIC_REST_API_URL}/chats/resetUnreadMessages/${id}`,
+        {},
+      );
+    } catch (error) {
+      console.log(error);
     }
-  };
-
-  React.useEffect(() => {
-    const intervalToGetActualTime = setInterval(() => {
-      setTimeLapse(Date.now());
-    }, 10000);
-    return () => clearInterval(intervalToGetActualTime);
   }, []);
 
-  if (sortedChats) {
-    dispatch(setSortedByLastDate());
-  } else {
-    dispatch(setSortedByFirstDate());
-  }
+  const handleSendMessageToUser = useCallback(
+    async (clientId: string, channel: string, chatId: string) => {
+      setUserSelected(clientId);
+      handleResetNoViewedChats(chatId);
+
+      dispatch(setChatsIdChannel(channel));
+      dispatch(setChatsIdClient(clientId));
+    },
+    [dispatch, setUserSelected, handleResetNoViewedChats],
+  );
+
+  useEffect(() => {
+    if (sortedChats) {
+      dispatch(setSortedByLastDate());
+    } else {
+      dispatch(setSortedByFirstDate());
+    }
+  }, [dispatch, sortedChats]);
 
   return (
     <StyledInConversationContainer>
@@ -139,20 +135,21 @@ export const InConversationChatItem: FC<
               pausedItem={chat.isPaused}
               key={chat.createdAt.toString()}
               onClick={() =>
-                handleSendMessageToUser(chat.client.clientId, chat.channel)
+                handleSendMessageToUser(
+                  chat.client.clientId,
+                  chat.channel,
+                  chat._id,
+                )
               }>
               <StyledInConversationChatItem>
                 <StyledClientAndAgentAvatars>
                   {chat.isPaused && <SVGIcon iconFile="/icons/pause.svg" />}
-
                   {chat.isPaused === false && chat.client.profilePic && (
                     <img src={chat.client.profilePic} alt={chat.client.name} />
                   )}
-
                   {chat.isPaused === false && !chat.client.profilePic && (
                     <SVGIcon iconFile="/icons/user.svg" />
                   )}
-
                   {chat.channel === Channels.WHATSAPP && (
                     <SVGIcon iconFile="/icons/whatsapp.svg" />
                   )}
@@ -164,6 +161,11 @@ export const InConversationChatItem: FC<
                   )}
                   {chat.channel === Channels.WEBCHAT && (
                     <SVGIcon iconFile="/icons/webchat.svg" />
+                  )}
+                  {chat.unreadMessages > 0 && (
+                    <StyledNotViewedMessages>
+                      {chat.unreadMessages > 99 ? '99+' : chat.unreadMessages}
+                    </StyledNotViewedMessages>
                   )}
                 </StyledClientAndAgentAvatars>
                 <StyledNameAndDialog>
@@ -183,57 +185,18 @@ export const InConversationChatItem: FC<
                 <StyledTimeAndState>
                   <div>
                     <SVGIcon iconFile="/icons/watch.svg" />
-                    {Math.floor(
-                      (timeLapse - new Date(chat.createdAt).getTime()) /
-                        (1000 * 60),
-                    ) > 59 &&
-                      (Math.floor(
-                        (timeLapse - new Date(chat.createdAt).getTime()) /
-                          (1000 * 60),
-                      ) > 119 ? (
-                        <Text>
-                          Hace +
-                          {Math.floor(
-                            (timeLapse - new Date(chat.createdAt).getTime()) /
-                              (1000 * 60) /
-                              60,
-                          )}{' '}
-                          hs.
-                        </Text>
-                      ) : (
-                        <Text>
-                          Hace +
-                          {Math.floor(
-                            (timeLapse - new Date(chat.createdAt).getTime()) /
-                              (1000 * 60) /
-                              60,
-                          )}{' '}
-                          h.
-                        </Text>
-                      ))}
-                    {Math.floor(
-                      (Date.now() - new Date(chat.createdAt).getTime()) /
-                        (1000 * 60),
-                    ) <= 59 && (
-                      <Text>
-                        Hace{' '}
-                        {Math.floor(
-                          (timeLapse - new Date(chat.createdAt).getTime()) /
-                            (1000 * 60),
-                        )}{' '}
-                        min.
-                      </Text>
-                    )}
+                    <Text>{getTimeAgo(Number(new Date(chat.createdAt)))}</Text>
                   </div>
                   <div>
                     {chat.isTransfer === true && (
-                      <SVGIcon iconFile="/icons/exchange_alt.svg" />
+                      <div>
+                        <SVGIcon iconFile="/icons/exchange_alt.svg" />
+                      </div>
                     )}
-                    {/* <div>{user.number}</div> */}
                   </div>
                 </StyledTimeAndState>
               </StyledInConversationChatItem>
-              {chat.tags && (
+              {/* {chat.tags && (
                 <StyledLabelsContainer>
                   {chat.tags.map((tag: Tag, index: number) => (
                     <StyledLabel color={tag.color} key={index.toString()}>
@@ -241,7 +204,7 @@ export const InConversationChatItem: FC<
                     </StyledLabel>
                   ))}
                 </StyledLabelsContainer>
-              )}
+              )} */}
             </StyledInConversationWrapper>
           ))}
     </StyledInConversationContainer>

@@ -38,6 +38,11 @@ export const StyledReviewChatsHeader = styled.div`
     font-size: ${({ theme }) => theme.fontSize[14]};
     line-height: 17px;
   }
+  & > div {
+    & > button {
+      cursor: pointer;
+    }
+  }
   & > :nth-child(2) {
     & > button {
       margin-right: 23px;

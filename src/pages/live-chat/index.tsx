@@ -26,8 +26,10 @@ const LiveChatPage: NextPage<
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
   );
-
-  socket.emit('joinRooms', userDataInState?._id);
+  socket.emit('joinRooms', {
+    userId: userDataInState?._id,
+    companyId: userDataInState?.companyId,
+  });
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useCallback } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import {
   useAppDispatch,
@@ -45,7 +45,7 @@ export const ReviewChart: FC<IPropsReview> = ({
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
 
-  const readReview = async () => {
+  const readReview = useCallback(async () => {
     try {
       const currentDts = await readReviewChats('0', 'currentWeek');
       if (currentDts.success === false) {
@@ -61,10 +61,10 @@ export const ReviewChart: FC<IPropsReview> = ({
         message: `${err}`,
       });
     }
-  };
+  }, [dispatch, showAlert]);
   useEffect(() => {
     readReview();
-  }, []);
+  }, [readReview]);
 
   const weekdays = [
     { id: 2, day: 'Lunes' },
@@ -79,11 +79,10 @@ export const ReviewChart: FC<IPropsReview> = ({
     return {
       id: item._id,
       day: weekdays[index]?.day,
-      Satisfactorio: item.satisfactory,
       Insatisfactorio: item.unsatisfactory,
+      Satisfactorio: item.satisfactory,
     };
   });
-
   const handleClick = () => {
     setIsComponentVisible(!isComponentVisible);
     setSelectedComponent('REVIEW');
@@ -177,7 +176,7 @@ export const ReviewChart: FC<IPropsReview> = ({
             indexScale={{ type: 'band', round: true }}
             enableGridX
             enableLabel={false}
-            colors={{ scheme: 'purpleRed_green' }}
+            colors={['#24C3A7', '#F78F28']}
             defs={[
               {
                 id: '1',

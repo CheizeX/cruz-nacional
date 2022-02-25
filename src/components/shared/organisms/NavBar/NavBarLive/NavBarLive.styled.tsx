@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { INavBarLiveProps } from './NavBarLive.interface';
 
 const mySelector = (
@@ -125,30 +125,6 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const StyledAgentStatusSropdown = styled.div`
-  width: 240px;
-  background: ${({ theme }) => theme.Colors.grays[10]};
-  border-radius: 10px;
-  height: 156px;
-  box-shadow: 0px 0px 7px 0px #0000004a;
-  padding: 14px 0 0 18px;
-  & > :nth-child(4) {
-    & > :nth-child(2) {
-      & > div {
-        & * {
-          & > svg {
-            & > g {
-              & > path {
-                fill: ${({ theme }) => theme.Colors.grays[10]};
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 export const NotificationStyledNavBar = styled.div`
   width: 12px;
   height: 12px;
@@ -179,51 +155,51 @@ export const Letter = styled.div`
   }
 `;
 
-export const TriggerElement = styled.div<INavBarLiveProps>`
-  border-radius: 24px;
-  background: ${({ statusChecked, theme }) =>
-    mySelector(statusChecked === 'Disponible', theme.Colors.green[3], null) ||
-    mySelector(
-      statusChecked === 'En Pausa - Baño',
-      theme.Colors.orange[3],
-      null,
-    ) ||
-    mySelector(
-      statusChecked === 'En Pausa - En llamado',
-      theme.Colors.orange[3],
-      null,
-    ) ||
-    mySelector(
-      statusChecked === 'En Pausa - Almuerzo',
-      theme.Colors.orange[3],
-      null,
-    )};
-  padding: 4px 12px;
-  width: max-content;
-  cursor: pointer;
-  margin-left: 1px;
-  display: flex;
-  min-width: 109px;
-  min-height: 31px;
-  & > div {
-    padding: 6px;
-    span {
-      line-height: 4px;
-    }
-    & > div {
-      padding-top: 4px;
-      & > div {
-        & > svg {
-          padding: 1px;
+// export const TriggerElement = styled.div<INavBarLiveProps>`
+//   border-radius: 24px;
+//   background: ${({ statusChecked, theme }) =>
+//     mySelector(statusChecked === 'Disponible', theme.Colors.green[3], null) ||
+//     mySelector(
+//       statusChecked === 'En Pausa - Baño',
+//       theme.Colors.orange[3],
+//       null,
+//     ) ||
+//     mySelector(
+//       statusChecked === 'En Pausa - En llamado',
+//       theme.Colors.orange[3],
+//       null,
+//     ) ||
+//     mySelector(
+//       statusChecked === 'En Pausa - Almuerzo',
+//       theme.Colors.orange[3],
+//       null,
+//     )};
+//   padding: 4px 12px;
+//   width: max-content;
+//   cursor: pointer;
+//   margin-left: 1px;
+//   display: flex;
+//   min-width: 109px;
+//   min-height: 31px;
+//   & > div {
+//     padding: 6px;
+//     span {
+//       line-height: 4px;
+//     }
+//     & > div {
+//       padding-top: 4px;
+//       & > div {
+//         & > svg {
+//           padding: 1px;
 
-          & > path {
-            fill: ${({ theme }) => theme.Colors.grays[10]};
-          }
-        }
-      }
-    }
-  }
-`;
+//           & > path {
+//             fill: ${({ theme }) => theme.Colors.grays[10]};
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
 
 export const MessageIcon = styled.div`
   padding: 8px 0px 0px 0px;
@@ -261,49 +237,6 @@ export const BellIcon = styled.div`
       }
     }
   }
-`;
-
-export const StyledButton = styled.div<INavBarLiveProps>`
-  border-radius: 50%;
-  width: 24px;
-  min-height: 24px;
-  border: 2px solid ${({ theme }) => theme.Colors.grays[8]};
-  margin-right: 7px;
-  ${({ focusCheck }) =>
-    focusCheck &&
-    css<INavBarLiveProps>`
-      border: 2px solid ${({ theme }) => theme.Colors.purples[1]};
-    `}
-`;
-
-export const StyledRadio = styled.div<INavBarLiveProps>`
-  height: 14px;
-  width: 14px;
-  max-height: 14px;
-  align-items: center;
-  background-color: ${({ theme }) => theme.Colors.grays[8]};
-  border-radius: 50%;
-  display: inline-flex;
-  justify-content: center;
-  display: flex;
-  margin: auto;
-  align-content: center;
-  text-align: center;
-  position: relative;
-  top: 3px;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
-  &:active {
-    opacity: 0.9;
-  }
-  ${({ focusCheck }) =>
-    focusCheck &&
-    css<INavBarLiveProps>`
-      background-color: ${({ theme }) => theme.Colors.purples[1]};
-      color: ${({ theme }) => theme.Colors.grays[10]};
-    `}
 `;
 
 export const LiveNavDropdownContainer = styled.div`

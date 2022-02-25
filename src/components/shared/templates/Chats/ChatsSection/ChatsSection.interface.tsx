@@ -26,6 +26,19 @@ export interface ShowOnlyPaused {
   setShowOnlyPausedChats: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+export interface MessagesViewedOrNot {
+  newMessagesInChat: {
+    key: string;
+    messageLength: number;
+  };
+  setNewMessagesInChat: React.Dispatch<
+    React.SetStateAction<{
+      key: string;
+      messageLength: number;
+    }>
+  >;
+}
+
 // TYPE para las funciones de busqueda por nombre y rut
 export interface IPropsSearchByName {
   onChangeSearchName: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -52,6 +65,10 @@ export interface Objeto {
 export interface StyledPendingWrapperProps {
   focusedItem?: boolean;
   pausedItem?: boolean;
+}
+
+export interface StyledOnConversationWrapperProps {
+  deletedMessage: boolean;
 }
 
 export interface ILiveChatModalProps {

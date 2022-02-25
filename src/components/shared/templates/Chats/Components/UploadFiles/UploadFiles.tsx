@@ -40,6 +40,9 @@ export const UploadFiles: FC<
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
+  const { userDataInState }: any = useAppSelector(
+    (state) => state.userAuthCredentials,
+  );
 
   const [files, setFiles] = useState<UploadableFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -106,7 +109,7 @@ export const UploadFiles: FC<
       }
       if (chatToTalkWithUser?.channel === 'Webchat') {
         await baseRestApi.postMultipart(
-          `/webchat/sendFiles/${chatToTalkWithUserId}?from=AGENT`,
+          `/webchat/sendFiles/${chatToTalkWithUserId}?from=AGENT&companyId=${userDataInState.companyId}`,
           formData,
         );
       }

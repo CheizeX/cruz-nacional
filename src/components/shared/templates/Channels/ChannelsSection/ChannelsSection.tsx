@@ -5,24 +5,38 @@ import { StyledChannelSection } from './ChannelsSection.styled';
 import { ChannelsEmpty } from '../Components/ChannelsEmpty/ChannelsEmpty';
 import { ModalMolecule } from '../../../molecules/Modal/Modal';
 import { AddChannel } from '../Components/AddChannel/AddChannel';
-import { SectionWebChat } from '../Components/SectionWebChat/SectionWebChat';
-import { SectionWhatsAppComponent } from '../Components/SectionWhatsapp/SectionWhatsapp';
-import { SectionFacebookComponent } from '../Components/SectionFacebook/SectionFacebook';
-import { ConfirmationAuth } from '../Components/SectionFacebook/Components/ConfirmationAuth/ConfirmationAuth';
-import { SectionComponentInstagram } from '../Components/SectionInstagram/SectionInstagram';
+import { WebChatSection } from '../Components/WebChatSection/WebChatSection';
+import { FacebookComponent } from '../Components/FacebookSection/FacebookSection';
+import { ConfirmationAuth } from '../Components/FacebookSection/Components/ConfirmationAuth/ConfirmationAuth';
+import { InstagramSection } from '../Components/InstagramSection/InstagramSection/InstagramSection';
 import { ChannelList } from '../Components/ChannelList/ChannelList';
-import { getAllChannel } from '../../../../../api/channels';
+import {
+  getAllChannel,
+  getDevicedStatusWassenger,
+  getNewDevicedIDWassenger,
+  getWassengerQR,
+} from '../../../../../api/channels';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { useAppDispatch } from '../../../../../redux/hook/hooks';
 import { setlistChannel } from '../../../../../redux/slices/channels/list-channel';
 import { RootState } from '../../../../../redux';
 import { DeleteChannel } from '../Components/DeleteChannel/DeleteChannel';
+import { UnOfficialWhatsAppComponent } from '../Components/WhatsappSection/UnOfficialWhatsapp/UnOfficialWhatsapp';
+import { OfficialWhatsappComponent } from '../Components/WhatsappSection/OfficialWhatsapp/OfficialWhatsapp';
+import { NotificationDiviceCreated } from '../Components/WhatsappSection/Components/NotificationDiviceCreated/NotificationDiviceCreated';
+import { setImageQR } from '../../../../../redux/slices/channels/integration-with-qr';
 
 export const ChannelsSection: FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [isSectionWebChat, setIsSectionWebChat] = useState<boolean>(false);
   const [seletedComponent, setSeletedComponent] = useState<string>('');
+  const [showDivice, setShowDivice] = useState<boolean>(false);
+
+  const [
+    selectedByComponentUnOfficialWhatsapp,
+    setSelectedByComponentUnOfficialWhatsapp,
+  ] = useState<number>(1);
   const [confirmationAccount, setConfirmationAccounth] =
     useState<boolean>(false);
 
@@ -30,7 +44,48 @@ export const ChannelsSection: FC = () => {
   const { listChannel } = useSelector(
     (state: RootState) => state.channel.listChannelState,
   );
+
   const dispatch = useAppDispatch();
+  let timer: NodeJS.Timeout;
+  const handleDiveceCreate = async () => {
+    try {
+      const response = await getNewDevicedIDWassenger();
+      if (response === 'Device created') {
+        timer = setInterval(async () => {
+          const result = await getDevicedStatusWassenger();
+          if (result.success === false) {
+            setIsSectionWebChat(false);
+          } else {
+            setShowDivice(true);
+            setIsSectionWebChat(false);
+            clearInterval(timer);
+          }
+        }, 5000);
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  };
+  const handleClickQR = async () => {
+    try {
+      const response = await getWassengerQR(false, '6213b996ca61728595b80c7b');
+      if (response.success !== false) {
+        dispatch(setImageQR(response));
+      } else {
+        dispatch(setImageQR(''));
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  };
 
   const getChannelList = useCallback(async () => {
     try {
@@ -47,14 +102,26 @@ export const ChannelsSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [setlistChannel, listChannel]);
+  }, [dispatch, showAlert]);
 
   useEffect(() => {
     getChannelList();
-  }, []);
+  }, [getChannelList]);
 
   return (
     <StyledChannelSection>
+      {showDivice === true ? (
+        <NotificationDiviceCreated
+          setIsSectionWebChat={setIsSectionWebChat}
+          setShowDivice={setShowDivice}
+          handleClickQR={handleClickQR}
+          setSelectedByComponentUnOfficialWhatsapp={
+            setSelectedByComponentUnOfficialWhatsapp
+          }
+          setSeletedComponent={setSeletedComponent}
+        />
+      ) : null}
+
       <ChannelsListHeader setIsOpenModal={setIsOpenModal} />
       <ModalMolecule isModal={isOpenModal}>
         <AddChannel
@@ -65,24 +132,48 @@ export const ChannelsSection: FC = () => {
       </ModalMolecule>
       <ModalMolecule isModal={isSectionWebChat}>
         {seletedComponent === 'Web Chat' ? (
-          <SectionWebChat setIsSectionWebChat={setIsSectionWebChat} />
+          <WebChatSection
+            setIsSectionWebChat={setIsSectionWebChat}
+            getChannelList={getChannelList}
+          />
         ) : null}
-        {seletedComponent === 'Whatsapp' ? (
-          <SectionWhatsAppComponent setIsSectionWebChat={setIsSectionWebChat} />
+        {seletedComponent === 'UnofficialWhatsapp' ? (
+          <UnOfficialWhatsAppComponent
+            whatsappUnOfficial={!!listChannel.unofficialWhatsApp}
+            setIsSectionWebChat={setIsSectionWebChat}
+            getChannelList={getChannelList}
+            handleDiveceCreate={handleDiveceCreate}
+            handleClickQR={handleClickQR}
+            selectedByComponentUnOfficialWhatsapp={
+              selectedByComponentUnOfficialWhatsapp
+            }
+            setSelectedByComponentUnOfficialWhatsapp={
+              setSelectedByComponentUnOfficialWhatsapp
+            }
+          />
         ) : null}
         {seletedComponent === 'Messenger' ? (
-          <SectionFacebookComponent
+          <FacebookComponent
             setConfirmationAccounth={setConfirmationAccounth}
             setIsSectionWebChat={setIsSectionWebChat}
+            getChannelList={getChannelList}
           />
         ) : null}
         {seletedComponent === 'Instagram' ? (
-          <SectionComponentInstagram
+          <InstagramSection
             setIsSectionWebChat={setIsSectionWebChat}
+            hasMessengerAccount={!!listChannel.facebook}
+            getChannelList={getChannelList}
           />
         ) : null}
         {seletedComponent === 'DeleteChannel' ? (
           <DeleteChannel setIsSectionWebChat={setIsSectionWebChat} />
+        ) : null}
+        {seletedComponent === 'OfficialWhatsapp' ? (
+          <OfficialWhatsappComponent
+            setIsSectionWebChat={setIsSectionWebChat}
+            getChannelList={getChannelList}
+          />
         ) : null}
       </ModalMolecule>
       <ModalMolecule isModal={confirmationAccount}>

@@ -123,6 +123,7 @@ export class BaseRestApi {
         uri,
         body,
       );
+
       // if (!response.data.success)
       //   throw new Error(JSON.stringify(response.data));
       return response.data.result;

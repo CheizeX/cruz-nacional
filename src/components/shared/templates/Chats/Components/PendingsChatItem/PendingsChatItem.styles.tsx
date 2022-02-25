@@ -160,15 +160,21 @@ export const StyledNameAndDialog = styled.div`
 export const StyledTimeAndState = styled.div`
   height: 60px;
   width: 77px;
+  position: relative;
   & > :first-child {
     display: flex;
-
+    position: absolute;
+    top: -5px;
+    right: 0;
+    justify-content: flex-end;
+    width: 120px;
+    height: 12px;
     & > div {
       height: 100%;
       margin-top: -2px;
+      width: 14px;
     }
     & > span {
-      transform: translateX(14px);
       align-self: flex-start;
       margin-top: -6px;
       color: ${({ theme }) => theme.Colors.grays[5]};

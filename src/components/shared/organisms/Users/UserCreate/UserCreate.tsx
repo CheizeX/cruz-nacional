@@ -173,7 +173,11 @@ export const UserCreate: FC<IUserCreateProps> = ({
                           <div />
                         </StyledRadioGray>
                       )}
-                      <span>Supervisor</span>
+                      <button
+                        type="button"
+                        onClick={() => setRoleSelected('SUPERVISOR')}>
+                        Supervisor
+                      </button>
                       {roleSelected === 'AGENT' ? (
                         <StyledRadioPurple>
                           <div />
@@ -183,7 +187,11 @@ export const UserCreate: FC<IUserCreateProps> = ({
                           <div />
                         </StyledRadioGray>
                       )}
-                      <span>Agente</span>
+                      <button
+                        type="button"
+                        onClick={() => setRoleSelected('AGENT')}>
+                        Agente
+                      </button>
                     </StyledVisualRadiosContainer>
                     <StyledInputContainer>
                       <Text>Nombre</Text>

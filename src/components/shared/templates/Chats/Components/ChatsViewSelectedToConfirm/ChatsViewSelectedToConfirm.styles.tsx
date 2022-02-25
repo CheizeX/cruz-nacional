@@ -30,15 +30,22 @@ export const StyledHeaderChatsViewSelectedToConfirm = styled.div`
     min-width: 220px;
     max-width: max-content;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     & button {
+      position: relative;
+      right: -10px;
       cursor: pointer;
       min-width: 40px;
       max-width: 40px;
       width: 100%;
       height: 36px;
       display: flex;
-      justify-content: flex-end;
+      & * {
+        & :hover {
+          fill: ${({ theme }) => theme.Colors.blue[2]};
+        }
+      }
+      /* justify-content: flex-end; */
     }
     & > :first-child {
       border-radius: 50%;
@@ -63,30 +70,44 @@ export const StyledHeaderChatsViewSelectedToConfirm = styled.div`
     & > :nth-child(2) {
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: center;
       min-width: 60px;
       max-height: 40px;
       text-align: left;
       & > :first-child {
         color: ${({ theme }) => theme.Colors.grays[5]};
-        font-weight: ${({ theme }) => theme.fontWeight[400]};
-        font-size: ${({ theme }) => theme.fontSize[12]};
-        margin-bottom: -3px;
+        font-weight: ${({ theme }) => theme.fontWeight[500]};
+        font-size: ${({ theme }) => theme.fontSize[16]};
+        margin-bottom: 0px;
       }
       & > :last-child {
         word-wrap: nowrap;
         display: flex;
         flex-direction: row;
         color: ${({ theme }) => theme.Colors.grays[1]};
-        margin-top: -3px;
+        font-size: ${({ theme }) => theme.fontSize[14]};
+        font-weight: 500;
       }
     }
     & > :nth-child(3) {
       & div {
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-end;
         height: 100%;
+        width: 100%;
+        & svg {
+          position: relative;
+          border-radius: 3px;
+          height: 80%;
+          width: 80%;
+        }
+        & * {
+          fill: ${({ theme }) => theme.Colors.blue[1]};
+          & :hover {
+            fill: ${({ theme }) => theme.Colors.blue[2]};
+          }
+        }
       }
     }
   }
@@ -286,7 +307,6 @@ export const StyledFooterToChat = styled.div<
   }
 `;
 
-// CRUZ-NACIONAL---------------------------------------------------------------------------
 export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
   // set visibility hidden when showPredefinedTexts === true
 
@@ -294,10 +314,9 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
     showPredefinedTexts ? 'visible' : 'hidden'};
 
   position: absolute;
-  width: 899px;
-  height: 500px;
-  bottom: 61px;
-  left: 3px;
+  width: 350px;
+  height: max-content;
+  bottom: 60px;
   box-shadow: 0px 0px 5px ${({ theme }) => theme.Colors.grays[8]};
   border-radius: 10px;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
@@ -305,48 +324,19 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow-y: scroll;
-  ::-webkit-scrollbar {
-    width: 0px;
-  }
-
   & > button {
-    text-align: left;
+    text-align: center;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    height: fit-content;
+    height: 40px;
     border-radius: 5px;
-    padding: 5px;
-    & :nth-child(2n) {
-      background-color: ${({ theme }) => theme.Colors.grays[9]};
-    }
+    padding-left: 5px;
     & > span {
-      margin: 0 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    & > :nth-child(1) {
-      min-width: 25px;
-      min-height: 25px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: ${({ theme }) => theme.Colors.grays[5]};
-      border-radius: 50%;
-      padding: 0;
-      margin: 0;
-      font-size: ${({ theme }) => theme.fontSize[12]};
-    }
-    & > :nth-child(2) {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      margin: 0;
-      width: 20px;
+      margin-left: 5px;
     }
     &:hover {
+      background-color: ${({ theme }) => theme.Colors.grays[9]};
       cursor: pointer;
       & > span {
         color: ${({ theme }) => theme.Colors.purples[2]};
@@ -366,8 +356,8 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
         }
         & svg {
           background-color: ${({ theme }) => theme.Colors.grays[6]};
-          height: 15px;
-          width: 15px;
+          height: 20px;
+          width: 20px;
           padding: 2px;
           /* border: 1px solid green; */
           border-radius: 50%;
@@ -376,7 +366,6 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
     }
   }
 `;
-// CRUZ-NACIONAL -------------------------------------------------------------
 
 export const StyledFooterPausedButton = styled.button`
   min-width: 230px;

@@ -14,7 +14,7 @@ export const SubscriptionSectionItems = [
   },
   {
     id: 2,
-    item: 'Soporte vía mail',
+    item: 'Soporte priorizado',
   },
   {
     id: 3,
@@ -37,7 +37,7 @@ export const SubscriptionSectionPersonalizedItems = [
   },
   {
     id: 1,
-    item: 'Supervisores personalizados',
+    item: 'Supervisores ilimitados',
   },
   {
     id: 2,
@@ -61,31 +61,35 @@ export const SubscriptionSectionPersonalizedItems = [
   },
   {
     id: 7,
-    item: 'WhatsApp Business API (costo de sesión a cargo del cliente)',
+    item: 'WhatsApp QR ',
   },
   {
     id: 8,
-    item: 'Integraciones personalizadas',
+    item: 'WhatsApp Business API ',
   },
 ];
 
 export const planes = [
   {
     name: 'Start',
+    price: '49',
+    link: 'https://buy.stripe.com/dR6cOa1Zf9si98IaEK',
+  },
+  {
+    name: 'Growth',
     price: '99',
+    link: 'https://buy.stripe.com/00g8xU5br0VM5Ww3cf',
   },
   {
     name: 'Business',
     price: '199',
+    link: 'https://buy.stripe.com/cN2dSe5brcEudoY5ko',
   },
   {
     name: 'Corporate',
     price: '399',
+    link: 'https://buy.stripe.com/00g3dA6fv9siet24gl',
   },
-  // {
-  //   name: 'Enterprise',
-  //   // price: '499',
-  // },
 ];
 // const Subscription = () => {
 //   return 'Show page working ! ';

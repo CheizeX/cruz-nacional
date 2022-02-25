@@ -70,7 +70,6 @@ export const ChatTransfer: FC<IChatTransfer> = ({
   const getChatsToday = useCallback(async () => {
     try {
       const response = await readChatsToday('today');
-      console.log(response, 'jsjsjs');
       if (response.success === false) {
         dispatch(setChatsTransfer([]));
       } else {

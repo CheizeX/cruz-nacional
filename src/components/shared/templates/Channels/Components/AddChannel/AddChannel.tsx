@@ -18,7 +18,7 @@ const dataChannel = [
   },
   {
     id: 2,
-    name: 'Whatsapp',
+    name: 'UnofficialWhatsapp',
     svg: 'whatsapp',
   },
   {
@@ -31,6 +31,11 @@ const dataChannel = [
     name: 'Instagram',
     svg: 'Instagram',
   },
+  {
+    id: 5,
+    name: 'OfficialWhatsapp',
+    svg: 'whatsapp',
+  },
 ];
 
 export const AddChannel: FC<IPropsAddChannel> = ({
@@ -40,6 +45,15 @@ export const AddChannel: FC<IPropsAddChannel> = ({
 }) => {
   const closeModal = () => {
     setIsOpenModal(false);
+  };
+  const validateName = (text: string) => {
+    if (text === 'UnofficialWhatsapp') {
+      return 'Whatsapp No Oficial';
+    }
+    if (text === 'OfficialWhatsapp') {
+      return 'Whatsapp Oficial';
+    }
+    return text;
   };
   const handleToggle = (arg: string) => {
     setIsSectionWebChat(true);
@@ -66,7 +80,7 @@ export const AddChannel: FC<IPropsAddChannel> = ({
                   key={item.id}
                   type="button">
                   <SVGIcon iconFile={`/icons/${item.svg}.svg`} />
-                  <Text>{item.name}</Text>
+                  <Text size="12px">{validateName(item.name)}</Text>
                 </button>
               ))}
             </div>

@@ -137,15 +137,7 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
     } else {
       wordRef?.current[isSelectedRef]?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [
-    wordRef,
-    searchByWords,
-    setSearchByWords,
-    isSelectedRef,
-    selected,
-    setSelected,
-    max,
-  ]);
+  }, [wordRef, searchByWords, isSelectedRef, max]);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchByWords(event.target.value);
   };
@@ -258,9 +250,6 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
             </button>
           </WrapperSearchHistory>
           <div>
-            {/* <button type="button" onClick={counterMax()}>
-              777
-            </button> */}
             <button
               type="button"
               disabled={isSelectedRef > indexChat.length && !searchByWords}

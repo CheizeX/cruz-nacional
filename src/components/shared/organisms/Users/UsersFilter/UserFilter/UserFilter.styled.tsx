@@ -6,6 +6,7 @@ export const StyledWrapperFilterUser = styled.div`
   & > button {
     width: 14px;
     height: 14px;
+    cursor: pointer;
   }
 `;
 export const StyledUserFilter = styled.div`

@@ -1,30 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useState } from 'react';
-import { BusinessHours } from '../Components/BusinessHours/BusinesHours';
-import { ListedRestrictionsLeft } from '../Components/ListedRestrictions/ListedRestrictions';
-import {
-  StyledConfigurationSection,
-  StyledRightSideTimeRestrictions,
-} from './ConfigurationSection.styled';
+import React, { FC } from 'react';
+import { Tabs } from '../../../organisms/Tabs/Tabs';
+import { StyledConfigurationSectionContainer } from './ConfigurationSection.styled';
+import { TimeTable } from '../Components/TimeTable/TimeTable';
+import { UsersConfig } from '../Components/UsersConfig/UsersConfig';
 
 export const ConfigurationSection: FC = () => {
-  const [sortedRestrictions, setSortedRestrictions] = useState<boolean>(false);
-
-  const numberOfRestrictions = 0;
-  const businessHours = 0;
-
   return (
-    <>
-      <StyledConfigurationSection>
-        <ListedRestrictionsLeft
-          sortedRestrictions={sortedRestrictions}
-          setSortedRestrictions={setSortedRestrictions}
-          numberOfRestrictions={numberOfRestrictions}
-        />
-        <StyledRightSideTimeRestrictions>
-          <BusinessHours businessHours={businessHours} />
-        </StyledRightSideTimeRestrictions>
-      </StyledConfigurationSection>
-    </>
+    <StyledConfigurationSectionContainer>
+      <Tabs activeByDefault={0}>
+        <div title="Horarios">
+          <TimeTable />
+        </div>
+        <div title="Usuarios">
+          <UsersConfig />
+        </div>
+      </Tabs>
+    </StyledConfigurationSectionContainer>
   );
 };

@@ -7,5 +7,5 @@ export default {
 } as Meta;
 
 storiesOf('Ailalia/Organisms/LiveChat/EndChat', module).add('Default', () => {
-  return <EndChat setLiveChatModal={() => null} />;
+  return <EndChat setLiveChatModal={() => null} setUserSelected={() => null} />;
 });

@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+import { StyledOnConversationWrapperProps } from '../../ChatsSection/ChatsSection.interface';
 import { StyledClientAndAgentAvatars } from '../PendingsChatItem/PendingsChatItem.styles';
+// import { StyledOnConversationWrapperProps } from '../../ChatsSection/ChatsSection.interface';
 
 export const StyledDialoguesContainer = styled.div`
   width: 100%;
@@ -16,7 +18,7 @@ export const StyledDialoguesContainer = styled.div`
   }
 `;
 
-export const StyledUserDialogue = styled.div`
+export const StyledUserDialogue = styled.div<StyledOnConversationWrapperProps>`
   min-height: 65px;
   max-width: 380px;
   width: fit-content;
@@ -112,8 +114,11 @@ export const StyledUserDialogue = styled.div`
         display: flex;
         justify-content: space-between;
         flex-direction: column;
-        margin-left: 10px;
-        border-left: 2px dashed ${({ theme }) => theme.Colors.grays[8]};
+        margin-left: ${({ deletedMessage }) =>
+          deletedMessage === true ? '0px' : '10px'};
+        border-left: 2px dashed
+          ${({ theme, deletedMessage }) =>
+            deletedMessage === true ? 'transparent' : theme.Colors.grays[8]};
         & > button {
           display: flex;
           justify-content: center;
@@ -153,36 +158,32 @@ export const StyledUserDialogue = styled.div`
     }
   }
 `;
+
 export const StyledCopyToClipboardUser = styled.span`
   position: relative;
-  top: -12px;
-  right: -10px;
+  top: 4px;
+  right: -5px;
   max-width: 20px;
   height: 20px;
   &:hover {
     cursor: pointer;
     & > svg {
-      color: ${({ theme }) => theme.Colors.purples[2]};
+      color: ${({ theme }) => theme.Colors.orange[1]};
     }
   }
   & > svg {
     width: 15px;
     height: 20px;
-    color: ${({ theme }) => theme.Colors.grays[8]};
+    color: ${({ theme }) => theme.Colors.orange[3]};
   }
 `;
+
 export const StyledCopyToClipboardAgent = styled.span`
   position: relative;
   top: -12px;
   left: -10px;
   max-width: 20px;
   height: 20px;
-  &:hover {
-    cursor: pointer;
-    & > svg {
-      color: ${({ theme }) => theme.Colors.grays[10]};
-    }
-  }
   & > svg {
     width: 15px;
     height: 20px;
@@ -195,6 +196,7 @@ export const StyledBoxAvatar = styled.img`
   height: 30px;
   max-width: 1.9rem;
   max-height: 1.9rem;
+  box-shadow: 1px 3px 3px 1px ${({ theme }) => theme.Colors.purples[3]};
 `;
 
 export const StyledAgentOrSUpervisorDialogue = styled.div`
@@ -214,6 +216,7 @@ export const StyledAgentOrSUpervisorDialogue = styled.div`
     & > :nth-child(1) {
       word-wrap: break-word;
       border-radius: 10px 0px 10px 10px;
+      // background-color: #24c3a7;
       background-color: ${({ theme }) => theme.Colors.purples[1]};
       color: ${({ theme }) => theme.Colors.grays[10]};
       padding: 14px 15px;
@@ -421,4 +424,68 @@ export const StyledUserPendingDialogue = styled.div`
       font-weight: 400;
     }
   }
+`;
+export const StyledDeletedMessage = styled.span`
+  font-style: italic;
+  align-items: center;
+  & > div {
+    width: 20px;
+    height: 20px;
+    margin-left: 0;
+    & * {
+      & > svg {
+        max-width: 20px;
+        max-height: 20px;
+        & * {
+          & path {
+            fill: gray;
+          }
+        }
+      }
+    }
+  }
+`;
+export const PendingDeletedMessagesStyle = styled.div`
+  font-style: italic;
+  align-items: center;
+  border-radius: 0px 10px 10px 10px;
+  background-color: #ffffff;
+  color: #2a2a2a;
+  font-weight: 400;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  transition: all 1s ease-in-out;
+  overflow: hidden;
+  & > div {
+    width: 20px;
+    height: 20px;
+    margin-left: 0;
+    margin-right: 8px;
+    border: none;
+    border-left: none;
+    & * {
+      & > svg {
+        max-width: 20px;
+        max-height: 20px;
+        & * {
+          & path {
+            fill: gray;
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const WrapperOnConversation = styled.p``;
+
+export const StyledNameAndContactSeparator = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: ${({ theme }) => theme.Colors.green[4]};
+  border-radius: 50%;
+  margin: 0px 5px;
+  position: relative;
+  top: 5.5px;
 `;

@@ -1,7 +1,7 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable sonarjs/no-identical-functions */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { FC, useRef, useCallback, useState } from 'react';
-import { CgClipboard } from 'react-icons/cg';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import { SelectedUserProps } from '../../ChatsSection/ChatsSection.interface';
@@ -13,18 +13,16 @@ import {
   StyledAgentAvatar,
   StyledUserPendingDialogue,
   StyledBoxAvatar,
-  StyledCopyToClipboardUser,
+  StyledDeletedMessage,
+  PendingDeletedMessagesStyle,
 } from './DialoguesBox.styles';
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
 import { ModalBackgroundProps } from '../../../../molecules/Modal/Modal';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
-import { useToastContext } from '../../../../molecules/Toast/useToast';
-import { Toast } from '../../../../molecules/Toast/Toast.interface';
 
 export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
   userSelected,
 }) => {
-  const toasts = useToastContext();
   const [idModal, setIdModal] = useState('');
 
   const { chatsOnConversation } = useAppSelector(
@@ -42,27 +40,40 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
 
   const dialogueBoxRef = useRef<HTMLDivElement>(null);
 
+  const readUrl = (text: string) => {
+    // Exp valida url
+    const regex =
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+    // Extrae la url del array
+    const t = regex.exec(text);
+    // remplaza la url por string vacio.
+    const res = text.replace(/http([^"'\s]+)/g, '');
+    const url = t ? t[0] : '';
+    return (
+      <p>
+        {res}
+        <a
+          href={url}
+          target="_blank"
+          dangerouslySetInnerHTML={{ __html: url }}
+          rel="noreferrer"
+        />
+      </p>
+    );
+  };
+
   const scrollToBottom = useCallback(() => {
     dialogueBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [dialogueBoxRef]);
 
   const tokenQueryParam = `?token=${accessToken}`;
 
-  const handleCopyTextToClipboard = useCallback((arg: string) => {
-    navigator.clipboard.writeText(arg);
-    toasts?.addToast({
-      alert: Toast.SUCCESS,
-      title: '',
-      message: `TEXTO COPIADO AL PORTAPAPELES`,
-    });
-  }, []);
-
-  const handleOpenAttachments = (message: Message) => {
+  const handleOpenAttachments = (message: Message, chatChannel: string) => {
     window.open(
       `${
         process.env.NEXT_PUBLIC_REST_API_URL
       }/whatsapp360/file/${message.content.substring(
-        16,
+        chatChannel === 'Webchat' ? 14 : 16,
         message.content.length,
       )}${tokenQueryParam}`,
     );
@@ -87,7 +98,11 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
           .map((chat) =>
             chat.messages?.map((message, index) =>
               message.from === chat.client.clientId ? (
-                <StyledUserDialogue key={index.toString()}>
+                <StyledUserDialogue
+                  key={index.toString()}
+                  deletedMessage={
+                    message.isDeleted ? message.isDeleted : false
+                  }>
                   <div>
                     {message.contentType === 'ATTACHMENT' && (
                       <>
@@ -106,7 +121,7 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    handleOpenAttachments(message)
+                                    handleOpenAttachments(message, chat.channel)
                                   }>
                                   <SVGIcon iconFile="/icons/download.svg" />
                                 </button>
@@ -164,7 +179,7 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    handleOpenAttachments(message)
+                                    handleOpenAttachments(message, chat.channel)
                                   }>
                                   <SVGIcon iconFile="/icons/download.svg" />
                                 </button>
@@ -222,7 +237,7 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    handleOpenAttachments(message)
+                                    handleOpenAttachments(message, chat.channel)
                                   }>
                                   <SVGIcon iconFile="/icons/download.svg" />
                                 </button>
@@ -330,7 +345,6 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             </>
                           )}
                         </Text>
-
                         <Text>
                           {new Date(message.createdAt).toLocaleTimeString(
                             'en-US',
@@ -345,16 +359,14 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                     )}
                     {message.contentType !== 'ATTACHMENT' && (
                       <>
-                        <Text>
-                          <StyledCopyToClipboardUser
-                            onClick={() =>
-                              handleCopyTextToClipboard(message.content)
-                            }>
-                            <CgClipboard />
-                          </StyledCopyToClipboardUser>
-                          {message.content}
-                        </Text>
-
+                        {message.isDeleted === true ? (
+                          <StyledDeletedMessage>
+                            Se eliminó este mensage
+                            <SVGIcon iconFile="/icons/band.svg" />
+                          </StyledDeletedMessage>
+                        ) : (
+                          <p>{readUrl(message.content)}</p>
+                        )}
                         <Text>
                           {new Date(message.createdAt).toLocaleTimeString(
                             'en-US',
@@ -622,17 +634,27 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                         </div>
                       </>
                     )}
+
                     {message.contentType !== 'ATTACHMENT' && (
-                      <Text>
-                        {/* <StyledCopyToClipboardAgent
-                          onClick={() =>
-                            handleCopyTextToClipboard(message.content)
-                          }>
-                          <CgClipboard />
-                        </StyledCopyToClipboardAgent> */}
-                        {message.content}
-                      </Text>
+                      //  <StyledInputText value={message.content} />
+                      <>
+                        {message.isDeleted === true ? (
+                          <StyledDeletedMessage>
+                            Se eliminó este mensage
+                            <SVGIcon iconFile="/icons/band.svg" />
+                          </StyledDeletedMessage>
+                        ) : (
+                          <p>{readUrl(message.content)}</p>
+                        )}
+                      </>
                     )}
+                    <Text color="gray" weight="400">
+                      {new Date(message.createdAt).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false,
+                      })}
+                    </Text>
                   </div>
                   <StyledAgentAvatar>
                     {userDataInState && userDataInState.urlAvatar !== '' ? (
@@ -699,8 +721,18 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                               <SVGIcon iconFile="/icons/image-icon.svg" />
                             </button>
                           )}
-                        {message.contentType !== 'ATTACHMENT' &&
-                          message.content}
+                        {message.contentType !== 'ATTACHMENT' && (
+                          <>
+                            {message.isDeleted === true ? (
+                              <PendingDeletedMessagesStyle>
+                                <SVGIcon iconFile="/icons/band.svg" />
+                                Se eliminó este mensage
+                              </PendingDeletedMessagesStyle>
+                            ) : (
+                              <p>{readUrl(message.content)}</p>
+                            )}
+                          </>
+                        )}
                       </Text>
                       <Text>
                         {new Date(message.createdAt).toLocaleTimeString(

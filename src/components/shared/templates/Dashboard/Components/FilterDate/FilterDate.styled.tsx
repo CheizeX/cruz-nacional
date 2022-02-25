@@ -51,6 +51,7 @@ export const StyledHeaderRageDate = styled.div`
 
 export const StyledBodyRageDate = styled.div`
   width: 215px;
-  height: 299px;
+  height: 100%;
   margin: 10px 0;
+  max-height: 166px;
 `;

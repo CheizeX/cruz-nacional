@@ -1,4 +1,11 @@
-import { FC, useState, useMemo, useEffect, useContext } from 'react';
+import {
+  FC,
+  useState,
+  useMemo,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react';
 import styled from 'styled-components';
 import {
   useAppDispatch,
@@ -60,6 +67,9 @@ export const MonitorSection: FC = () => {
   const { countAgent } = useAppSelector(
     (state) => state.monitor.monitorCountAgentsAvailableState,
   );
+  // const { userDataInState } = useAppSelector(
+  //   (state) => state.userAuthCredentials,
+  // );
   const [agentInput, setAgentInput] = useState<string>('');
   const handleOnChangeState = (id: number) => {
     const currentIndex = statusAgent.indexOf(id);
@@ -112,7 +122,7 @@ export const MonitorSection: FC = () => {
     seStateByAgent(newCurrentChecked);
   };
 
-  const getAgentsAvailable = async () => {
+  const getAgentsAvailable = useCallback(async () => {
     try {
       const result = await readingUsers(UserStatus.AVAILABLE);
       if (result.success === false) {
@@ -129,8 +139,8 @@ export const MonitorSection: FC = () => {
         message: `${err}`,
       });
     }
-  };
-  const getAgentsNotAvailable = async () => {
+  }, [dispatch, showAlert]);
+  const getAgentsNotAvailable = useCallback(async () => {
     try {
       const data = await readingUsers(UserStatus.ALL);
       if (data.success === false) {
@@ -158,9 +168,9 @@ export const MonitorSection: FC = () => {
         message: `${err}`,
       });
     }
-  };
+  }, [dispatch, showAlert]);
 
-  const getChatsToday = async () => {
+  const getChatsToday = useCallback(async () => {
     try {
       const response = await readChatsToday('today');
       if (response.success === false) {
@@ -195,7 +205,7 @@ export const MonitorSection: FC = () => {
         message: `${err}`,
       });
     }
-  };
+  }, [dispatch, showAlert]);
   // se agrego una nueva propiedad de CALL para realizar el fitro de busqueda por status.
   const handleOnClick = async () => {
     const responseState = stateByAgent.map(
@@ -281,8 +291,8 @@ export const MonitorSection: FC = () => {
     getAgentsAvailable();
     getAgentsNotAvailable();
     getChatsToday();
-    socket.emit('joinSupervisorRooms');
-  }, []);
+    // socket.emit('joinSupervisorRooms', userDataInState?.companyId);
+  }, [getAgentsAvailable, getAgentsNotAvailable, getChatsToday]);
 
   useEffect(() => {
     socket.on('newChatEvent', (data: Chat[]) => {
@@ -321,7 +331,7 @@ export const MonitorSection: FC = () => {
       dispatch(setAgentsAvailable(agentAvailable));
       dispatch(setAgentsNotAvailable(agentNotAvailable));
     });
-  }, [socket, agentsAvailable, setAgentsAvailable]);
+  }, [socket, agentsAvailable, dispatch]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAgentInput(event.target.value);

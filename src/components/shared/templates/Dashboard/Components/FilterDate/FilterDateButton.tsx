@@ -17,10 +17,12 @@ export interface PropsDate {
   datePicker?: number;
 }
 
-export const StyledWrapper = styled.div`
+export const StyledWrapper = styled.button`
   width: 100%;
   height: 100%;
   margin: auto;
+  cursor: pointer;
+  max-height: 166px;
 `;
 
 export const StyledTabsHeaders = styled.div<PropsDateButton>`
@@ -47,7 +49,7 @@ export const StyledContainerRadio = styled.div<PropsDateButton>`
     `}
 `;
 
-export const StyledRadio = styled.button<PropsDateButton>`
+export const StyledRadio = styled.div<PropsDateButton>`
   background-color: ${({ theme }) => theme.Colors.grays[8]};
   border-radius: 50%;
   margin: 0;
@@ -127,7 +129,7 @@ export const FilterButtonDate = ({
         dispatch(getChatsByPeriod('0/lastMonth'));
       }
     });
-  }, [socket]);
+  }, [active, dispatch, socket]);
 
   useEffect(() => {
     if (active === 0) {
@@ -147,7 +149,7 @@ export const FilterButtonDate = ({
       dispatch(setNameOfSelectedDateToFilter('Mes Anterior'));
     }
     getNewChatEvent();
-  }, [active]);
+  }, [active, dispatch, getNewChatEvent]);
 
   const handleDatePicker = (id: number) => {
     setActive(id);
@@ -158,12 +160,11 @@ export const FilterButtonDate = ({
     const title = (child as React.ReactElement).props.title ?? index.toString();
 
     return (
-      <Wrapper key={index.toString()}>
+      <Wrapper key={index.toString()} onClick={() => handleDatePicker(index)}>
         <StyledContainerRadio focusRadio={active === index}>
           <StyledRadio
             focusRadio={active === index}
             key={title + index.toString()}
-            onClick={() => handleDatePicker(index)}
           />
         </StyledContainerRadio>
         <StyledLabel focusRadio={active === index}>

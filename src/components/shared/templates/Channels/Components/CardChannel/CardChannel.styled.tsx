@@ -24,6 +24,7 @@ export const StyledCardChannel = styled.div`
         font-size: ${({ theme }) => theme.fontSize[14]};
         font-weight: ${({ theme }) => theme.fontWeight[600]};
         line-height: 1rem;
+        width: 100%;
       }
       & > :nth-child(2) {
         color: ${({ theme }) => theme.Colors.grays[3]};
@@ -60,6 +61,22 @@ export const StyledCardChannel = styled.div`
           }
         }
       }
+      & > div {
+        & > :nth-child(3) {
+          z-index: 1;
+          display: flex;
+          position: relative;
+          right: 20px;
+          top: 4px;
+          width: 100%;
+          height: 100%;
+          & > div {
+            position: absolute;
+            right: -20px;
+            top: 20px;
+          }
+        }
+      }
     }
   }
   & > :last-child {
@@ -91,6 +108,7 @@ export const StyledPicture = styled.div`
     border-radius: 50%;
     position: relative;
     & img {
+      font-size: 10px;
       max-width: 57px;
       max-height: 57px;
       border-radius: 50%;
@@ -135,7 +153,7 @@ export const CheckBoxLabel = styled.span<IContainerCard>`
     width: 12px;
     height: 12px;
     margin: 1px;
-    margin-left: ${({ isChecked }) => (isChecked === true ? '18px' : '2px')};
+    margin-left: ${({ isChecked }) => (isChecked === true ? '18px' : '3px')};
     background: ${({ theme, isChecked }) =>
       isChecked === true ? theme.Colors.green[4] : theme.Colors.grays[5]};
     box-shadow: 1px 3px 3px 1px rgba(0, 0, 0, 0.2);
@@ -157,10 +175,8 @@ export const CheckBox = styled.input`
       border-radius: 50%;
       width: 12px;
       height: 12px;
-      margin-left: 18px;
+      margin-left: 2px;
       transition: 0.2s;
-      // background-color: ${({ theme }) => theme.Colors.green[2]};
-      // opacity: 0.3;
     }
   }
 `;
@@ -168,9 +184,9 @@ export const CheckBox = styled.input`
 export const DropdownContainerCard = styled.div`
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   border: 1px solid ${({ theme }) => theme.Colors.grays[8]};
-  border-radius: 16px;
+  border-radius: 6px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  padding: 12px 8px;
+  padding: 6px 6px;
   & > div {
     display: flex;
     border-radius: 4px;
@@ -205,7 +221,6 @@ export const StyledWhatsApp360 = styled.div`
     border-radius: 50%;
     width: 34px;
     height: 34px;
-    background-color: red;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -214,6 +229,9 @@ export const StyledWhatsApp360 = styled.div`
     max-width: 74px;
     max-height: 74px;
     object-fit: cover;
+  }
+  & svg {
+    z-index: 2;
   }
 `;
 export const StyledFacebookService = styled.div`
@@ -234,5 +252,55 @@ export const StyledFacebookService = styled.div`
       line-height: 14px;
       letter-spacing: 0.4px;
     }
+  }
+`;
+
+export const StyledLogoInstagram = styled.div`
+  display: flex;
+  & > div {
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  & img {
+    max-width: 74px;
+    max-height: 74px;
+    object-fit: cover;
+    font-size: ${({ theme }) => theme.fontSize[12]};
+  }
+  & svg {
+    z-index: 2;
+  }
+`;
+
+export const StyledLogoWebChat = styled.div`
+  display: flex;
+  & > div {
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  & img {
+    max-width: 44px;
+    max-height: 44px;
+    object-fit: cover;
+  }
+  & svg {
+    z-index: 2;
+  }
+`;
+export const LogoWassenger = styled.div`
+  display: flex;
+  & img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: contain;
+    width: 100%;
   }
 `;

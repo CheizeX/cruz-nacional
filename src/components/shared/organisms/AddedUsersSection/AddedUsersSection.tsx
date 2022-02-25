@@ -1,4 +1,11 @@
-import React, { FC, useState, useMemo, useContext, useEffect } from 'react';
+import React, {
+  FC,
+  useState,
+  useMemo,
+  useContext,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../../../redux/hook/hooks';
 import { ContainerInput } from '../../molecules/Input/ContainerInput';
@@ -79,7 +86,7 @@ export const AddedUsersSection: FC = () => {
   const { usersData } = useSelector(
     (state: RootState) => state.users.useQueryState,
   );
-  const dataApi = async () => {
+  const dataApi = useCallback(async () => {
     try {
       const currentDta = await readingUsers(UserStatus.ALL);
       if (currentDta.success === false) {
@@ -94,9 +101,9 @@ export const AddedUsersSection: FC = () => {
         message: `${err}`,
       });
     }
-  };
+  }, [dispatch, showAlert]);
 
-  const getFilterTag = async () => {
+  const getFilterTag = useCallback(async () => {
     try {
       const response = await readTags();
       if (response.success === false) {
@@ -111,7 +118,7 @@ export const AddedUsersSection: FC = () => {
         message: `${err}`,
       });
     }
-  };
+  }, [dispatch, showAlert]);
 
   const handleFilterData = async () => {
     try {
@@ -149,7 +156,7 @@ export const AddedUsersSection: FC = () => {
   useEffect(() => {
     dataApi();
     getFilterTag();
-  }, []);
+  }, [dataApi, getFilterTag]);
 
   useEffect(() => {
     socket.on('newUser', (data: User[]) => {
@@ -164,7 +171,7 @@ export const AddedUsersSection: FC = () => {
       //   // se emit un event deleteUser ---- que viene del servidor
       dispatch(setDataUser(data));
     });
-  }, [setDataUser, socket, usersData]);
+  }, [dispatch, socket, usersData]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextInput(event.target.value);

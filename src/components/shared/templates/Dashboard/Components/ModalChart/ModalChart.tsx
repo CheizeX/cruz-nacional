@@ -47,11 +47,11 @@ export const ModalChart: FC<IPropsChart> = ({ setComponentReview }) => {
   );
   const datosIsTransfer = result.filter((item) => item.isTransfer === true);
   const datosUnsatisfatory = result.filter(
-    (elem) => elem.finishedStatus === ChatFinishedStatus.SATISFACTORY,
+    (elem) => elem.finishedStatus === ChatFinishedStatus.UNSATISFACTORY,
   );
 
   const datosSatisfactory = result.filter(
-    (item) => item.finishedStatus === ChatFinishedStatus.UNSATISFACTORY,
+    (item) => item.finishedStatus === ChatFinishedStatus.SATISFACTORY,
   );
 
   const data = [

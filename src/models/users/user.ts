@@ -29,4 +29,5 @@ export type DecodedToken = {
   role?: string;
   urlAvatar: string;
   _id?: string;
+  companyId?: string;
 };

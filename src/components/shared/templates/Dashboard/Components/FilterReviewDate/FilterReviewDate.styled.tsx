@@ -1,10 +1,12 @@
 import styled, { css } from 'styled-components';
 import { IPropsFilterReviewButton } from './FilterReviewDate.interface';
 
-export const StyledWrapper = styled.div`
+export const StyledWrapper = styled.button`
   width: 100%;
   height: 100%;
   margin: auto;
+  cursor: pointer;
+  max-height: 166px;
 `;
 
 export const StyledTabsHeadersReview = styled.div<IPropsFilterReviewButton>`
@@ -31,7 +33,7 @@ export const StyledContainerRadioReview = styled.div<IPropsFilterReviewButton>`
     `}
 `;
 
-export const StyledRadioReview = styled.button<IPropsFilterReviewButton>`
+export const StyledRadioReview = styled.div<IPropsFilterReviewButton>`
   background-color: ${({ theme }) => theme.Colors.grays[8]};
   border-radius: 50%;
   margin: 0;

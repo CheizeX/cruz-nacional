@@ -49,21 +49,28 @@ export type Message = {
   createdAt: Date;
   updatedAt: Date;
   size?: string;
+  isDeleted?: boolean;
   _id?: string;
+  mid?: string;
 };
 
 export type Chat = {
   _id: string;
   channel: Channels;
-  status: ChatStatus;
-  assignedAgent: User;
-  tags: Tag[];
-  finishedStatus?: ChatFinishedStatus;
-  feedback?: string;
-  messages: Message[];
   client: Client;
+  status: ChatStatus;
+  companyId: string;
+  fromLaravel: boolean;
+  assignedAgent: User;
+  messages: Message[];
+  tags: Tag[];
   isTransfer: boolean;
   isPaused: boolean;
+  unreadMessages: number;
+  selected: boolean;
   createdAt: Date;
   updatedAt: Date;
+  finishedStatus?: ChatFinishedStatus;
+  feedback?: string;
+  hasHistory?: boolean;
 };

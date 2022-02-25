@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
 import { Text } from '../../../atoms/Text/Text';
-import { Dropdown } from '../../../atoms/Dropdown/Dropdown';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
@@ -11,15 +10,10 @@ import {
   Logo,
   Ailalia,
   Letter,
-  TriggerElement,
-  WrapperChackedAgent,
-  StyledButton,
-  StyledRadio,
   LiveNavDropdownContainer,
   LiveTriggerElement,
   LiveStyledAvatar,
   LiveArrowIcon,
-  StyledAgentStatusSropdown,
 } from './NavBarLive.styled';
 import { INavBarLiveProps } from './NavBarLive.interface';
 import { useAuth } from '../../../../../hooks/auth';
@@ -29,6 +23,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../redux/hook/hooks';
+import { DropdownStatus } from '../../DropdownStatus/DropdownStatus';
 import { setUserDataInState } from '../../../../../redux/slices/auth/user-credentials';
 import { DecodedToken } from '../../../../../models/users/user';
 import { MyAccountSidebarOrganism } from '../../MyAccountSidebar/MyAccountSidebar';
@@ -138,7 +133,12 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps> = ({
           {bellIcon && bellIcon()}
         </BellIcon> */}
           {/* <NotificationStyledNavBar /> */}
-          <Dropdown
+          <DropdownStatus
+            statusChecked={statusChecked}
+            activoCheck={activoCheck}
+            handleClickStatus={handleClickStatus}
+          />
+          {/* <Dropdown
             triggerElement={() => (
               <TriggerElement statusChecked={statusChecked}>
                 <Text>{statusChecked}</Text>
@@ -177,7 +177,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps> = ({
                 <SVGIcon iconFile="/icons/toile.svg" />
                 <Text color="black">En Pausa - Baño</Text>
               </WrapperChackedAgent>
-              {/* Se agrego una nueva opción de status  */}
+        
               <WrapperChackedAgent
                 position="two"
                 onClick={() =>
@@ -189,9 +189,9 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps> = ({
                 <SVGIcon iconFile="/icons/calling.svg" />
                 <Text color="black">En Pausa - En llamada</Text>
               </WrapperChackedAgent>
-              {/* ---------------------------------------------- */}
+         
             </StyledAgentStatusSropdown>
-          </Dropdown>
+          </Dropdown> */}
           <LiveTriggerElement>
             <LiveStyledAvatar>
               {profilePicture && profilePicture !== '' ? (
