@@ -18,6 +18,8 @@ import { Text } from '../../../../atoms/Text/Text';
 import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
 import useDisplayElementOrNot from '../../../../../../hooks/use-display-element-or-not';
 import { dataAvatar } from '../WebChatSection/Components/AvatarContainer/AvatarContainer';
+import { setIdChannel } from '../../../../../../redux/slices/channels/list-channel';
+import { useAppDispatch } from '../../../../../../redux/hook/hooks';
 
 export const CardChannel: FC<IPropsCardChannel> = ({
   name,
@@ -25,10 +27,12 @@ export const CardChannel: FC<IPropsCardChannel> = ({
   service,
   isActive,
   image,
+  _idChannel,
   providerName,
   setIsSectionWebChat,
   setSeletedComponent,
 }) => {
+  const dispatch = useAppDispatch();
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
   const [toggle, setToggle] = useState<boolean>(isActive);
@@ -36,8 +40,9 @@ export const CardChannel: FC<IPropsCardChannel> = ({
   const handleClick = () => {
     setIsComponentVisible(!isComponentVisible);
   };
-  const handleClickCard = () => {
+  const handleClickCard = (arg: string) => {
     setSeletedComponent('DeleteChannel');
+    dispatch(setIdChannel(arg));
     setIsSectionWebChat(true);
   };
 
@@ -82,7 +87,9 @@ export const CardChannel: FC<IPropsCardChannel> = ({
                   <BadgeMolecule
                     bgColor="transparent"
                     leftIcon={() => <SVGIcon iconFile="/icons/delete.svg" />}>
-                    <button type="button" onClick={handleClickCard}>
+                    <button
+                      type="button"
+                      onClick={() => handleClickCard(_idChannel || '')}>
                       <Text>Eliminar </Text>
                     </button>
                   </BadgeMolecule>

@@ -4,12 +4,14 @@ import { ListChannel } from '../../../models/channels/channel';
 
 interface IIntegrationQRSlice {
   listChannel: ListChannel;
+  idChannel: string;
   isLoanding: boolean;
   error: string | null;
 }
 
 const initialState: IIntegrationQRSlice = {
   listChannel: {} as ListChannel,
+  idChannel: '',
   isLoanding: false,
   error: null,
 };
@@ -21,8 +23,11 @@ export const listChannelStore = createSlice({
     setlistChannel: (state, action: PayloadAction<ListChannel>) => {
       state.listChannel = action.payload;
     },
+    setIdChannel: (state, action: PayloadAction<string>) => {
+      state.idChannel = action.payload;
+    },
   },
 });
 
-export const { setlistChannel } = listChannelStore.actions;
+export const { setlistChannel, setIdChannel } = listChannelStore.actions;
 export default listChannelStore.reducer;

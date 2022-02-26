@@ -478,7 +478,9 @@ export const PendingDeletedMessagesStyle = styled.div`
   }
 `;
 
-export const WrapperOnConversation = styled.p``;
+export const WrapperOnConversation = styled.span`
+  display: flex;
+`;
 
 export const StyledNameAndContactSeparator = styled.div`
   width: 10px;

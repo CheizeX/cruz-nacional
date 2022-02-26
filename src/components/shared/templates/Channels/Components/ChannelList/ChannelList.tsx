@@ -14,6 +14,7 @@ export const ChannelList: FC<IPropsList> = ({
         {listChannel.facebook ? (
           <div>
             <CardChannel
+              _idChannel={listChannel?.facebook._id}
               name={listChannel?.facebook.pageName}
               icon="Messenger"
               service="Messenger"
@@ -27,6 +28,7 @@ export const ChannelList: FC<IPropsList> = ({
         {listChannel.officialWhatsApp ? (
           <div>
             <CardChannel
+              _idChannel={listChannel?.officialWhatsApp._id}
               name={`+${listChannel?.officialWhatsApp.phoneNumber}`}
               icon="whatsapp"
               service="WhatsApp"
@@ -41,6 +43,7 @@ export const ChannelList: FC<IPropsList> = ({
         {listChannel.unofficialWhatsApp ? (
           <div>
             <CardChannel
+              _idChannel={listChannel.unofficialWhatsApp._id}
               name={`+${listChannel?.unofficialWhatsApp.phoneNumber}`}
               icon="whatsapp"
               service="WhatsApp"
@@ -55,6 +58,7 @@ export const ChannelList: FC<IPropsList> = ({
         {listChannel.webchat ? (
           <div>
             <CardChannel
+              _idChannel={listChannel.webchat._id}
               name={`${listChannel?.webchat.name}`}
               icon="webchat"
               service="Web Chat"
@@ -69,6 +73,7 @@ export const ChannelList: FC<IPropsList> = ({
           <div>
             <CardChannel
               name={`${listChannel?.instagram.username}`}
+              _idChannel={listChannel?.instagram._id}
               icon="Instagram"
               service="Instagram"
               isActive={listChannel?.instagram.isActive}

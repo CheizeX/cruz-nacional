@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import {
   StyledDeleteChannel,
@@ -13,8 +14,39 @@ import {
   Size,
 } from '../../../../atoms/Button/Button';
 import { IDeleteChannel } from './DeleteChannel.interface';
+// import { deleteChannel } from '../../../../../../api/channels';
+import { useToastContext } from '../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../molecules/Toast/Toast.interface';
+import { RootState } from '../../../../../../redux';
 
 export const DeleteChannel: FC<IDeleteChannel> = ({ setIsSectionWebChat }) => {
+  const showAlert = useToastContext();
+  const { idChannel }: any = useSelector(
+    (state: RootState) => state.channel.listChannelState,
+  );
+
+  const handleDelete = async () => {
+    try {
+      // const response = await deleteChannel(idChannel);
+      // console.log(response);
+      if (idChannel) {
+        console.log(idChannel);
+      } else {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: 'No se puede eliminar este canal.',
+        });
+      }
+      setIsSectionWebChat(false);
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  };
   return (
     <StyledDeleteChannel>
       <StyledIconChannel>
@@ -34,7 +66,7 @@ export const DeleteChannel: FC<IDeleteChannel> = ({ setIsSectionWebChat }) => {
           variant={ButtonVariant.OUTLINED}
         />
         <ButtonMolecule
-          onClick={() => null}
+          onClick={handleDelete}
           text="Eliminar"
           size={Size.MEDIUM}
         />

@@ -26,7 +26,7 @@ export const updateChannel = (
 };
 
 export const deleteChannel = (channelId: string) => {
-  return baseRestApi.delete<boolean>(`/channels/${channelId}`);
+  return baseRestApi.delete<string>(`/channelsCredentials/${channelId}`);
 };
 
 export const authFacebook = (userToken: string) => {

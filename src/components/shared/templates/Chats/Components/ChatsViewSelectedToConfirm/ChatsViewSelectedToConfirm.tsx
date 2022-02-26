@@ -376,11 +376,21 @@ export const ChatsViewSelectedToConfirm: FC<
               Cliente
               {chatsOnConversation?.find(
                 (chat) =>
-                  !!(
-                    chat.client.clientId === userSelected &&
-                    chat.channel === 'WhatsApp'
-                  ) || chat.channel === 'Webchat',
-              ) ? (
+                  chat.client.clientId === userSelected &&
+                  chat.channel === 'WhatsApp',
+              )?.client.clientId ? (
+                <StyledCopyToClipboardUser
+                  onClick={() =>
+                    handleCopyTextToClipboard(String(userSelected))
+                  }>
+                  <CgClipboard />
+                </StyledCopyToClipboardUser>
+              ) : null}
+              {chatsOnConversation?.find(
+                (chat) =>
+                  chat.client.clientId === userSelected &&
+                  chat.channel === 'Webchat',
+              )?.client.clientId ? (
                 <StyledCopyToClipboardUser
                   onClick={() =>
                     handleCopyTextToClipboard(String(userSelected))
@@ -400,9 +410,15 @@ export const ChatsViewSelectedToConfirm: FC<
                 {
                   chatsOnConversation?.find(
                     (chat) =>
-                      (chat.client.clientId === userSelected &&
-                        chat.channel === 'WhatsApp') ||
+                      chat.client.clientId === userSelected &&
                       chat.channel === 'Webchat',
+                  )?.client.clientId
+                }
+                {
+                  chatsOnConversation?.find(
+                    (chat) =>
+                      chat.client.clientId === userSelected &&
+                      chat.channel === 'WhatsApp',
                   )?.client.clientId
                 }
               </Text>
@@ -416,13 +432,6 @@ export const ChatsViewSelectedToConfirm: FC<
                 )?.client.name || userSelected}
               </Text>
             )}
-            {
-              chatsOnConversation?.find(
-                (chat) =>
-                  chat.client.clientId === userSelected &&
-                  chat.channel === ('Webchat' || 'WhatsApp'),
-              )?.client.clientId
-            }
           </span>
           {chatsOnConversation?.find(
             (user) => user.client.clientId === userSelected,
@@ -527,24 +536,26 @@ export const ChatsViewSelectedToConfirm: FC<
                   </button>
                 ))}
             </StyledEmojisContainer>
-            <StyledPredefinidedTexts
-              showPredefinedTexts={showPredefinedTexts}
-              setShowPredefinedTexts={setShowPredefinedTexts}>
-              {preDefinedTextsObject &&
-                preDefinedTextsObject?.map((text) => (
+            {preDefinedTextsObject.length > 0 && (
+              <StyledPredefinidedTexts
+                showPredefinedTexts={showPredefinedTexts}
+                setShowPredefinedTexts={setShowPredefinedTexts}>
+                {preDefinedTextsObject.map((text: any) => (
                   <button
                     key={text.id}
                     type="button"
                     onClick={() => {
                       handleClickToSendPredefinidedTexts(text.text);
                     }}>
+                    <span>{Number(text.id) < 10 ? 0 + text.id : text.id}.</span>
                     <SVGIcon iconFile="/icons/ray.svg" />
                     <Text color="gray" size="12px" key={text.text}>
                       {text.text}
                     </Text>
                   </button>
                 ))}
-            </StyledPredefinidedTexts>
+              </StyledPredefinidedTexts>
+            )}
 
             <button type="button" onClick={handleDropZoneDisplayed}>
               <SVGIcon iconFile="/icons/clipper.svg" />
@@ -552,9 +563,11 @@ export const ChatsViewSelectedToConfirm: FC<
             {/* <button type="button" onClick={handleSowEmojisButtton}>
               <SVGIcon iconFile="/icons/emojis.svg" />
             </button> */}
-            <button type="button" onClick={handlePredefinedTexts}>
-              <SVGIcon iconFile="/icons/ray.svg" />
-            </button>
+            {preDefinedTextsObject.length > 0 && (
+              <button type="button" onClick={handlePredefinedTexts}>
+                <SVGIcon iconFile="/icons/ray.svg" />
+              </button>
+            )}
           </span>
           <ContainerInput
             value={chatInputDialogue}

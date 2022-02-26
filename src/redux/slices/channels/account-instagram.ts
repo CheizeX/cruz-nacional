@@ -12,7 +12,7 @@ const initialState: IAuthFacebookSlice = {
   dataInfoInstagram: {
     name: '',
     image: '',
-    id: '',
+    _id: '',
     isActive: false,
     accessToken: '',
     username: '',

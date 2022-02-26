@@ -307,16 +307,76 @@ export const StyledFooterToChat = styled.div<
   }
 `;
 
-export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
-  // set visibility hidden when showPredefinedTexts === true
+// export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
+//   // set visibility hidden when showPredefinedTexts === true
 
+//   visibility: ${({ showPredefinedTexts }) =>
+//     showPredefinedTexts ? 'visible' : 'hidden'};
+
+//   position: absolute;
+//   width: 350px;
+//   height: max-content;
+//   bottom: 60px;
+//   box-shadow: 0px 0px 5px ${({ theme }) => theme.Colors.grays[8]};
+//   border-radius: 10px;
+//   background-color: ${({ theme }) => theme.Colors.grays[10]};
+//   padding: 10px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   & > button {
+//     text-align: center;
+//     display: flex;
+//     justify-content: flex-start;
+//     align-items: center;
+//     height: 40px;
+//     border-radius: 5px;
+//     padding-left: 5px;
+//     & > span {
+//       margin-left: 5px;
+//     }
+//     &:hover {
+//       background-color: ${({ theme }) => theme.Colors.grays[9]};
+//       cursor: pointer;
+//       & > span {
+//         color: ${({ theme }) => theme.Colors.purples[2]};
+//       }
+//       & svg {
+//         background-color: ${({ theme }) => theme.Colors.purples[2]};
+//       }
+//     }
+//     & > div {
+//       height: 30px;
+//       & div {
+//         display: flex;
+//         justify-content: center;
+//         align-items: center;
+//         & * {
+//           fill: ${({ theme }) => theme.Colors.grays[9]};
+//         }
+//         & svg {
+//           background-color: ${({ theme }) => theme.Colors.grays[6]};
+//           height: 20px;
+//           width: 20px;
+//           padding: 2px;
+//           /* border: 1px solid green; */
+//           border-radius: 50%;
+//         }
+//       }
+//     }
+//   }
+// `;
+export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
   visibility: ${({ showPredefinedTexts }) =>
     showPredefinedTexts ? 'visible' : 'hidden'};
 
   position: absolute;
-  width: 350px;
+  max-width: 899px;
+  max-height: 500px;
   height: max-content;
-  bottom: 60px;
+  width: max-content;
+  bottom: 61px;
+  left: 3px;
   box-shadow: 0px 0px 5px ${({ theme }) => theme.Colors.grays[8]};
   border-radius: 10px;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
@@ -324,19 +384,48 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+
   & > button {
-    text-align: center;
+    text-align: left;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    height: 40px;
+    height: fit-content;
     border-radius: 5px;
-    padding-left: 5px;
+    padding: 5px;
+    & :nth-child(2n) {
+      background-color: ${({ theme }) => theme.Colors.grays[9]};
+    }
     & > span {
-      margin-left: 5px;
+      margin: 0 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    & > :nth-child(1) {
+      min-width: 25px;
+      min-height: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: ${({ theme }) => theme.Colors.grays[5]};
+      border-radius: 50%;
+      padding: 0;
+      margin: 0;
+      font-size: ${({ theme }) => theme.fontSize[12]};
+    }
+    & > :nth-child(2) {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin: 0;
+      width: 20px;
     }
     &:hover {
-      background-color: ${({ theme }) => theme.Colors.grays[9]};
       cursor: pointer;
       & > span {
         color: ${({ theme }) => theme.Colors.purples[2]};
@@ -356,8 +445,8 @@ export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
         }
         & svg {
           background-color: ${({ theme }) => theme.Colors.grays[6]};
-          height: 20px;
-          width: 20px;
+          height: 15px;
+          width: 15px;
           padding: 2px;
           /* border: 1px solid green; */
           border-radius: 50%;

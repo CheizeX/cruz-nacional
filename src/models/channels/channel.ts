@@ -61,7 +61,7 @@ export type IPropsWebChat = {
 };
 
 export type IPropsInstagram = {
-  id: string;
+  _id: string;
   image: string;
   name: string;
   username: string;

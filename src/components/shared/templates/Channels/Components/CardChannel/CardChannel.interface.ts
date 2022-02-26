@@ -1,4 +1,5 @@
 export interface IPropsCardChannel {
+  _idChannel?: string;
   name: string;
   icon: string;
   service: string;
