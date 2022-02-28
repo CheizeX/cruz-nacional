@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../../../../redux/hook/hooks';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
@@ -14,7 +14,7 @@ import { UserTagModalProps } from './DeleteUserTagModa.interface';
 // import { useTagManagement } from '../../../../../hooks/tags-management';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
-import { websocketContext } from '../../../../../chat';
+// import { websocketContext } from '../../../../../chat';
 import { deleteTag } from '../../../../../api/tags';
 import { RootState } from '../../../../../redux';
 
@@ -23,7 +23,7 @@ export const DeleteUserTagModal: FC<UserTagModalProps> = ({
   setTagModal,
   tags,
 }) => {
-  const socket: any = useContext(websocketContext);
+  // const socket: any = useContext(websocketContext);
   const showAlert = useToastContext();
 
   const dispatch = useAppDispatch();
@@ -36,7 +36,7 @@ export const DeleteUserTagModal: FC<UserTagModalProps> = ({
     try {
       await deleteTag(tagDeleteById);
 
-      socket?.emit('deleteTag');
+      // socket?.emit('deleteTag');
 
       showAlert?.addToast({
         alert: Toast.SUCCESS,

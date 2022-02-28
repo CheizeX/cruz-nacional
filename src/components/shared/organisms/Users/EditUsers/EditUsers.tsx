@@ -1,4 +1,4 @@
-import { FC, useState, useContext, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { useToastContext } from '../../../molecules/Toast/useToast';
@@ -30,7 +30,7 @@ import {
   StyledRadio,
 } from './EditUser.styled';
 import { UserRole } from '../../../../../models/users/role';
-import { websocketContext } from '../../../../../chat/index';
+// import { websocketContext } from '../../../../../chat/index';
 import { updateUser } from '../../../../../api/users';
 import { RootState } from '../../../../../redux';
 
@@ -44,7 +44,7 @@ export const EditUsers: FC<IEditUsersProps> = ({
   users,
 }) => {
   const showAlert = useToastContext();
-  const socket: any = useContext(websocketContext);
+  // const socket: any = useContext(websocketContext);
 
   // Redux
   const { usersData } = useSelector(
@@ -118,7 +118,7 @@ export const EditUsers: FC<IEditUsersProps> = ({
           tags: updateContainerTags,
         });
 
-        socket.emit('updateUser');
+        // socket.emit('updateUser');
         showAlert?.addToast({
           alert: Toast.SUCCESS,
           title: '¡Perfecto!',

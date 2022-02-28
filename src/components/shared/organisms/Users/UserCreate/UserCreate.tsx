@@ -1,4 +1,4 @@
-import { FC, useState, useContext } from 'react';
+import { FC, useState } from 'react';
 import * as Yup from 'yup';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useToastContext } from '../../../molecules/Toast/useToast';
@@ -32,7 +32,7 @@ import {
 import { IUserCreateProps } from './UserCreate.interface';
 import { UserRole } from '../../../../../models/users/role';
 import { Tag } from '../../../../../models/tags/tag';
-import { websocketContext } from '../../../../../chat/index';
+// import { websocketContext } from '../../../../../chat/index';
 import { createUser } from '../../../../../api/users/index';
 
 interface Values {
@@ -63,7 +63,7 @@ export const UserCreate: FC<IUserCreateProps> = ({
 }) => {
   const [roleSelected, setRoleSelected] = useState<string>('AGENT');
   const showAlert = useToastContext();
-  const socket: any = useContext(websocketContext);
+  // const socket: any = useContext(websocketContext);
   const clearTagsUser = () => setContainerTags([]);
 
   const initialValues = {
@@ -99,7 +99,7 @@ export const UserCreate: FC<IUserCreateProps> = ({
         });
       }
       clearTagsUser();
-      socket.emit('newUser');
+      // socket.emit('newUser');
       setTimeout(() => {
         setUserModal(false);
       }, 1000);

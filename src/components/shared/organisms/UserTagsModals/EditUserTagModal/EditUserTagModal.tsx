@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext } from 'react';
+import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../../../../redux/hook/hooks';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
@@ -19,14 +19,14 @@ import {
 import { tagsColorsArrayEdit } from './EditUserTagModal.shared';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
-import { websocketContext } from '../../../../../chat';
+// import { websocketContext } from '../../../../../chat';
 import { updateTag } from '../../../../../api/tags';
 import { RootState } from '../../../../../redux';
 
 export const EditUserTagModal: FC<
   StyledEditUserTagColorCheckboxProps & UserTagModalProps
 > = ({ setOpenNewTag, setTagModal, tags }) => {
-  const socket: any = useContext(websocketContext);
+  // const socket: any = useContext(websocketContext);
 
   const dispatch = useAppDispatch();
   const { tagEditById } = useSelector(
@@ -73,7 +73,7 @@ export const EditUserTagModal: FC<
 
         dispatch(setTagByIdEdit(''));
 
-        socket?.emit('updateTag');
+        // socket?.emit('updateTag');
 
         setOpenNewTag(`${tags}`);
 

@@ -20,14 +20,14 @@ import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { tagsColorsArrayCreate } from './CreateUserTagModal.shared';
 import { UserTagModalProps } from '../DeleteUserTagModal/DeleteUserTagModa.interface';
-import { websocketContext } from '../../../../../chat';
+// import { websocketContext } from '../../../../../chat';
 import { createUserTag } from '../../../../../api/tags';
 
 export const CreateUserTagModal: FC<
   StyledColorCheckboxProps & UserTagModalProps & ButtonMoleculeProps
 > = ({ setOpenNewTag, setTagModal, tags }) => {
   const showAlert = useToastContext();
-  const socket: any = React.useContext(websocketContext);
+  // const socket: any = React.useContext(websocketContext);
 
   const [selectedColor, setSelectedColor] = useState('');
   const [tagName, setTagName] = useState('');
@@ -53,7 +53,7 @@ export const CreateUserTagModal: FC<
           color: selectedColor,
         });
 
-        socket?.emit('newTag');
+        // socket?.emit('newTag');
 
         setOpenNewTag(`${tags}`);
 
