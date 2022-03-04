@@ -26,6 +26,7 @@ import { UnOfficialWhatsAppComponent } from '../Components/WhatsappSection/UnOff
 import { OfficialWhatsappComponent } from '../Components/WhatsappSection/OfficialWhatsapp/OfficialWhatsapp';
 import { NotificationDiviceCreated } from '../Components/WhatsappSection/Components/NotificationDiviceCreated/NotificationDiviceCreated';
 import { setImageQR } from '../../../../../redux/slices/channels/integration-with-qr';
+import { ListChannel } from '../../../../../models/channels/channel';
 
 export const ChannelsSection: FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -91,7 +92,7 @@ export const ChannelsSection: FC = () => {
     try {
       const response = await getAllChannel();
       if (response.success === false) {
-        // dispatch(setlistChannel();
+        dispatch(setlistChannel({} as ListChannel));
       } else {
         dispatch(setlistChannel(response));
       }
