@@ -78,7 +78,7 @@ export const FacebookComponent: FC<ISectionFacebook> = ({
     provider.addScope('instagram_manage_messages');
     provider.addScope('instagram_basic');
     provider.addScope('pages_manage_metadata');
-    // provider.addScope('pages_read_engagement');
+    provider.addScope('pages_read_engagement');
     // provider.addScope('Page Public Content Access');
     // provider.addScope('Page Public Metadata Access');
     const auth = getAuth();
