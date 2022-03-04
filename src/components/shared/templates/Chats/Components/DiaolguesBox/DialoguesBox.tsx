@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { FC, useRef, useCallback, useState } from 'react';
+import { IoMdCloseCircle } from 'react-icons/io';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import { SelectedUserProps } from '../../ChatsSection/ChatsSection.interface';
@@ -15,6 +16,7 @@ import {
   StyledDeletedMessage,
   PendingDeletedMessagesStyle,
   WrapperOnConversation,
+  StyledBoxBotAvatar,
 } from './DialoguesBox.styles';
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
 import { ModalBackgroundProps } from '../../../../molecules/Modal/Modal';
@@ -43,21 +45,43 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
   const readUrl = (text: string) => {
     // Exp valida url
     const regex =
+      // "^(http|https|ftp)://[a-zA-Z0-9-.]+.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9-._?,'/\\+&amp;%$#=~])*$";
+      // (?:https?:):\/\/(?:youtu\.be\/|(?:[az]{2,3}\.)?youtube\.com\/watch(?:\?|#!)v=)([\w-]{11}).*/gi;
+      // https?:\/\/(?:[-\w]+\.)?([-\w]+)\.\w+(?:\.\w+)?\/?.*/i;
+      // https?://(?:[-w]+.)?([-w]+).w+(?:.w+)?/?.*/i;
+      // ^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be)\/.+$/g;
+      // ^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|v\/)?)([\w-]+)(\S+)?$/g;
+      // ((http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))[\S]+/g;
       /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
     // Extrae la url del array
     const t = regex.exec(text);
-    // remplaza la url por string vacio.
-    const res = text.replace(/http([^"'\s]+)/g, '');
     const url = t ? t[0] : '';
+
+    // const y = !url.match(
+    //   /http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))[\S]+/g,
+    // );
+    // console.log(y, 'yyyyyyy');
+    // y === true ? (url = `https://${url}`) : null;
+
+    // if (url) {
+    //   if (!url.match(/^[a-zA-Z]+:\/\//)) {
+    //     url = `http://${url}`;
+    //     console.log(url, 'urllllllllllll');
+    //   } else {
+    //     url;
+    //   }
+    // }
+    // remplaza la url por string vacio.
+    const res = text.replace(regex, '');
     return (
       <p>
-        {res}
         <a
           href={url}
           target="_blank"
           dangerouslySetInnerHTML={{ __html: url }}
           rel="noreferrer"
         />
+        {res}
       </p>
     );
   };
@@ -142,9 +166,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => setIdModal('')}>
-                                    <SVGIcon
-                                      iconFile="/icons/minimize.svg"
+                                    <IoMdCloseCircle
                                       color="white"
+                                      width="30px"
                                     />
                                   </button>
                                   <article>
@@ -200,9 +224,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => setIdModal('')}>
-                                    <SVGIcon
-                                      iconFile="/icons/minimize.svg"
+                                    <IoMdCloseCircle
                                       color="white"
+                                      width="30px"
                                     />
                                   </button>
                                   <article>
@@ -258,9 +282,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => setIdModal('')}>
-                                    <SVGIcon
-                                      iconFile="/icons/minimize.svg"
+                                    <IoMdCloseCircle
                                       color="white"
+                                      width="30px"
                                     />
                                   </button>
                                   <article>
@@ -317,9 +341,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => setIdModal('')}>
-                                    <SVGIcon
-                                      iconFile="/icons/minimize.svg"
+                                    <IoMdCloseCircle
                                       color="white"
+                                      width="30px"
                                     />
                                   </button>
                                   <article>
@@ -384,7 +408,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                   </div>
                 </StyledUserDialogue>
               ) : (
-                <StyledAgentOrSUpervisorDialogue key={index.toString()}>
+                <StyledAgentOrSUpervisorDialogue
+                  key={index.toString()}
+                  chatFrom={message.from}>
                   <div>
                     {message.contentType === 'ATTACHMENT' && (
                       <>
@@ -425,9 +451,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => setIdModal('')}>
-                                    <SVGIcon
-                                      iconFile="/icons/minimize.svg"
+                                    <IoMdCloseCircle
                                       color="white"
+                                      width="30px"
                                     />
                                   </button>
                                   <article>
@@ -484,9 +510,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => setIdModal('')}>
-                                      <SVGIcon
-                                        iconFile="/icons/minimize.svg"
+                                      <IoMdCloseCircle
                                         color="white"
+                                        width="30px"
                                       />
                                     </button>
                                     <article>
@@ -538,9 +564,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => setIdModal('')}>
-                                      <SVGIcon
-                                        iconFile="/icons/minimize.svg"
+                                      <IoMdCloseCircle
                                         color="white"
+                                        width="30px"
                                       />
                                     </button>
                                     <article>
@@ -592,9 +618,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => setIdModal('')}>
-                                      <SVGIcon
-                                        iconFile="/icons/minimize.svg"
+                                      <IoMdCloseCircle
                                         color="white"
+                                        width="30px"
                                       />
                                     </button>
                                     <article>
@@ -669,7 +695,7 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                     ) : (
                       <>
                         {message.from === 'Bot' ? (
-                          <StyledBoxAvatar
+                          <StyledBoxBotAvatar
                             src="/avatars/Robot_1.svg"
                             alt="Bot"
                           />

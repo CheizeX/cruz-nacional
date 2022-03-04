@@ -4,6 +4,9 @@ export interface SelectedUserProps {
   setUserSelected: React.Dispatch<React.SetStateAction<string>>;
   userSelected?: string;
 }
+export interface IWrapperColorDialogues {
+  chatFrom: string;
+}
 export interface SortUsers {
   setSortedChats: React.Dispatch<React.SetStateAction<boolean>>;
   sortedChats?: boolean;
