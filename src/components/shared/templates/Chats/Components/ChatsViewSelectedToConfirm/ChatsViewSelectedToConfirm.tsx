@@ -34,7 +34,7 @@ import {
 } from './ChatsViewSelectedToConfirm.styles';
 import { UploadFiles } from '../UploadFiles/UploadFiles';
 import { UploadableFile } from '../UploadFiles/UploadFiles.interface';
-import { Message } from '../../../../../../models/chat/chat';
+import { Channels, Message } from '../../../../../../models/chat/chat';
 import { baseRestApi } from '../../../../../../api/base';
 import { useToastContext } from '../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../molecules/Toast/Toast.interface';
@@ -56,6 +56,8 @@ import {
   StyledCopyToClipboardUser,
   StyledNameAndContactSeparator,
 } from '../DiaolguesBox/DialoguesBox.styles';
+import { Tooltip } from '../../../../atoms/Tooltip/Tooltip';
+import { TooltipPosition } from '../../../../atoms/Tooltip/tooltip.interface';
 
 export const ChatsViewSelectedToConfirm: FC<
   SelectedUserProps &
@@ -85,6 +87,7 @@ export const ChatsViewSelectedToConfirm: FC<
   setEmojisDisplayed,
   showPredefinedTexts,
   setShowPredefinedTexts,
+  liveChatModal,
 }) => {
   const showAlert = useToastContext();
   const toasts = useToastContext();
@@ -197,6 +200,19 @@ export const ChatsViewSelectedToConfirm: FC<
             bodyObject,
           );
         }
+        if (chatToTalkWithUser?.channel === 'Wassenger') {
+          await baseRestApi.patch(
+            `/wassenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
+            bodyObject,
+          );
+        }
+        if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
+          await baseRestApi.patch(
+            `/chatapi/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
+            bodyObject,
+          );
+        }
+        // https://rest-ailalia.ngrok.io/rest/v1/api/wassenger/sendMessageToUser/:chatId/:userId
       } catch (error) {
         showAlert?.addToast({
           alert: Toast.ERROR,
@@ -242,6 +258,18 @@ export const ChatsViewSelectedToConfirm: FC<
           bodyObject,
         );
       }
+      if (chatToTalkWithUser?.channel === 'Wassenger') {
+        await baseRestApi.patch(
+          `/wassenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
+          bodyObject,
+        );
+      }
+      if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
+        await baseRestApi.patch(
+          `/chatapi/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
+          bodyObject,
+        );
+      }
       setSendingMessage(false);
     } catch (error) {
       showAlert?.addToast({
@@ -283,6 +311,18 @@ export const ChatsViewSelectedToConfirm: FC<
       if (chatToTalkWithUser?.channel === 'Webchat') {
         await baseRestApi.patch(
           `/webchat/sendMessageToUser/${chatToTalkWithUserId}`,
+          bodyObject,
+        );
+      }
+      if (chatToTalkWithUser?.channel === 'Wassenger') {
+        await baseRestApi.patch(
+          `/wassenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
+          bodyObject,
+        );
+      }
+      if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
+        await baseRestApi.patch(
+          `/chatapi/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
           bodyObject,
         );
       }
@@ -377,26 +417,44 @@ export const ChatsViewSelectedToConfirm: FC<
               {chatsOnConversation?.find(
                 (chat) =>
                   chat.client.clientId === userSelected &&
-                  chat.channel === 'WhatsApp',
-              )?.client.clientId ? (
-                <StyledCopyToClipboardUser
-                  onClick={() =>
-                    handleCopyTextToClipboard(String(userSelected))
-                  }>
-                  <CgClipboard />
-                </StyledCopyToClipboardUser>
+                  chat.channel === Channels.CHAT_API,
+              )?.client.clientId && liveChatModal === false ? (
+                <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
+                  <StyledCopyToClipboardUser
+                    onClick={() =>
+                      handleCopyTextToClipboard(String(userSelected))
+                    }>
+                    <CgClipboard />
+                  </StyledCopyToClipboardUser>
+                </Tooltip>
               ) : null}
               {chatsOnConversation?.find(
                 (chat) =>
                   chat.client.clientId === userSelected &&
-                  chat.channel === 'Webchat',
-              )?.client.clientId ? (
-                <StyledCopyToClipboardUser
-                  onClick={() =>
-                    handleCopyTextToClipboard(String(userSelected))
-                  }>
-                  <CgClipboard />
-                </StyledCopyToClipboardUser>
+                  chat.channel === Channels.WEBCHAT,
+              )?.client.clientId && liveChatModal === false ? (
+                <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
+                  <StyledCopyToClipboardUser
+                    onClick={() =>
+                      handleCopyTextToClipboard(String(userSelected))
+                    }>
+                    <CgClipboard />
+                  </StyledCopyToClipboardUser>
+                </Tooltip>
+              ) : null}
+              {chatsOnConversation?.find(
+                (chat) =>
+                  chat.client.clientId === userSelected &&
+                  chat.channel === Channels.WHATSAPP,
+              )?.client.clientId && liveChatModal ? (
+                <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
+                  <StyledCopyToClipboardUser
+                    onClick={() =>
+                      handleCopyTextToClipboard(String(userSelected))
+                    }>
+                    <CgClipboard />
+                  </StyledCopyToClipboardUser>
+                </Tooltip>
               ) : null}
             </Text>
             {chatsOnConversation?.find(
@@ -411,14 +469,21 @@ export const ChatsViewSelectedToConfirm: FC<
                   chatsOnConversation?.find(
                     (chat) =>
                       chat.client.clientId === userSelected &&
-                      chat.channel === 'Webchat',
+                      chat.channel === Channels.WEBCHAT,
                   )?.client.clientId
                 }
                 {
                   chatsOnConversation?.find(
                     (chat) =>
                       chat.client.clientId === userSelected &&
-                      chat.channel === 'WhatsApp',
+                      chat.channel === Channels.WHATSAPP,
+                  )?.client.clientId
+                }
+                {
+                  chatsOnConversation?.find(
+                    (chat) =>
+                      chat.client.clientId === userSelected &&
+                      chat.channel === Channels.CHAT_API,
                   )?.client.clientId
                 }
               </Text>
@@ -435,13 +500,16 @@ export const ChatsViewSelectedToConfirm: FC<
           </span>
           {chatsOnConversation?.find(
             (user) => user.client.clientId === userSelected,
-          )?.hasHistory && (
-            <button
-              type="button"
-              onClick={() => handleClickHistoryChat(true, 'HistoryChat')}>
-              <SVGIcon iconFile="/icons/list_icons.svg" />
-            </button>
-          )}
+          )?.hasHistory &&
+            liveChatModal === false && (
+              <Tooltip text="Historial" position={TooltipPosition.right}>
+                <button
+                  type="button"
+                  onClick={() => handleClickHistoryChat(true, 'HistoryChat')}>
+                  <SVGIcon iconFile="/icons/list_icons.svg" />
+                </button>
+              </Tooltip>
+            )}
         </div>
         {chatsOnConversation?.find(
           (user) =>

@@ -1,4 +1,6 @@
 import React, { FC } from 'react';
+import { useRouter } from 'next/router';
+import { BiArrowBack } from 'react-icons/bi';
 import { LoginViewsWrapper } from '../../../organisms/LoginViewsWrapper/LoginViewsWrapper';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../atoms/Text/Text';
@@ -10,11 +12,15 @@ import {
 } from './ExpiredChangePasswordLink.styled';
 
 export const ExpiredChangePasswordLink: FC = () => {
+  const router = useRouter();
+
   return (
     <LoginViewsWrapper>
       <StyledWrapper>
         <StyledHeader>
-          <SVGIcon iconFile="/icons/collapse-left.svg" />
+          <BiArrowBack
+            onClick={() => router.push('/request-password-change/')}
+          />
           <Text>Volver</Text>
         </StyledHeader>
         <StyledInformation>

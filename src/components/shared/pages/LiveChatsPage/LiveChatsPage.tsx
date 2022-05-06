@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useJwt } from 'react-jwt';
 import { NavBarLive } from '../../organisms/NavBar/NavBarLive/NavBarLive';
@@ -11,10 +11,16 @@ import {
   FilterChannelsProps,
   FilterChannel,
 } from '../../templates/Chats/Components/ChatsFilter/ChatFilter/ChatFilter.interface';
-import { useAppSelector } from '../../../../redux/hook/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook/hooks';
 import useLocalStorage from '../../../../hooks/use-local-storage';
 import { UserRole } from '../../../../models/users/role';
 import { Loader } from '../../atoms/Loader/Loader';
+import { ContactsSetion } from '../../templates/Contacts/ContactsSection/ContactsSection';
+import { setlistChannel } from '../../../../redux/slices/channels/list-channel';
+import { useToastContext } from '../../molecules/Toast/useToast';
+import { Toast } from '../../molecules/Toast/Toast.interface';
+import { ListChannel } from '../../../../models/channels/channel';
+import { getAllChannel } from '../../../../api/channels';
 
 export const LiveChatsPage: FC<
   UploadableFile & FilterChannelsProps & FilterChannel & IBackOfficeProps
@@ -31,13 +37,37 @@ export const LiveChatsPage: FC<
   setMyAccount,
 }) => {
   const { push } = useRouter();
+  const showAlert = useToastContext();
+  const dispatch = useAppDispatch();
 
   const [accessToken] = useLocalStorage('AccessToken', '');
+  const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
+  const [userSelected, setUserSelected] = useState<string>('');
   const { decodedToken }: any = useJwt(accessToken);
 
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
   );
+  // State que se encarga de cambiar de sección
+  const { componentsSection }: any = useAppSelector(
+    (state) => state.section.componentsSectionState,
+  );
+  const getChannelList = useCallback(async () => {
+    try {
+      const response = await getAllChannel();
+      if (response.success === false) {
+        dispatch(setlistChannel({} as ListChannel));
+      } else {
+        dispatch(setlistChannel(response));
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  }, [dispatch, showAlert]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -50,7 +80,13 @@ export const LiveChatsPage: FC<
     ) {
       push('/backoffice');
     }
-  }, [decodedToken]);
+  }, [accessToken, decodedToken, push, userDataInState]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      getChannelList();
+    }, 1000);
+  }, [getChannelList]);
 
   return (
     <>
@@ -60,21 +96,36 @@ export const LiveChatsPage: FC<
             setMyAccount={setMyAccount}
             messageIcon={() => <SVGIcon iconFile="/icons/message_icons.svg" />}
             bellIcon={() => <SVGIcon iconFile="/icons/bell.svg" />}
+            componentsSection={componentsSection}
           />
-          <ChatsSection
-            checkedTags={checkedTags}
-            setCheckedTags={setCheckedTags}
-            handleCleanChannels={handleCleanChannels}
-            selectedChannels={selectedChannels}
-            setSelectedChannels={setSelectedChannels}
-            channel={channel}
-            emojisDisplayed
-            setEmojisDisplayed={() => {}}
-            id={id}
-            file={file}
-            errors={errors}
-            setChatInputDialogue={() => {}}
-          />
+          {componentsSection === 'Chat' ? (
+            <ChatsSection
+              checkedTags={checkedTags}
+              setCheckedTags={setCheckedTags}
+              handleCleanChannels={handleCleanChannels}
+              selectedChannels={selectedChannels}
+              setSelectedChannels={setSelectedChannels}
+              setActiveByDefaultTab={setActiveByDefaultTab}
+              activeByDefaultTab={activeByDefaultTab}
+              setUserSelected={setUserSelected}
+              userSelected={userSelected}
+              channel={channel}
+              emojisDisplayed
+              setEmojisDisplayed={() => {}}
+              id={id}
+              file={file}
+              errors={errors}
+              setChatInputDialogue={() => {}}
+            />
+          ) : null}
+          {componentsSection === 'Contactos' ? (
+            <ContactsSetion
+              setActiveByDefaultTab={setActiveByDefaultTab}
+              activeByDefaultTab={activeByDefaultTab}
+              setUserSelected={setUserSelected}
+              userSelected={userSelected}
+            />
+          ) : null}
         </StyledLiveChats>
       ) : (
         <Loader />

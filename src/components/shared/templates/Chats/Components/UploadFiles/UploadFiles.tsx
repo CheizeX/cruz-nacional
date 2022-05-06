@@ -2,6 +2,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { baseRestApi } from '../../../../../../api/base';
+import { Channels } from '../../../../../../models/chat/chat';
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
 import {
   ButtonMolecule,
@@ -110,6 +111,18 @@ export const UploadFiles: FC<
       if (chatToTalkWithUser?.channel === 'Webchat') {
         await baseRestApi.postMultipart(
           `/webchat/sendFiles/${chatToTalkWithUserId}?from=AGENT&companyId=${userDataInState.companyId}`,
+          formData,
+        );
+      }
+      if (chatToTalkWithUser?.channel === 'Wassenger') {
+        await baseRestApi.postMultipart(
+          `/wassenger/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
+          formData,
+        );
+      }
+      if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
+        await baseRestApi.postMultipart(
+          `/chatapi/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
           formData,
         );
       }

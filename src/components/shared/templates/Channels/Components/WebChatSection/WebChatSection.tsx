@@ -18,6 +18,12 @@ import { CustomWebChat } from './Components/CustomWebChat/CustomWebChat';
 import { AvatarContainer } from './Components/AvatarContainer/AvatarContainer';
 import { WrapperNameAndDescription } from './Components/WrapperNameAndDescription/WrapperNameAndDescription';
 import { ColorPaletteWrap } from './Components/ColorPaletteWrap/ColorPaletteWrap';
+import { createWebChat } from '../../../../../../api/channels';
+import { useToastContext } from '../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../molecules/Toast/Toast.interface';
+import { setScript } from '../../../../../../redux/slices/channels/list-channel';
+import { useAppDispatch } from '../../../../../../redux/hook/hooks';
+import { IPropsScripts } from '../../../../../../models/channels/channel';
 
 const data = [
   {
@@ -40,8 +46,11 @@ const data = [
 
 export const WebChatSection: FC<IPropsWebChat> = ({
   setIsSectionWebChat,
-  // getChannelList,
+  setSeletedComponent,
+  getChannelList,
 }) => {
+  const showAlert = useToastContext();
+  const dispatch = useAppDispatch();
   const [isSection, setIsSection] = useState<number>(1);
   const [primaryColor, setPrimaryColor] = useState<string>('#6e28bf');
   const [secondaryColor, setSecundaryColor] = useState<string>('#65edfa');
@@ -72,34 +81,58 @@ export const WebChatSection: FC<IPropsWebChat> = ({
     setIsAnimation(!isAnimation);
   };
   // funcion que envia los datos para crear el webChat
-  // const handleSubmit = () => {
-  //   try {
-  //     if (isAnimation === true) {
-  //       const response = {
-  //         name: customTitle,
-  //         description: customDescription,
-  //         isAnimation: 'yes',
-  //         avatar: customAvatar,
-  //         primaryColor,
-  //         secondaryColor,
-  //       };
-  //       console.log(response);
-  //     } else {
-  //       const result = {
-  //         name: customTitle,
-  //         description: customDescription,
-  //         isAnimation: 'no',
-  //         avatar: customAvatar,
-  //         primaryColor,
-  //         secondaryColor,
-  //       };
-  //       console.log(result);
-  //     }
-  // getChannelList()
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const handleSubmit = async () => {
+    // dispatch(setScript({}));
+    try {
+      if (isAnimation === true) {
+        const response = await createWebChat({
+          name: customTitle,
+          description: customDescription,
+          animation: 'yes',
+          avatar: customAvatar,
+          primaryColor,
+          secondaryColor,
+        });
+
+        if (response === 'Creating webchat') {
+          showAlert?.addToast({
+            alert: Toast.SUCCESS,
+            title: '¡Perfecto!',
+            message: `Se creo el Web Chat satisfactoriamente`,
+          });
+        }
+      } else {
+        const result = await createWebChat({
+          name: customTitle,
+          description: customDescription,
+          animation: 'no',
+          avatar: customAvatar,
+          primaryColor,
+          secondaryColor,
+        });
+        if (result === 'Creating webchat') {
+          showAlert?.addToast({
+            alert: Toast.SUCCESS,
+            title: '¡Perfecto!',
+            message: `Se creo el Web Chat satisfactoriamente`,
+          });
+        }
+      }
+      setTimeout(() => {
+        setIsSectionWebChat(false);
+        setSeletedComponent('script');
+        setIsSectionWebChat(true);
+      }, 1000);
+      dispatch(setScript({} as IPropsScripts));
+      getChannelList();
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${error}`,
+      });
+    }
+  };
 
   return (
     <StyledWebChat>
@@ -184,15 +217,11 @@ export const WebChatSection: FC<IPropsWebChat> = ({
           onClick={prevToggle}
           state={isSection <= 1 ? ButtonState.DISABLED : ButtonState.NORMAL}
         />
-        {isSection === 4 ? (
-          <ButtonMolecule text="Confirmar" size={Size.MEDIUM} />
-        ) : (
-          <ButtonMolecule
-            text="Siguiente"
-            onClick={handleToggle}
-            size={Size.MEDIUM}
-          />
-        )}
+        <ButtonMolecule
+          text={isSection === 4 ? 'Confirmar' : 'Siguiente'}
+          onClick={isSection === 4 ? handleSubmit : handleToggle}
+          size={Size.MEDIUM}
+        />
       </StyledFooterWebChat>
     </StyledWebChat>
   );

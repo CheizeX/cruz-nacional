@@ -91,7 +91,6 @@ export const DashTotalChatsByState: FC = () => {
 
   const getNewChatEvent = React.useCallback(async () => {
     await socket?.on('newChatEvent', (data: Chat[]) => {
-      console.log(data);
       dispatch(
         setFinishedTodayChats(
           data.filter((chat: Chat) => chat.status === ChatStatus.FINISHED),

@@ -98,7 +98,7 @@ export const LoginView: FC<ViewLoginProps> = ({
     if (decodedToken?.role === UserRole.ADMIN) {
       push('/backoffice');
     }
-  }, [decodedToken]);
+  }, [decodedToken, dispatch, push]);
 
   const onSubmit = async (
     _values?: Partial<Values>,
@@ -175,7 +175,7 @@ export const LoginView: FC<ViewLoginProps> = ({
                     </StyledSecondInput>
                     <Link href="/request-password-change">
                       <StyledLinkTo>
-                        <LinkToMolecule text="¿Olvidaste tu contraseña?" />
+                        <LinkToMolecule text="Cambiar contraseña" />
                       </StyledLinkTo>
                     </Link>
                     <ButtonMolecule

@@ -112,6 +112,73 @@ export const StyledTrialFormContainer = styled.main`
       margin-top: 1rem;
       min-height: 50px;
     }
+    & > :nth-child(7) {
+      width: 80%;
+      height: 40px;
+      border-radius: 1.5rem;
+      display: flex;
+      align-items: center;
+      padding-left: 30px;
+      background-color: ${({ theme }) => theme.Colors.grays[9]};
+      position: relative;
+      & ::before {
+        position: absolute;
+        z-index: 1;
+        content: '📞';
+        font-size: 10px;
+        font-weight: 500;
+        transform: translate(-10px, 1px);
+        color: ${({ theme }) => theme.Colors.grays[6]};
+        border-radius: 50%;
+      }
+      & * {
+        color: ${({ theme }) => theme.Colors.grays[3]};
+      }
+
+      & > input {
+        background-color: ${({ theme }) => theme.Colors.grays[9]};
+        display: flex;
+        align-items: center;
+        border: none;
+        height: 30px;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+      }
+      & > :first-child {
+        background-color: ${({ theme }) => theme.Colors.grays[9]};
+        height: 35px;
+        border: 1px solid red;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        &:hover {
+          background-color: ${({ theme }) => theme.Colors.grays[9]};
+        }
+      }
+      & > :last-child {
+        border: 2px solid ${({ theme }) => theme.Colors.grays[9]};
+        margin-top: 2.5px;
+        height: 35px;
+        background-color: ${({ theme }) => theme.Colors.grays[9]};
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        margin-left: 5px;
+
+        &:hover {
+          background-color: ${({ theme }) => theme.Colors.grays[9]};
+        }
+        & > div {
+          background-color: ${({ theme }) => theme.Colors.grays[9]};
+          border-top-left-radius: 20px;
+          border-bottom-left-radius: 20px;
+          /* margin-left: 5px; */
+          & > button {
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            /* margin-left: 5px; */
+          }
+        }
+      }
+    }
   }
   & > div {
     position: absolute;

@@ -38,6 +38,11 @@ import chatsHistoryState from './slices/live-chat/chat-history';
 import chatsTodayTransferState from './slices/live-chat/chat-transfer';
 import configurationInfo from './slices/configuration/configuration-info';
 import chatContainerAccountInstagramState from './slices/channels/account-instagram';
+import subscriptionsInfo from './slices/subscriptions/subscriptions-info';
+import componentsSectionState from './slices/section/live-chat-section';
+import contactsState from './slices/contacts/contacts-form';
+import contactsInfoState from './slices/contacts/contacts-info';
+import invoices from './slices/subscriptions/invoices';
 
 const liveChat = combineReducers({
   chatsPendings,
@@ -49,6 +54,7 @@ const liveChat = combineReducers({
   chatsHistoryState,
   chatsTodayTransferState,
 });
+
 const users = combineReducers({
   useQueryState,
   userByIdEditState,
@@ -89,6 +95,14 @@ const channel = combineReducers({
   listChannelState,
   chatContainerAccountInstagramState,
 });
+const section = combineReducers({
+  componentsSectionState,
+});
+
+const contacts = combineReducers({
+  contactsState,
+  contactsInfoState,
+});
 
 export const store = configureStore({
   reducer: {
@@ -109,6 +123,10 @@ export const store = configureStore({
     optionsToFilterChats,
     channel,
     configurationInfo,
+    subscriptionsInfo,
+    section,
+    contacts,
+    invoices,
   },
 });
 

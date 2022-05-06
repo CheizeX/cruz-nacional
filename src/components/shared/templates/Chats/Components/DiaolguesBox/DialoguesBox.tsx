@@ -5,7 +5,11 @@ import { IoMdCloseCircle } from 'react-icons/io';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import { SelectedUserProps } from '../../ChatsSection/ChatsSection.interface';
-import { ChatStatus, Message } from '../../../../../../models/chat/chat';
+import {
+  Channels,
+  ChatStatus,
+  Message,
+} from '../../../../../../models/chat/chat';
 import {
   StyledDialoguesContainer,
   StyledUserDialogue,
@@ -21,6 +25,7 @@ import {
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
 import { ModalBackgroundProps } from '../../../../molecules/Modal/Modal';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
+import { ContactForm } from '../ContactForm/ContactForm';
 
 export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
   userSelected,
@@ -35,6 +40,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
   );
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
+  );
+  const { pendingSession } = useAppSelector(
+    (state) => state.liveChat.chatsHistoryState,
+  );
+  const { idChannel } = useAppSelector(
+    (state) => state.liveChat.chatsHistoryState,
   );
 
   const [accessToken] = useLocalStorage('AccessToken', '');
@@ -57,20 +68,6 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
     const t = regex.exec(text);
     const url = t ? t[0] : '';
 
-    // const y = !url.match(
-    //   /http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))[\S]+/g,
-    // );
-    // console.log(y, 'yyyyyyy');
-    // y === true ? (url = `https://${url}`) : null;
-
-    // if (url) {
-    //   if (!url.match(/^[a-zA-Z]+:\/\//)) {
-    //     url = `http://${url}`;
-    //     console.log(url, 'urllllllllllll');
-    //   } else {
-    //     url;
-    //   }
-    // }
     // remplaza la url por string vacio.
     const res = text.replace(regex, '');
     return (
@@ -78,6 +75,7 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
         <a
           href={url}
           target="_blank"
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: url }}
           rel="noreferrer"
         />
@@ -112,6 +110,10 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
 
   return (
     <StyledDialoguesContainer>
+      {(!pendingSession && idChannel === 'WhatsApp') ||
+      idChannel === Channels.CHAT_API ? (
+        <ContactForm />
+      ) : null}
       {chatsOnConversation &&
         chatsOnConversation
           ?.filter(
@@ -687,7 +689,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                     </Text>
                   </div>
                   <StyledAgentAvatar>
-                    {userDataInState && userDataInState.urlAvatar !== '' ? (
+                    {userDataInState &&
+                    userDataInState.urlAvatar !== '' &&
+                    message.from !== 'Bot' ? (
                       <StyledBoxAvatar
                         src={profilePicture}
                         alt={userDataInState.name}
@@ -709,7 +713,6 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
               ),
             ),
           )}
-
       {chatsPendings &&
         chatsPendings
           ?.filter(
@@ -718,76 +721,123 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
               chat.status === ChatStatus.ASSIGNMENT_PENDING,
           )
           .map((chat) =>
-            chat.messages.map(
-              (message) =>
-                message.from === chat.client.clientId && (
-                  <StyledUserPendingDialogue key={message._id}>
-                    <div>
-                      <Text>
-                        {message.contentType === 'ATTACHMENT' &&
-                          message.content.substring(
-                            message.content.length - 3,
-                            message.content.length,
-                          ) === 'png' && (
-                            <button type="button">
-                              <SVGIcon iconFile="/icons/image-icon.svg" />
-                            </button>
-                          )}
-                        {message.contentType === 'ATTACHMENT' &&
-                          message.content.substring(
-                            message.content.length - 3,
-                            message.content.length,
-                          ) === 'pdf' && (
-                            <button type="button">
-                              <SVGIcon iconFile="/icons/pdf-icon.svg" />
-                            </button>
-                          )}
-                        {message.contentType === 'ATTACHMENT' &&
-                          message.content.substring(
-                            message.content.length - 3,
-                            message.content.length,
-                          ) === 'jpg' && (
-                            <button type="button">
-                              <SVGIcon iconFile="/icons/image-icon.svg" />
-                            </button>
-                          )}
-                        {message.contentType === 'ATTACHMENT' &&
-                          message.content.substring(
-                            message.content.length - 4,
-                            message.content.length,
-                          ) === 'jpeg' && (
-                            <button type="button">
-                              <SVGIcon iconFile="/icons/image-icon.svg" />
-                            </button>
-                          )}
-                        {message.contentType !== 'ATTACHMENT' && (
-                          <>
-                            {message.isDeleted === true ? (
-                              <PendingDeletedMessagesStyle>
-                                <SVGIcon iconFile="/icons/band.svg" />
-                                Se eliminó este mensage
-                              </PendingDeletedMessagesStyle>
-                            ) : (
-                              <WrapperOnConversation>
-                                {readUrl(message.content)}
-                              </WrapperOnConversation>
-                            )}
-                          </>
+            chat.messages.map((message) =>
+              message.from === chat.client.clientId ? (
+                <StyledUserPendingDialogue
+                  key={message._id}
+                  chatFrom={message.from}>
+                  <div>
+                    <Text>
+                      {message.contentType === 'ATTACHMENT' &&
+                        message.content.substring(
+                          message.content.length - 3,
+                          message.content.length,
+                        ) === 'png' && (
+                          <button type="button">
+                            <SVGIcon iconFile="/icons/image-icon.svg" />
+                          </button>
                         )}
-                      </Text>
-                      <Text>
-                        {new Date(message.createdAt).toLocaleTimeString(
-                          'en-US',
-                          {
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: false,
-                          },
+                      {message.contentType === 'ATTACHMENT' &&
+                        message.content.substring(
+                          message.content.length - 3,
+                          message.content.length,
+                        ) === 'pdf' && (
+                          <button type="button">
+                            <SVGIcon iconFile="/icons/pdf-icon.svg" />
+                          </button>
                         )}
-                      </Text>
-                    </div>
-                  </StyledUserPendingDialogue>
-                ),
+                      {message.contentType === 'ATTACHMENT' &&
+                        message.content.substring(
+                          message.content.length - 3,
+                          message.content.length,
+                        ) === 'jpg' && (
+                          <button type="button">
+                            <SVGIcon iconFile="/icons/image-icon.svg" />
+                          </button>
+                        )}
+                      {message.contentType === 'ATTACHMENT' &&
+                        message.content.substring(
+                          message.content.length - 4,
+                          message.content.length,
+                        ) === 'jpeg' && (
+                          <button type="button">
+                            <SVGIcon iconFile="/icons/image-icon.svg" />
+                          </button>
+                        )}
+                      {message.contentType !== 'ATTACHMENT' && (
+                        <>
+                          {message.isDeleted === true ? (
+                            <PendingDeletedMessagesStyle>
+                              <SVGIcon iconFile="/icons/band.svg" />
+                              Se eliminó este mensage
+                            </PendingDeletedMessagesStyle>
+                          ) : (
+                            <WrapperOnConversation>
+                              {readUrl(message.content)}
+                            </WrapperOnConversation>
+                          )}
+                        </>
+                      )}
+                    </Text>
+                    <Text>
+                      {new Date(message.createdAt).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false,
+                      })}
+                    </Text>
+                  </div>
+                </StyledUserPendingDialogue>
+              ) : (
+                <StyledAgentOrSUpervisorDialogue
+                  chatFrom={message.from}
+                  key={message._id}>
+                  <div>
+                    {message.contentType !== 'ATTACHMENT' && (
+                      <>
+                        {message.isDeleted === true ? (
+                          <StyledDeletedMessage>
+                            Se eliminó este mensage
+                            <SVGIcon iconFile="/icons/band.svg" />
+                          </StyledDeletedMessage>
+                        ) : (
+                          <WrapperOnConversation>
+                            {readUrl(message.content)}
+                          </WrapperOnConversation>
+                        )}
+                      </>
+                    )}
+                    <Text color="gray" weight="400">
+                      {new Date(message.createdAt).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false,
+                      })}
+                    </Text>
+                  </div>
+                  <StyledAgentAvatar>
+                    {userDataInState &&
+                    userDataInState.urlAvatar !== '' &&
+                    message.from !== 'Bot' ? (
+                      <StyledBoxAvatar
+                        src={profilePicture}
+                        alt={userDataInState.name}
+                      />
+                    ) : (
+                      <>
+                        {message.from === 'Bot' ? (
+                          <StyledBoxBotAvatar
+                            src="/avatars/Robot_1.svg"
+                            alt="Bot"
+                          />
+                        ) : (
+                          <SVGIcon iconFile="/icons/user.svg" />
+                        )}
+                      </>
+                    )}
+                  </StyledAgentAvatar>
+                </StyledAgentOrSUpervisorDialogue>
+              ),
             ),
           )}
       <div ref={dialogueBoxRef} />

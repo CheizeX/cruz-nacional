@@ -14,23 +14,18 @@ export const Channels = [
   {
     id: 22,
     name: 'Messenger',
-    icon: 'Messenger',
+    icon: 'messenger',
   },
   {
     id: 33,
     name: 'Instagram',
-    icon: 'Instagram',
+    icon: 'instagram',
   },
   {
     id: 44,
     name: 'Chat web',
-    icon: 'WebChat',
+    icon: 'webchat',
   },
-  // {
-  //   id: 4,
-  //   name: 'Telegram',
-  //   icon: 'Telegram',
-  // },
 ];
 
 export const FilterChannels: FC<FilterChannelsProps & FilterChannel> = ({
@@ -45,7 +40,7 @@ export const FilterChannels: FC<FilterChannelsProps & FilterChannel> = ({
             checked={channel.indexOf(id) !== -1}
             onClick={() => handleFilterChannels(id)}
           />
-          <SVGIcon iconFile={`/icons/${icon}.svg`} />
+          <SVGIcon iconFile={`/icons/${icon.toLocaleLowerCase()}.svg`} />
           <Text color="black">{name}</Text>
         </StyledWrapperChecked>
       ))}

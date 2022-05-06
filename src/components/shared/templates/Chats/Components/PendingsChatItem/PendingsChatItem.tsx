@@ -26,6 +26,10 @@ import {
 } from '../../../../../../redux/slices/live-chat/pending-chats';
 import { Channels, Chat } from '../../../../../../models/chat/chat';
 import { getTimeAgo } from '../../ChatsSection/ChatsSection.shared';
+import {
+  setChatsIdChannel,
+  setChatsIdClient,
+} from '../../../../../../redux/slices/live-chat/chat-history';
 // import { Tag } from '../../../../../../models/tags/tag';
 
 export const PendingsChatItem: FC<
@@ -51,6 +55,8 @@ export const PendingsChatItem: FC<
 
   const handleClick = (chat: Chat) => {
     setUserSelected(chat.client.clientId);
+    dispatch(setChatsIdChannel(chat.channel));
+    dispatch(setChatsIdClient(chat.client.clientId));
     setActiveByDefaultTab(0);
   };
 
@@ -111,10 +117,13 @@ export const PendingsChatItem: FC<
                     <SVGIcon iconFile="/icons/messenger.svg" />
                   )}
                   {chat.channel === Channels.INSTAGRAM && (
-                    <SVGIcon iconFile="/icons/Instagram.svg" />
+                    <SVGIcon iconFile="/icons/instagram.svg" />
                   )}
                   {chat.channel === Channels.WEBCHAT && (
                     <SVGIcon iconFile="/icons/webchat.svg" />
+                  )}
+                  {chat.channel === Channels.CHAT_API && (
+                    <SVGIcon iconFile="/icons/whatsapp.svg" />
                   )}
                 </StyledClientAndAgentAvatars>
                 <StyledNameAndDialog>

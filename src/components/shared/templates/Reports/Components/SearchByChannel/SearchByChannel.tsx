@@ -23,7 +23,7 @@ export const SearchByChannel: FC<ISearchByChannel> = ({
             checked={filterChannel.indexOf(id) !== -1}
             onClick={() => filterByChannel(id)}
           />
-          <SVGIcon iconFile={`/icons/${icon}.svg`} />
+          <SVGIcon iconFile={`/icons/${icon.toLocaleLowerCase()}.svg`} />
           <Text color="black">{name}</Text>
         </StyledWrapperCheckedChannel>
       ))}

@@ -131,6 +131,22 @@ export const StyledClientAndAgentAvatars = styled.div`
       height: 23px;
     }
   }
+  & > :nth-child(4) {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: teal;
+    position: absolute;
+    top: 30px;
+    left: -7px;
+    & > svg {
+      width: 20px;
+      height: 20px;
+      & > path {
+        fill: ${({ theme }) => theme.Colors.grays[10]};
+      }
+    }
+  }
 `;
 
 export const StyledNameAndDialog = styled.div`

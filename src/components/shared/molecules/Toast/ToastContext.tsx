@@ -12,13 +12,19 @@ export default ToastContext;
 
 export const ToastContextProvider: FC = ({ children }) => {
   const [toasts, setToast] = useState<IToastProps[]>([]);
+
   useEffect(() => {
-    if (toasts.length > 0) {
-      const timer = setTimeout(
-        () => setToast((_toasts) => _toasts.slice(1)),
-        3000,
-      );
-      return () => clearTimeout(timer);
+    for (let i = 0; i < toasts.length; i += 1) {
+      if (toasts.length > 0 && toasts[i].durationTime === false) {
+        const timer = setTimeout(
+          () =>
+            setToast((_toasts) =>
+              _toasts.filter((alert) => alert.id !== toasts[i].id),
+            ),
+          3000,
+        );
+        return () => clearTimeout(timer);
+      }
     }
   }, [toasts]);
 
@@ -27,6 +33,7 @@ export const ToastContextProvider: FC = ({ children }) => {
       const nextToast = toasts.concat({
         alert: Toast.SUCCESS,
         id: Math.random(),
+        durationTime: false,
         ...toast,
       } as IToastProps);
       setToast(nextToast);

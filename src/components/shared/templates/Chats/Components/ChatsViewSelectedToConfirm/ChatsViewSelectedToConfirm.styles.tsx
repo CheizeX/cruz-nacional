@@ -43,6 +43,7 @@ export const StyledHeaderChatsViewSelectedToConfirm = styled.div`
       & * {
         & :hover {
           fill: ${({ theme }) => theme.Colors.blue[2]};
+          // min-width: 56px;
         }
       }
       /* justify-content: flex-end; */

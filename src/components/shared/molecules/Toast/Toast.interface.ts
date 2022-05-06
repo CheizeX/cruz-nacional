@@ -2,12 +2,14 @@ export enum Toast {
   ERROR = 'error',
   SUCCESS = 'success',
   WARNING = 'warning',
+  INACTIVE = 'inactive',
 }
 
 export interface IAddToast {
   message: string;
   title: string;
   alert?: Toast;
+  durationTime?: boolean;
 }
 
 export interface IToastProps {
@@ -15,6 +17,7 @@ export interface IToastProps {
   id?: number;
   title: string;
   message: string;
+  durationTime: boolean;
 }
 
 export type IToastContextType = {

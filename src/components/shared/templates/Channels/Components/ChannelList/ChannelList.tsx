@@ -44,7 +44,11 @@ export const ChannelList: FC<IPropsList> = ({
           <div>
             <CardChannel
               _idChannel={listChannel.unofficialWhatsApp._id}
-              name={`+${listChannel?.unofficialWhatsApp.phoneNumber}`}
+              name={
+                listChannel?.unofficialWhatsApp.phoneNumber
+                  ? `+${listChannel.unofficialWhatsApp.phoneNumber}`
+                  : 'En proceso...'
+              }
               icon="whatsapp"
               service="WhatsApp"
               providerName={listChannel?.unofficialWhatsApp.providerName}

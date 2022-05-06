@@ -35,13 +35,15 @@ export const ReviewChart: FC<IPropsReview> = ({
   endDate,
   setEndDate,
 }) => {
-  const { reviewChats, datePicker } = useAppSelector(
-    (state) => state.review.chatContainerReviewState,
-  );
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
 
+  const { reviewChats, datePicker } = useAppSelector(
+    (state) => state.review.chatContainerReviewState,
+  );
+
   const [isActive, setIsActive] = useState<number>(0);
+
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
 
@@ -67,18 +69,20 @@ export const ReviewChart: FC<IPropsReview> = ({
   }, [readReview]);
 
   const weekdays = [
-    { id: 2, day: 'Lunes' },
-    { id: 3, day: 'Martes' },
-    { id: 4, day: 'Miercoles' },
-    { id: 5, day: 'Jueves' },
-    { id: 6, day: 'Viernes' },
-    { id: 7, day: 'Sabado' },
+    { id: 2, day: 'Lunes', position: 0 },
+    { id: 3, day: 'Martes', position: 1 },
+    { id: 4, day: 'Miercoles', position: 2 },
+    { id: 5, day: 'Jueves', position: 3 },
+    { id: 6, day: 'Viernes', position: 4 },
+    { id: 7, day: 'Sabado', position: 5 },
+    { id: 1, day: 'Domingo', position: 6 },
   ];
 
-  const dataReview = reviewChats?.map((item, index) => {
+  const dataReview = reviewChats?.map((item) => {
+    const result = weekdays.filter((ele) => ele.id === Number(item._id));
     return {
       id: item._id,
-      day: weekdays[index]?.day,
+      day: result[0].day,
       Insatisfactorio: item.unsatisfactory,
       Satisfactorio: item.satisfactory,
     };

@@ -5,6 +5,7 @@ export interface TextProps {
   size?: string;
   weight?: string;
   family?: string;
+  lineThrough?: boolean;
 }
 
 export const Text = styled.span<TextProps>`
@@ -13,4 +14,6 @@ export const Text = styled.span<TextProps>`
   font-size: ${({ size, theme }) => size ?? theme.fontSize[14]};
   font-weight: ${({ weight, theme }) => weight ?? theme.fontWeight[600]};
   line-height: 20px;
+  text-decoration: ${({ lineThrough }) =>
+    lineThrough ? 'line-through' : 'none'};
 `;

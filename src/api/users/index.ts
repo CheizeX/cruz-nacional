@@ -26,8 +26,12 @@ export const readingUsers = async (status: string) => {
   }
 };
 
-export const readUser = (userId: string) => {
-  return baseRestApi.get<User>(`/users/${userId}`);
+export const readUser = async (userId: string) => {
+  try {
+    return await baseRestApi.get<User>(`/users/${userId}`);
+  } catch (error) {
+    return error;
+  }
 };
 
 export const updateUser = async (

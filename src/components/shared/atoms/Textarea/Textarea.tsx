@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { ITextarea } from './Textarea.interface';
 
-export const Textarea = styled.textarea`
+export const Textarea = styled.textarea<ITextarea>`
   background-color: ${({ theme }) => theme.Colors.grays[8]};
   border-radius: 15px;
   color: ${({ theme }) => theme.Colors.grays[1]};

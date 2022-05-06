@@ -8,6 +8,7 @@ import { Text } from '../../../../atoms/Text/Text';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { ISearchForChats } from './SearchForChats.interface';
 import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
+import { Channels } from '../../../../../../models/chat/chat';
 
 // const getDateString = (date: Date) => `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
 export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
@@ -39,7 +40,11 @@ export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
             ({ _id, channel, status, assignedAgent, createdAt }, index) => (
               <WrapperReports key={_id} index={index} position={status}>
                 <div>
-                  <SVGIcon iconFile={`/icons/${channel}.svg`} />
+                  <SVGIcon
+                    iconFile={`/icons/${
+                      channel === Channels.CHAT_API ? 'Whatsapp' : channel
+                    }.svg`}
+                  />
                   <Text>{channel}</Text>
                 </div>
                 <span>

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useCallback, useEffect, useContext } from 'react';
 import { useJwt } from 'react-jwt';
 import { ChatsList } from '../Components/ChatsList/ChatsList';
@@ -10,7 +9,12 @@ import { TransferConfirmation } from '../Components/TransferConfirmation/Transfe
 import { UploadableFile } from '../Components/UploadFiles/UploadFiles.interface';
 import { readChat } from '../../../../../api/chat';
 import { Chat, ChatStatus } from '../../../../../models/chat/chat';
-import { ChatInputDialogueProps, Emojis } from './ChatsSection.interface';
+import {
+  ChatInputDialogueProps,
+  Emojis,
+  SelectedUserProps,
+  TabProps,
+} from './ChatsSection.interface';
 import { websocketContext } from '../../../../../chat/index';
 import { ChatTransfer } from '../Components/ChatTransfer/ChatTransfer';
 import { EndChat } from '../Components/EndChat/EndChat';
@@ -18,7 +22,10 @@ import { PauseChat } from '../Components/PauseChat/PauseChat';
 import { ReloadChat } from '../Components/ReloadChat/ReloadChat';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
-import { useAppDispatch } from '../../../../../redux/hook/hooks';
+import {
+  useAppDispatch,
+  // useAppSelector,
+} from '../../../../../redux/hook/hooks';
 import { setChatsPendings } from '../../../../../redux/slices/live-chat/pending-chats';
 import { setChatsOnConversation } from '../../../../../redux/slices/live-chat/on-conversation-chats';
 import useLocalStorage from '../../../../../hooks/use-local-storage';
@@ -28,6 +35,7 @@ import {
   FilterChannelsProps,
   FilterChannel,
 } from '../Components/ChatsFilter/ChatFilter/ChatFilter.interface';
+import { readUser } from '../../../../../api/users/index';
 import { ModalClosePreviousSession } from '../Components/ModalClosePreviousSession/ModalClosePreviousSession';
 import { SeccionChatHistory } from '../Components/SeccionChatHistory/SeccionChatHistory';
 
@@ -36,7 +44,9 @@ export const ChatsSection: FC<
     ChatInputDialogueProps &
     Emojis &
     FilterChannelsProps &
-    FilterChannel
+    FilterChannel &
+    TabProps &
+    SelectedUserProps
 > = ({
   id,
   file,
@@ -45,6 +55,10 @@ export const ChatsSection: FC<
   handleCleanChannels,
   checkedTags,
   setCheckedTags,
+  setActiveByDefaultTab,
+  activeByDefaultTab,
+  setUserSelected,
+  userSelected,
 }) => {
   const socket: any = useContext(websocketContext);
 
@@ -54,9 +68,12 @@ export const ChatsSection: FC<
   const { decodedToken } = useJwt(accessToken);
 
   const dispatch = useAppDispatch();
+  // const { chatsOnConversation } = useAppSelector(
+  //   (state) => state.liveChat.chatsOnConversation,
+  // );
 
-  const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
-  const [userSelected, setUserSelected] = useState<string>('');
+  // const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
+  // const [userSelected, setUserSelected] = useState<string>('');
   const [sortedChats, setSortedChats] = useState<boolean>(false);
   const [showOnlyPausedChats, setShowOnlyPausedChats] =
     useState<boolean>(false);
@@ -80,6 +97,13 @@ export const ChatsSection: FC<
       messageLength: number;
     },
   );
+
+  // const stringLengthValidation = (arg: string) => {
+  //   if (arg.length > 12) {
+  //     return `${arg.slice(0, 12)}...`;
+  //   }
+  //   return arg;
+  // };
   // Funcion para buscar por nombre y rut
   // const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setSearchByName(event.target.value);
@@ -91,68 +115,6 @@ export const ChatsSection: FC<
     setSearchByName(event.target.value);
   };
   // ---------------------------------
-
-  // --------------- <<< WEB SOCKET EVENTS >>> -----------------
-  // Escucha los chats de usuarios o agentes según el parámetro que se le pase
-  const getNewMessageFromNewUserOrAgent = useCallback(async (event: string) => {
-    socket?.on(event, async (data: Chat[]) => {
-      dispatch(setChatsOnConversation(data));
-    });
-  }, []);
-
-  // Escucha los mensajes de usuarios que ya enviaron el primer mensaje, pero que todavía no se encuentran ON_CONVERSATION
-  const getNewPendingChat = useCallback(async () => {
-    socket?.on('connect', () => {});
-    socket?.on('newUserMessageToBeAssigned', (data: Chat[]) => {
-      dispatch(setChatsPendings(data));
-    });
-  }, [dispatch]);
-
-  // escucha los chats de nuevos usuarios
-  const wsNewChat = useCallback(async () => {
-    socket?.on('newChat', (data: Chat[]) => {
-      dispatch(setChatsPendings(data));
-    });
-  }, []);
-
-  // Trae los chats Pendientes
-  const wsGetPendingChats = useCallback(async () => {
-    socket?.on('getPendingChats', (data: Chat[]) => {
-      // setUserSelected('');
-      dispatch(setChatsPendings(data));
-    });
-  }, []);
-
-  // Trae los chats transferidos
-  const wsGetTransferedChats = useCallback(async () => {
-    socket?.on('newTransfer', async (data: Chat[]) => {
-      dispatch(setChatsOnConversation(data));
-    });
-  }, [dispatch, userSelected]);
-
-  // escucha los chats que pasan a on_conversation
-  const wsNewChatAssigned = useCallback(async () => {
-    socket?.on('newChatAssigned', (data: Chat[]) => {
-      dispatch(setChatsOnConversation(data));
-    });
-  }, []);
-
-  // escucha los chats que cambian a pausado
-  const newPausedConversation = useCallback(async () => {
-    socket?.on('newPausedConversation', (data: Chat[]) => {
-      dispatch(setChatsOnConversation(data));
-    });
-  }, []);
-  //-----------------------------------------------------------------------
-  // escucha si se ha iniciado sessión desde otro navegador.
-  const wsClosePreviousSession = useCallback(async () => {
-    socket?.on('closePreviousSession', () => {
-      setLiveChatModal(true);
-      setLiveChatPage('ModalPreviousSession');
-      // localStorage.removeItem('AccessToken');
-      // router.push('/');
-    });
-  }, []);
 
   // trae todos los chats que se encuentran ON_CONVERSATION
   const getOnConversationChats = useCallback(async () => {
@@ -171,7 +133,7 @@ export const ChatsSection: FC<
       });
       localStorage.removeItem('AccessToken');
     }
-  }, []);
+  }, [dispatch, showAlert]);
 
   // trae todos los chats que se encuentran ASSIGNMENT_PENDING
   const getPendingChats = useCallback(async () => {
@@ -190,7 +152,116 @@ export const ChatsSection: FC<
       });
       localStorage.removeItem('AccessToken');
     }
-  }, []);
+  }, [dispatch, showAlert]);
+
+  const readByAgent = useCallback(async () => {
+    try {
+      if (decodedToken) {
+        const dataUser = decodedToken as DecodedToken;
+        const response = await readUser(dataUser._id);
+        dispatch(setUserDataInState(response as DecodedToken));
+      }
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'Token Expirado',
+        message: `${error}`,
+      });
+    }
+  }, [decodedToken, dispatch, showAlert]);
+
+  // --------------- <<< WEB SOCKET EVENTS >>> -----------------
+  // Escucha los chats de usuarios o agentes según el parámetro que se le pase
+  const getNewMessageFromNewUserOrAgent = useCallback(
+    async (event: string) => {
+      socket?.on(event, async (data: Chat[]) => {
+        dispatch(setChatsOnConversation(data));
+      });
+    },
+    [dispatch, socket],
+  );
+
+  // Escucha los mensajes de usuarios que ya enviaron el primer mensaje, pero que todavía no se encuentran ON_CONVERSATION
+  const getNewPendingChat = useCallback(async () => {
+    socket?.on('connect', () => {});
+    socket?.on('newUserMessageToBeAssigned', (data: Chat[]) => {
+      dispatch(setChatsPendings(data));
+    });
+  }, [dispatch, socket]);
+
+  // escucha los chats de nuevos usuarios
+  const wsNewChat = useCallback(async () => {
+    socket?.on('newChat', (data: Chat[]) => {
+      dispatch(setChatsPendings(data));
+    });
+  }, [dispatch, socket]);
+
+  // Trae los chats Pendientes
+  const wsGetPendingChats = useCallback(async () => {
+    socket?.on('getPendingChats', (data: Chat[]) => {
+      // setUserSelected('');
+      dispatch(setChatsPendings(data));
+    });
+  }, [dispatch, socket]);
+
+  // Trae los chats transferidos
+  const wsGetTransferedChats = useCallback(async () => {
+    socket?.on('newTransfer', async (data: Chat[]) => {
+      if (userSelected) {
+        dispatch(setChatsOnConversation(data));
+      }
+    });
+  }, [dispatch, socket, userSelected]);
+
+  // escucha los chats que pasan a on_conversation
+  const wsNewChatAssigned = useCallback(async () => {
+    socket?.on('newChatAssigned', (data: Chat[]) => {
+      dispatch(setChatsOnConversation(data));
+    });
+  }, [dispatch, socket]);
+
+  // escucha los chats que cambian a pausado
+  const newPausedConversation = useCallback(async () => {
+    socket?.on('newPausedConversation', (data: Chat[]) => {
+      dispatch(setChatsOnConversation(data));
+    });
+  }, [dispatch, socket]);
+  //-----------------------------------------------------------------------
+  // escucha si se ha iniciado sessión desde otro navegador.
+  const wsClosePreviousSession = useCallback(async () => {
+    socket?.on('closePreviousSession', () => {
+      setLiveChatModal(true);
+      setLiveChatPage('ModalPreviousSession');
+      // localStorage.removeItem('AccessToken');
+      // router.push('/');
+    });
+  }, [socket]);
+
+  // escucha si hay un chat cerrado por inactividad
+  // const wsCloseByInactivity = useCallback(async () => {
+  //   socket?.on('closeChatByInactivity', (chat: Chat) => {
+  //     showAlert?.addToast({
+  //       alert: Toast.INACTIVE,
+  //       title: 'Chat cerrado por inactividad',
+  //       message: `${stringLengthValidation(
+  //         chat.client.name,
+  //       )} - ${stringLengthValidation(chat.client.clientId)} ${chat.channel}`,
+  //       durationTime: true,
+  //     });
+  //     dispatch(
+  //       setChatsOnConversation(
+  //         chatsOnConversation.filter((item: Chat) => item._id !== chat._id),
+  //       ),
+  //     );
+  //     setUserSelected('');
+  //     // dispatch(setChatByInactivity(chat));
+  //   });
+  // }, [chatsOnConversation, dispatch, setUserSelected, showAlert, socket]);
+
+  useEffect(() => {
+    getPendingChats();
+    getOnConversationChats();
+  }, [getOnConversationChats, getPendingChats]);
 
   useEffect(() => {
     getNewMessageFromNewUserOrAgent('newAgentMessage');
@@ -202,16 +273,27 @@ export const ChatsSection: FC<
     wsGetTransferedChats();
     newPausedConversation();
     wsClosePreviousSession();
-  }, [socket]);
+    // wsCloseByInactivity();
+  }, [
+    getNewMessageFromNewUserOrAgent,
+    getNewPendingChat,
+    newPausedConversation,
+    socket,
+    // wsCloseByInactivity,
+    wsClosePreviousSession,
+    wsGetPendingChats,
+    wsGetTransferedChats,
+    wsNewChat,
+    wsNewChatAssigned,
+  ]);
+
+  // useEffect(() => {
+  //   dispatch(setUserDataInState(decodedToken as DecodedToken));
+  // }, [decodedToken, dispatch]);
 
   useEffect(() => {
-    getPendingChats();
-    getOnConversationChats();
-  }, []);
-
-  useEffect(() => {
-    dispatch(setUserDataInState(decodedToken as DecodedToken));
-  }, [decodedToken]);
+    readByAgent();
+  }, [decodedToken, dispatch, readByAgent]);
 
   return (
     <StyledChatsSection>
@@ -265,7 +347,6 @@ export const ChatsSection: FC<
           setNewMessagesInChat={setNewMessagesInChat}
         />
       )}
-
       <ModalMolecule isModal={liveChatModal} setModal={setLiveChatModal}>
         {liveChatPage && liveChatPage === 'ConfirmationTransfer' ? (
           <TransferConfirmation

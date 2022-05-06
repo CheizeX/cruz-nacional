@@ -1,18 +1,18 @@
 import styled from 'styled-components';
-import { IContainerCard } from './CardChannel.interface';
+import { IChannelInactive } from './CardChannel.interface';
 
-export const StyledCardChannel = styled.div`
+export const StyledCardChannel = styled.div<IChannelInactive>`
+  position: relative;
   width: 309px;
   height: 144px;
   border-radius: 10px;
   margin: 13px 0 0px 13px;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
-  // padding: 16px 16px 14px 14px;
   & > :first-child {
     display: flex;
     height: 92px;
     width: 100%;
-    border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[8]};
+    border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[9]};
     & > :nth-child(2) {
       display: flex;
       flex-direction: column;
@@ -20,14 +20,16 @@ export const StyledCardChannel = styled.div`
       align-items: center;
       justify-content: center;
       & > :nth-child(1) {
-        color: ${({ theme }) => theme.Colors.grays[1]};
+        color: ${({ theme, isNotAvailable }) =>
+          isNotAvailable ? theme.Colors.grays[5] : theme.Colors.grays[1]};
         font-size: ${({ theme }) => theme.fontSize[14]};
         font-weight: ${({ theme }) => theme.fontWeight[600]};
         line-height: 1rem;
         width: 100%;
       }
       & > :nth-child(2) {
-        color: ${({ theme }) => theme.Colors.grays[3]};
+        color: ${({ theme, isNotAvailable }) =>
+          isNotAvailable ? theme.Colors.grays[5] : theme.Colors.grays[3]};
         font-size: ${({ theme }) => theme.fontSize[12]};
         font-weight: ${({ theme }) => theme.fontWeight[400]};
         line-height: 14px;
@@ -35,6 +37,8 @@ export const StyledCardChannel = styled.div`
     }
     & > :nth-child(3) {
       display: flex;
+      position: absolute;
+      right: -8px;
       width: 100%;
       max-width: 100px;
       justify-content: center;
@@ -48,13 +52,21 @@ export const StyledCardChannel = styled.div`
           width: 18px;
           margin-left: 8px;
           cursor: pointer;
+          &:disabled {
+            cursor: not-allowed;
+          }
           & > div {
             & * {
               & > svg {
                 width: 6px;
                 height: 22px;
+                &:hover {
+                  & > path {
+                    fill: ${({ theme }) => theme.Colors.grays[5]};
+                  }
+                }
                 & > path {
-                  fill: ${({ theme }) => theme.Colors.grays[6]};
+                  fill: ${({ theme }) => theme.Colors.grays[7]};
                 }
               }
             }
@@ -104,9 +116,26 @@ export const StyledPicture = styled.div`
   & > :nth-child(1) {
     width: 57px;
     height: 57px;
-    background: ${({ theme }) => theme.Colors.blue[1]};
     border-radius: 50%;
     position: relative;
+    & > div {
+      width: 100%;
+      height: 100%;
+      background-color: ${({ theme }) => theme.Colors.grays[9]};
+      border-radius: 50%;
+      & * {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        & > svg {
+          width: 46px;
+          height: 46px;
+          & > path {
+            fill: ${({ theme }) => theme.Colors.grays[7]};
+          }
+        }
+      }
+    }
     & img {
       font-size: 10px;
       max-width: 57px;
@@ -132,55 +161,6 @@ export const StyledPicture = styled.div`
   }
 `;
 
-export const StyledBoxWrapper = styled.label`
-  position: relative;
-`;
-
-export const CheckBoxLabel = styled.span<IContainerCard>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 32px;
-  height: 16px;
-  border-radius: 15px;
-  background: ${({ theme, isChecked }) =>
-    isChecked === true ? '#e2fadb' : theme.Colors.grays[8]};
-  cursor: pointer;
-  &::after {
-    content: '';
-    display: block;
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    margin: 1px;
-    margin-left: ${({ isChecked }) => (isChecked === true ? '18px' : '3px')};
-    background: ${({ theme, isChecked }) =>
-      isChecked === true ? theme.Colors.green[4] : theme.Colors.grays[5]};
-    box-shadow: 1px 3px 3px 1px rgba(0, 0, 0, 0.2);
-    transition: 0.2s;
-  }
-`;
-
-export const CheckBox = styled.input`
-  opacity: 0;
-  z-index: 1;
-  border-radius: 15px;
-  width: 32px;
-  height: 16px;
-  &:checked + ${CheckBoxLabel} {
-    background-color: #e2fadb;
-    &::after {
-      content: '';
-      display: block;
-      border-radius: 50%;
-      width: 12px;
-      height: 12px;
-      margin-left: 2px;
-      transition: 0.2s;
-    }
-  }
-`;
-
 export const DropdownContainerCard = styled.div`
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   border: 1px solid ${({ theme }) => theme.Colors.grays[8]};
@@ -192,6 +172,7 @@ export const DropdownContainerCard = styled.div`
     border-radius: 4px;
     justify-content: flex-start;
     width: 100%;
+    cursor: pointer;
     &:hover {
       background-color: ${({ theme }) => theme.Colors.grays[9]};
     }
@@ -302,5 +283,74 @@ export const LogoWassenger = styled.div`
     max-height: 100px;
     object-fit: contain;
     width: 100%;
+  }
+`;
+export const ToogleComponentForMappedRestrictionsNoSel = styled.button`
+  min-width: 32px;
+  width: 32px;
+  min-height: 16px;
+  height: 16px;
+  border-radius: 27px;
+  background-color: ${({ theme }) => theme.Colors.grays[8]};
+  box-shadow: inset 0 0 2px ${({ theme }) => theme.Colors.grays[8]};
+  display: flex;
+  align-items: center;
+  padding: 0;
+  &:disabled {
+    cursor: not-allowed;
+  }
+  //outline: 1px solid ${({ theme }) => theme.Colors.grays[9]};
+  &:hover {
+    cursor: pointer;
+  }
+  & > div {
+    transition: all 0.3s ease-in-out;
+    transform: translateX(2px);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.Colors.grays[5]};
+  }
+`;
+
+export const ToogleComponentForMappedRestrictions = styled.button`
+  min-width: 32px;
+  width: 32px;
+  height: 16px;
+  border-radius: 27px;
+  background-color: rgba(30, 193, 67, 0.22);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  &:hover {
+    cursor: pointer;
+    outline: 1px solid ${({ theme }) => theme.Colors.grays[9]};
+  }
+  & > div {
+    transition: all 0.3s ease-in-out;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.Colors.green[4]};
+    transform: translateX(16px);
+  }
+`;
+
+export const LogoChatAPI = styled.div`
+  border: 3px solid ${({ theme }) => theme.Colors.green[1]};
+  & > div {
+    width: 74px;
+    height: 24px;
+    & span {
+      color: ${({ theme }) => theme.Colors.green[1]};
+      font-size: ${({ theme }) => theme.fontSize[14]};
+      font-weight: ${({ theme }) => theme.fontWeight[800]};
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      justify-content: center;
+    }
   }
 `;

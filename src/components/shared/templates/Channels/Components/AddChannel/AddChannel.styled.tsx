@@ -91,9 +91,13 @@ export const StyledBodyAddChannel = styled.div`
           border-radius: 10px;
           margin-left: 0.6rem;
           margin-top: 0.6rem;
+          cursor: pointer;
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
           &:hover {
             background-color: ${({ theme }) => theme.Colors.purples[1]};
-            cursor: pointer;
             & > span {
               color: ${({ theme }) => theme.Colors.grays[10]};
             }

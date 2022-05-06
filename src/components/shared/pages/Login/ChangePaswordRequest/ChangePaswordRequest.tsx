@@ -18,6 +18,7 @@ import {
   StyledHeader,
   StyledInformation,
 } from './ChangePasswordRequest.styled';
+import { baseRestApi } from '../../../../../api/base';
 
 interface Values {
   email: string;
@@ -58,20 +59,22 @@ export const ChangePasswordRequest: FC<ChangePasswordRequestProps> = ({
   ) => {
     try {
       if (_values?.email && onSubmitExternal)
-        await onSubmitExternal(_values.email);
-
+        await baseRestApi.post(
+          `${process.env.NEXT_PUBLIC_AUTH_API_URL}/sendRecoverMail/${_values.email}`,
+          {},
+        );
       submitProps?.setSubmitting(false);
       submitProps?.resetForm();
       toasts?.addToast({
         alert: Toast.SUCCESS,
-        title: '!',
-        message: 'Se le envió correo',
+        title: 'CORREO ENVIADO',
+        message: 'Verifica en tu correo electrónico',
       });
     } catch (error) {
       toasts?.addToast({
         alert: Toast.ERROR,
-        title: 'Se produjo un error',
-        message: String(error),
+        title: 'ERROR',
+        message: 'Ha ocurrido un error',
       });
     }
   };

@@ -66,6 +66,13 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
     return null;
   };
 
+  // const imageOnErrorHandler = (
+  //   event: React.SyntheticEvent<HTMLImageElement, Event>,
+  // ) => {
+  //   event.currentTarget.src = '/icons/unknown_user.svg';
+  //   event.currentTarget.className = 'error';
+  // };
+
   return (
     <StyledWrapperSectionMonitor>
       <StyledHeaderFirstSection>
@@ -103,113 +110,121 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
         onChange={onChange}
       />
       <WrapperSecondSectionAgent>
-        {dateAgent?.map(({ _id, name, email, status, urlAvatar }) => (
-          <div key={_id}>
-            <div>
-              {urlAvatar && urlAvatar !== '' ? (
-                <img
-                  src={`${urlAvatar}?token=${accessToken}`}
-                  alt={name.slice(0, 7)}
-                />
-              ) : (
-                // <StyledMyAccountAvatar src="/icons/user.svg" />
-                <SVGIcon iconFile="/icons/unknown_user.svg" />
-              )}
+        {(dateAgent &&
+          dateAgent.map(({ _id, name, email, status, urlAvatar }) => (
+            <div key={_id}>
               <div>
-                <span>
-                  {status === UserStatus.AVAILABLE ? (
-                    <StyledAgentActive />
-                  ) : null}
-                </span>
-                <StyledToolTipCardName>
-                  <TooltipTextName>
-                    {handleLetterLimitName(name)}
-                  </TooltipTextName>
-                  {handleTooltipName(name)}
-                </StyledToolTipCardName>
-                <StyledToolTipCardEmail>
-                  <TooltipTextEmail>
-                    {handleLetterLimitEmail(email)}
-                  </TooltipTextEmail>
-                  {handleTooltipEmail(email)}
-                </StyledToolTipCardEmail>
+                {urlAvatar && urlAvatar !== '' ? (
+                  <img
+                    src={`${urlAvatar}?token=${accessToken}`}
+                    alt={name.slice(0, 7)}
+                  />
+                ) : (
+                  // <img
+                  //   src={`${urlAvatar}?token=${accessToken}`}
+                  //   // onLoad={imageOnLoadHandler}
+                  //   onError={imageOnErrorHandler}
+                  //   alt="www.kindacode.com" laboraorio mundo spec imunospect
+                  // />
+                  // <StyledMyAccountAvatar src="/icons/user.svg" />
+                  <SVGIcon iconFile="/icons/unknown_user.svg" />
+                )}
+                <div>
+                  <span>
+                    {status === UserStatus.AVAILABLE ? (
+                      <StyledAgentActive />
+                    ) : null}
+                  </span>
+                  <StyledToolTipCardName>
+                    <TooltipTextName>
+                      {handleLetterLimitName(name)}
+                    </TooltipTextName>
+                    {handleTooltipName(name)}
+                  </StyledToolTipCardName>
+                  <StyledToolTipCardEmail>
+                    <TooltipTextEmail>
+                      {handleLetterLimitEmail(email)}
+                    </TooltipTextEmail>
+                    {handleTooltipEmail(email)}
+                  </StyledToolTipCardEmail>
+                </div>
               </div>
-            </div>
-            <span>
-              <div>
-                <BadgeMolecule
-                  bgColor="#3AA4FF"
-                  rightIcon={() => (
-                    <SVGIcon iconFile="/icons/small_message.svg" />
-                  )}>
-                  <Text>
-                    {chats?.filter(
-                      (chat: Chat) =>
-                        chat.status === ChatStatus.ON_CONVERSATION &&
-                        chat.assignedAgent &&
-                        chat.assignedAgent._id === _id,
-                    ).length ?? 0}
-                  </Text>
-                </BadgeMolecule>
-                <BadgeMolecule
-                  bgColor="#B2B2B2"
-                  rightIcon={() => (
-                    <SVGIcon iconFile="/icons/exchange_alt.svg" />
-                  )}>
-                  <Text>
-                    {chats?.filter(
-                      (chat: Chat) =>
-                        chat.isTransfer === true &&
-                        chat.assignedAgent &&
-                        chat.assignedAgent._id === _id,
-                    ).length ?? 0}
-                  </Text>
-                </BadgeMolecule>
-              </div>
-              <BadgeMolecule
-                bgColor="#8769FF"
-                leftIcon={() => <SVGIcon iconFile="/icons/icon_watch.svg" />}>
-                <Text>
-                  {chats !== undefined
-                    ? (chats.filter(
-                        (chat) =>
-                          chat.status === ChatStatus.FINISHED &&
-                          chat.assignedAgent._id &&
+              <span>
+                <div>
+                  <BadgeMolecule
+                    bgColor="#3AA4FF"
+                    rightIcon={() => (
+                      <SVGIcon iconFile="/icons/small_message.svg" />
+                    )}>
+                    <Text>
+                      {chats?.filter(
+                        (chat: Chat) =>
+                          chat.status === ChatStatus.ON_CONVERSATION &&
+                          chat.assignedAgent &&
                           chat.assignedAgent._id === _id,
-                      ).length === 0
-                        ? 0
-                        : chats
-                            .filter(
-                              (chat: Chat) =>
-                                chat.status === ChatStatus.FINISHED &&
-                                chat.assignedAgent &&
-                                chat.assignedAgent._id === _id &&
-                                chat,
-                            )
-                            .map(
-                              (item) =>
-                                new Date(item.updatedAt).getTime() -
-                                new Date(item.createdAt).getTime(),
-                            )
-                            .reduce(
-                              (acum, value) => Math.floor(acum + value),
-                              0,
-                            ) /
-                          1000 /
-                          60 /
-                          chats.filter(
-                            (item: Chat) =>
-                              item.assignedAgent &&
-                              item.assignedAgent._id === _id,
-                          ).length
-                      ).toFixed(0) ?? 0
-                    : 0}{' '}
-                  min
-                </Text>
-              </BadgeMolecule>
-            </span>
-          </div>
-        )) || []}
+                      ).length ?? 0}
+                    </Text>
+                  </BadgeMolecule>
+                  <BadgeMolecule
+                    bgColor="#B2B2B2"
+                    rightIcon={() => (
+                      <SVGIcon iconFile="/icons/exchange_alt.svg" />
+                    )}>
+                    <Text>
+                      {chats?.filter(
+                        (chat: Chat) =>
+                          chat.isTransfer === true &&
+                          chat.assignedAgent &&
+                          chat.assignedAgent._id === _id,
+                      ).length ?? 0}
+                    </Text>
+                  </BadgeMolecule>
+                </div>
+                <BadgeMolecule
+                  bgColor="#8769FF"
+                  leftIcon={() => <SVGIcon iconFile="/icons/icon_watch.svg" />}>
+                  <Text>
+                    {chats !== undefined
+                      ? (chats.filter(
+                          (chat) =>
+                            chat.status === ChatStatus.FINISHED &&
+                            chat.assignedAgent._id &&
+                            chat.assignedAgent._id === _id,
+                        ).length === 0
+                          ? 0
+                          : chats
+                              .filter(
+                                (chat: Chat) =>
+                                  chat.status === ChatStatus.FINISHED &&
+                                  chat.assignedAgent &&
+                                  chat.assignedAgent._id === _id &&
+                                  chat,
+                              )
+                              .map(
+                                (item) =>
+                                  new Date(item.updatedAt).getTime() -
+                                  new Date(item.createdAt).getTime(),
+                              )
+                              .reduce(
+                                (acum, value) => Math.floor(acum + value),
+                                0,
+                              ) /
+                            1000 /
+                            60 /
+                            chats.filter(
+                              (item: Chat) =>
+                                item.assignedAgent &&
+                                item.assignedAgent._id === _id,
+                            ).length
+                        ).toFixed(0) ?? 0
+                      : 0}{' '}
+                    min
+                  </Text>
+                </BadgeMolecule>
+              </span>
+            </div>
+          ))) ??
+          []}
       </WrapperSecondSectionAgent>
     </StyledWrapperSectionMonitor>
   );

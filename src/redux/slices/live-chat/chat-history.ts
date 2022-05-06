@@ -7,7 +7,7 @@ interface HistorySliceInterface {
   idChannel: string;
   chatHistory: Chat[];
   hasHistory: boolean;
-  seccionIsPending: boolean;
+  pendingSession: boolean;
 }
 
 const initialState: HistorySliceInterface = {
@@ -15,7 +15,7 @@ const initialState: HistorySliceInterface = {
   idChannel: '',
   chatHistory: [],
   hasHistory: false,
-  seccionIsPending: false,
+  pendingSession: false,
 };
 
 export const chatsHistoryStore = createSlice({
@@ -34,8 +34,8 @@ export const chatsHistoryStore = createSlice({
     setChatsHasHistory: (state, action: PayloadAction<boolean>) => {
       state.hasHistory = action.payload;
     },
-    setSeccionIsPending: (state, action: PayloadAction<boolean>) => {
-      state.seccionIsPending = action.payload;
+    setPendingSession: (state, action: PayloadAction<boolean>) => {
+      state.pendingSession = action.payload;
     },
   },
 });
@@ -45,6 +45,6 @@ export const {
   setChatsIdChannel,
   setChatsHistory,
   setChatsHasHistory,
-  setSeccionIsPending,
+  setPendingSession,
 } = chatsHistoryStore.actions;
 export default chatsHistoryStore.reducer;

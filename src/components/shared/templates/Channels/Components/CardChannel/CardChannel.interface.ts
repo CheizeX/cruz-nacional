@@ -10,6 +10,6 @@ export interface IPropsCardChannel {
   setSeletedComponent: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export interface IContainerCard {
-  isChecked: boolean;
+export interface IChannelInactive {
+  isNotAvailable: boolean;
 }

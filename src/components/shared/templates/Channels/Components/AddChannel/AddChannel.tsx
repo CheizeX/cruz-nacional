@@ -10,50 +10,35 @@ import {
   StyledBodyAddChannel,
 } from './AddChannel.styled';
 
-const dataChannel = [
-  {
-    id: 1,
-    name: 'Web Chat',
-    svg: 'webChat',
-  },
-  {
-    id: 2,
-    name: 'UnofficialWhatsapp',
-    svg: 'whatsapp',
-  },
-  {
-    id: 3,
-    name: 'Messenger',
-    svg: 'Messenger',
-  },
-  {
-    id: 4,
-    name: 'Instagram',
-    svg: 'Instagram',
-  },
-  {
-    id: 5,
-    name: 'OfficialWhatsapp',
-    svg: 'whatsapp',
-  },
-];
-
 export const AddChannel: FC<IPropsAddChannel> = ({
   setIsOpenModal,
   setIsSectionWebChat,
   setSeletedComponent,
+  listChannel,
+  showDivice,
 }) => {
   const closeModal = () => {
     setIsOpenModal(false);
   };
+  // valida el nombre
   const validateName = (text: string) => {
-    if (text === 'UnofficialWhatsapp') {
+    if (text === 'unofficialWhatsApp') {
       return 'Whatsapp No Oficial';
     }
-    if (text === 'OfficialWhatsapp') {
+    if (text === 'officialWhatsApp') {
       return 'Whatsapp Oficial';
     }
-    return text;
+    return text.slice(0, 1).toUpperCase().concat(text.slice(1, text.length));
+  };
+
+  const validSvg = (svg: string) => {
+    if (svg === 'unofficialWhatsApp' || svg === 'officialWhatsApp') {
+      return 'whatsapp';
+    }
+    if (svg === 'facebook') {
+      return 'messenger';
+    }
+    return svg.toLocaleLowerCase();
   };
   const handleToggle = (arg: string) => {
     setIsSectionWebChat(true);
@@ -74,15 +59,17 @@ export const AddChannel: FC<IPropsAddChannel> = ({
           <Text>Canales disponibles</Text>
           <div>
             <div>
-              {dataChannel.map((item) => (
-                <button
-                  onClick={() => handleToggle(item.name)}
-                  key={item.id}
-                  type="button">
-                  <SVGIcon iconFile={`/icons/${item.svg}.svg`} />
-                  <Text size="12px">{validateName(item.name)}</Text>
-                </button>
-              ))}
+              {listChannel.availableChannels &&
+                listChannel.availableChannels.map((item) => (
+                  <button
+                    onClick={() => handleToggle(item.name)}
+                    key={item._id}
+                    disabled={item.name === 'unofficialWhatsApp' && showDivice}
+                    type="button">
+                    <SVGIcon iconFile={`/icons/${validSvg(item.name)}.svg`} />
+                    <Text size="12px">{validateName(item.name)}</Text>
+                  </button>
+                ))}
             </div>
           </div>
         </div>

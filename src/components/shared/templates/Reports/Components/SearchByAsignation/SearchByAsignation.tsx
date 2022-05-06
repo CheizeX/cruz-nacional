@@ -41,22 +41,24 @@ export const SearchByAsignation: FC<
         placeHolder="Buscar agente..."
         LeftIcon={() => <SVGIcon iconFile="/icons/search-solid.svg" />}
       />
-      {dateFilterAgent?.map(({ _id, name, urlAvatar }) => (
-        <StyledSearchByAsignation
-          key={_id}
-          checkedAgent={filtersAsignation.indexOf(_id) !== -1}>
-          <Checkbox
-            checked={filtersAsignation.indexOf(_id) !== -1}
-            onClick={() => filterByAsignation(_id)}
-          />
-          {urlAvatar && urlAvatar !== '' ? (
-            <img src={`${urlAvatar}?token=${accessToken}`} alt={name} />
-          ) : (
-            <SVGIcon iconFile="/icons/unknown_user.svg" />
-          )}
-          <Text>{name}</Text>
-        </StyledSearchByAsignation>
-      ))}
+      <div>
+        {dateFilterAgent?.map(({ _id, name, urlAvatar }) => (
+          <StyledSearchByAsignation
+            key={_id}
+            checkedAgent={filtersAsignation.indexOf(_id) !== -1}>
+            <Checkbox
+              checked={filtersAsignation.indexOf(_id) !== -1}
+              onClick={() => filterByAsignation(_id)}
+            />
+            {urlAvatar && urlAvatar !== '' ? (
+              <img src={`${urlAvatar}?token=${accessToken}`} alt={name} />
+            ) : (
+              <SVGIcon iconFile="/icons/unknown_user.svg" />
+            )}
+            <Text>{name}</Text>
+          </StyledSearchByAsignation>
+        ))}
+      </div>
     </StyledWrapperAsignation>
   );
 };

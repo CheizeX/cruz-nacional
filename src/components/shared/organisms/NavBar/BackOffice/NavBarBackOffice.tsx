@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useJwt } from 'react-jwt';
 import { Text } from '../../../atoms/Text/Text';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
@@ -20,7 +20,7 @@ import {
 import { setUserDataInState } from '../../../../../redux/slices/auth/user-credentials';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
-import { DecodedToken } from '../../../../../models/users/user';
+import { DecodedToken, User } from '../../../../../models/users/user';
 import { MyAccountSidebarOrganism } from '../../MyAccountSidebar/MyAccountSidebar';
 import useDisplayElementOrNot from '../../../../../hooks/use-display-element-or-not';
 import useLocalStorage from '../../../../../hooks/use-local-storage';
@@ -30,6 +30,14 @@ import {
   getGeneralConfigurationData,
   getListOfRestrictions,
 } from '../../../../../redux/slices/configuration/configuration-info';
+import { getSubscriptionsData } from '../../../../../redux/slices/subscriptions/subscriptions-info';
+import { getAllInvoices } from '../../../../../redux/slices/subscriptions/invoices';
+import { ModalMolecule } from '../../../molecules/Modal/Modal';
+import { UsersToSelect } from './Components/UsersToSelect';
+import { DowngradeAlert } from './Components/DowngradeAlert';
+import { readingUsers, readUser } from '../../../../../api/users';
+import { UserStatus } from '../../../../../models/users/status';
+import { UserRole } from '../../../../../models/users/role';
 
 export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const { signOut } = useAuth();
@@ -37,20 +45,71 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
 
-  const { ref, isComponentVisible, setIsComponentVisible } =
-    useDisplayElementOrNot(false);
-  const [myAccount, setMyAccount] = React.useState<number>(0);
   const [accessToken] = useLocalStorage('AccessToken', '');
   const { decodedToken }: any = useJwt(accessToken);
+
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
   );
   const { configurationData, loadingConfigData } = useAppSelector(
     (state) => state.configurationInfo,
   );
+  const { nextPlan } = useAppSelector(
+    (state) => state.subscriptionsInfo.subscriptionsData,
+  );
+
+  const { ref, isComponentVisible, setIsComponentVisible } =
+    useDisplayElementOrNot(false);
+
+  const [myAccount, setMyAccount] = useState<number>(0);
+  const [modal, setModal] = useState<boolean>(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsersBuffer, setSelectedUsersBuffer] = useState<string[]>([]);
+
+  const dataApi = useCallback(async () => {
+    try {
+      const data = await readingUsers(UserStatus.ALL);
+      if (data.success === false) {
+        setUsers([]);
+      } else {
+        setUsers(data);
+      }
+
+      setSelectedUsers(
+        data
+          ?.filter(
+            (user: User) =>
+              user.role === UserRole.AGENT && user.persistent === true,
+          )
+          .map((user: User) => user._id),
+      );
+      setSelectedUsersBuffer(
+        data
+          ?.filter(
+            (user: User) =>
+              user.role === UserRole.AGENT && user.persistent === true,
+          )
+          .map((user: User) => user._id),
+      );
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  }, [dispatch, showAlert]);
+
+  const validateIfAllAgentsAreSelected =
+    selectedUsers.length === nextPlan?.invitationsAvailable;
+  const validateIfAllAgentsAreSelectedBuffer =
+    selectedUsersBuffer.length === nextPlan?.invitationsAvailable;
+
   const handleNavUserDropdown = () => {
     setIsComponentVisible(!isComponentVisible);
   };
+
   const handleMyAccount = (number: number) => {
     setMyAccount(number);
     setIsComponentVisible(false);
@@ -75,18 +134,44 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
     ? `${userDataInState.urlAvatar}?token=${accessToken}`
     : '';
 
-  useEffect(() => {
-    if (decodedToken) {
-      dispatch(setUserDataInState(decodedToken));
+  const readByAdmin = async () => {
+    try {
+      if (decodedToken) {
+        const dataUser = decodedToken as DecodedToken;
+        const response = await readUser(dataUser._id);
+        dispatch(setUserDataInState(response as DecodedToken));
+      }
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'Token Expirado',
+        message: `${error}`,
+      });
     }
+  };
+
+  useEffect(() => {
+    dataApi();
+  }, [dataApi]);
+
+  useEffect(() => {
+    readByAdmin();
+  }, [decodedToken, dispatch]);
+
+  useEffect(() => {
     dispatch(getConfigurationData());
     dispatch(getGeneralConfigurationData());
-  }, [decodedToken, dispatch]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getSubscriptionsData());
+    dispatch(getAllInvoices());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getListOfRestrictions(configurationData));
     dispatch(getBusinessHoursData(configurationData));
-  }, [loadingConfigData]);
+  }, [configurationData, dispatch, loadingConfigData]);
 
   return (
     <>
@@ -94,6 +179,15 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
         <Text color="#2A2A2A" size="18px" weight="600">
           {text}
         </Text>
+
+        {nextPlan && (
+          <DowngradeAlert
+            setModal={setModal}
+            nextPlan={nextPlan}
+            validateIfAllAgentsAreSelected={validateIfAllAgentsAreSelected}
+          />
+        )}
+
         <Wraper>
           {/* <MessageIcon onClick={onClick ?? (() => {})}>
           {messageIcon && messageIcon()}
@@ -144,6 +238,24 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
         setMyAccount={setMyAccount}
         myAccount={myAccount}
       />
+
+      <ModalMolecule isModal={modal} setModal={setModal}>
+        <UsersToSelect
+          validateIfAllAgentsAreSelectedBuffer={
+            validateIfAllAgentsAreSelectedBuffer
+          }
+          setModal={setModal}
+          setSelectedUsersBuffer={setSelectedUsersBuffer}
+          selectedUsersBuffer={selectedUsersBuffer}
+          usersData={users}
+          nextPlan={
+            nextPlan || {
+              plan: '',
+              invitationsAvailable: 0,
+            }
+          }
+        />
+      </ModalMolecule>
     </>
   );
 };

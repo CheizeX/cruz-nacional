@@ -33,7 +33,11 @@ export const StyledToast = styled.div<IAlertProps>`
   ${({ alert, theme }) =>
     alert === Toast.WARNING ? `background: ${theme.Colors.orange[3]};` : null}
   ${({ alert, theme }) =>
-    alert === Toast.ERROR ? `background: ${theme.Colors.orange[2]};` : null}  
+    alert === Toast.ERROR ? `background: ${theme.Colors.orange[2]};` : null}
+     ${({ alert, theme }) =>
+    alert === Toast.INACTIVE
+      ? `background: ${theme.Colors.orange[3]};`
+      : null}  
   box-sizing: border-box;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
@@ -58,7 +62,7 @@ export const StyledToast = styled.div<IAlertProps>`
     }
   }
 `;
-export const Icon = styled.div`
+export const Icon = styled.div<IAlertProps>`
   padding: 5px 0px 6px 0px;
   div {
     width: 39px;
@@ -68,6 +72,14 @@ export const Icon = styled.div`
       width: 39px;
       height: 39px;
       padding: 0px;
+    }
+  }
+  svg {
+    width: 38px;
+    height: 38px;
+    & > path {
+      fill: ${({ theme, alert }) =>
+        alert === Toast.INACTIVE && theme.Colors.grays[8]};
     }
   }
 `;

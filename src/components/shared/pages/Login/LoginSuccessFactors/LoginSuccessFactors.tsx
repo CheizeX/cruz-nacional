@@ -1,4 +1,5 @@
 import React, { FC, MouseEventHandler } from 'react';
+import { useRouter } from 'next/router';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../atoms/Text/Text';
 import { ButtonMolecule, Size } from '../../../atoms/Button/Button';
@@ -15,6 +16,8 @@ export interface LoginSuccessFactorsProps {
 }
 
 export const LoginSuccessFactors: FC<LoginSuccessFactorsProps> = () => {
+  const router = useRouter();
+
   return (
     <LoginViewsWrapper>
       <StyledLoginSuccessFactors>
@@ -32,10 +35,12 @@ export const LoginSuccessFactors: FC<LoginSuccessFactorsProps> = () => {
             seguridad de tu cuenta.
           </Text>
         </StyledMessage>
-        <ButtonMolecule text="Ir a la Aplicación" size={Size.MEDIUM} />
+        <ButtonMolecule
+          text="Ir a la Aplicación"
+          size={Size.MEDIUM}
+          onClick={() => router.push('/')}
+        />
       </StyledLoginSuccessFactors>
     </LoginViewsWrapper>
   );
 };
-
-export default LoginSuccessFactors;

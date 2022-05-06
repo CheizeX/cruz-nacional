@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { INavBarLiveProps } from './NavBarLive.interface';
+import { INavBarContainer, INavBarLiveProps } from './NavBarLive.interface';
 
 const mySelector = (
   condition: boolean,
@@ -22,6 +22,23 @@ export const StyledNavBarLive = styled.nav<INavBarLiveProps>`
   height: 84px;
   width: 100%;
   min-width: 1365px;
+  & > :nth-child(2) {
+    width: 502px;
+    display: flex;
+    justify-content: flex-end;
+    & > :first-child {
+      display: flex;
+      align-items: center;
+      min-width: 334px;
+      max-width: 392px;
+      width: 100%;
+      justify-content: end;
+      margin-right: 24px;
+      & > :first-child {
+        display: flex;
+      }
+    }
+  }
   span {
     font-size: ${({ theme }) => theme.fontSize[12]};
     font-weight: ${({ theme }) => theme.fontWeight[600]};
@@ -139,67 +156,37 @@ export const Letter = styled.div`
   width: 395px;
   height: 38px;
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   padding: 2px 36px 0px 54px;
-  & > span {
+  & > button {
+    font-size: ${({ theme }) => theme.fontSize[12]};
+    font-weight: ${({ theme }) => theme.fontWeight[600]};
+    border-radius: 50px;
+    padding: 5px 10px;
+    div {
+      background: transparent;
+      border-radius: 50px;
+      height: 38px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    &:hover {
+      transition: background-color 0.5s;
+      & * {
+        background-color: ${({ theme }) => theme.Colors.grays[10]};
+        color: ${({ theme }) => theme.Colors.purples[1]};
+        cursor: pointer;
+      }
+    }
     & > div {
-      & > div {
-        & > div {
-          & > div {
-            padding: 0px;
-            height: 2px;
-          }
-        }
+      & > span {
+        font-size: ${({ theme }) => theme.fontSize[14]};
+        font-weight: ${({ theme }) => theme.fontWeight[700]};
+        line-height: 14px;
       }
     }
   }
 `;
-
-// export const TriggerElement = styled.div<INavBarLiveProps>`
-//   border-radius: 24px;
-//   background: ${({ statusChecked, theme }) =>
-//     mySelector(statusChecked === 'Disponible', theme.Colors.green[3], null) ||
-//     mySelector(
-//       statusChecked === 'En Pausa - Baño',
-//       theme.Colors.orange[3],
-//       null,
-//     ) ||
-//     mySelector(
-//       statusChecked === 'En Pausa - En llamado',
-//       theme.Colors.orange[3],
-//       null,
-//     ) ||
-//     mySelector(
-//       statusChecked === 'En Pausa - Almuerzo',
-//       theme.Colors.orange[3],
-//       null,
-//     )};
-//   padding: 4px 12px;
-//   width: max-content;
-//   cursor: pointer;
-//   margin-left: 1px;
-//   display: flex;
-//   min-width: 109px;
-//   min-height: 31px;
-//   & > div {
-//     padding: 6px;
-//     span {
-//       line-height: 4px;
-//     }
-//     & > div {
-//       padding-top: 4px;
-//       & > div {
-//         & > svg {
-//           padding: 1px;
-
-//           & > path {
-//             fill: ${({ theme }) => theme.Colors.grays[10]};
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
 
 export const MessageIcon = styled.div`
   padding: 8px 0px 0px 0px;
@@ -221,20 +208,103 @@ export const MessageIcon = styled.div`
   }
 `;
 export const BellIcon = styled.div`
-  padding: 12px 28px 0px 28px;
-  width: 74px;
-  cursor: pointer;
+  width: 54px;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  justify-content: flex-start;
+  position: relative;
+  & > :first-child {
+    border-radius: 50%;
+    background: #1ec143;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    color: ${({ theme }) => theme.Colors.grays[10]};
+    top: -6px;
+    right: 10px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: ${({ theme }) => theme.fontWeight[600]};
+  }
   & > div {
     & > div {
       & > div {
         & > svg {
-          cursor: pointer;
+          width: 32px;
+          height: 32px;
           & > path {
             fill: ${({ theme }) => theme.Colors.grays[10]};
             opacity: 0.8;
           }
         }
       }
+    }
+  }
+`;
+
+export const StyledWarning = styled.div`
+  width: 54px;
+  display: flex;
+  align-items: center;
+  padding-top: 1px;
+  position: relative;
+  height: 28px;
+  & > :first-child {
+    border-radius: 50%;
+    background: #f78f28;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    color: ${({ theme }) => theme.Colors.grays[10]};
+    top: -6px;
+    right: 14px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: ${({ theme }) => theme.fontWeight[600]};
+  }
+  & > svg {
+    width: 32px;
+    height: 32px;
+    & > path {
+      fill: ${({ theme }) => theme.Colors.grays[10]};
+      opacity: 0.8;
+    }
+  }
+`;
+
+export const StyledClose = styled.div`
+  width: 54px;
+  display: flex;
+  align-items: center;
+  padding-top: 1px;
+  position: relative;
+  height: 28px;
+  & > :first-child {
+    border-radius: 50%;
+    background: #ff6641;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    color: ${({ theme }) => theme.Colors.grays[10]};
+    top: -6px;
+    right: 8px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: ${({ theme }) => theme.fontWeight[600]};
+  }
+  & > svg {
+    width: 30px;
+    height: 30px;
+    & > path {
+      fill: ${({ theme }) => theme.Colors.grays[10]};
+      opacity: 0.8;
     }
   }
 `;
@@ -347,6 +417,22 @@ export const LiveArrowIcon = styled.button`
           }
         }
       }
+    }
+  }
+`;
+
+export const ButtonSelectedComponent = styled.button<INavBarContainer>`
+  & > :first-child {
+    background-color: ${({ theme, isFocus }) =>
+      isFocus === true ? theme.Colors.grays[10] : 'transparent'};
+    & > span {
+      color: ${({ theme, isFocus }) =>
+        isFocus === true ? theme.Colors.purples[1] : theme.Colors.grays[10]};
+    }
+  }
+  &:hover {
+    & span {
+      color: ${({ theme }) => theme.Colors.purples[1]};
     }
   }
 `;

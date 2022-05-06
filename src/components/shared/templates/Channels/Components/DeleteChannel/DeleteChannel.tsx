@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import {
@@ -11,34 +11,39 @@ import { Text } from '../../../../atoms/Text/Text';
 import {
   ButtonMolecule,
   ButtonVariant,
+  ButtonState,
   Size,
 } from '../../../../atoms/Button/Button';
 import { IDeleteChannel } from './DeleteChannel.interface';
-// import { deleteChannel } from '../../../../../../api/channels';
 import { useToastContext } from '../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../molecules/Toast/Toast.interface';
 import { RootState } from '../../../../../../redux';
+import { setlistChannel } from '../../../../../../redux/slices/channels/list-channel';
+import { deleteChannel } from '../../../../../../api/channels';
+import { useAppDispatch } from '../../../../../../redux/hook/hooks';
 
-export const DeleteChannel: FC<IDeleteChannel> = ({ setIsSectionWebChat }) => {
+export const DeleteChannel: FC<IDeleteChannel> = ({
+  setIsSectionWebChat,
+  getChannelList,
+}) => {
   const showAlert = useToastContext();
-  const { idChannel }: any = useSelector(
+  const dispatch = useAppDispatch();
+  const [isLoanding, setIsLoanding] = useState<boolean>(false);
+
+  const { idChannel } = useSelector(
     (state: RootState) => state.channel.listChannelState,
   );
 
   const handleDelete = async () => {
     try {
-      // const response = await deleteChannel(idChannel);
-      // console.log(response);
-      if (idChannel) {
-        console.log(idChannel);
-      } else {
-        showAlert?.addToast({
-          alert: Toast.ERROR,
-          title: 'ERROR',
-          message: 'No se puede eliminar este canal.',
-        });
-      }
-      setIsSectionWebChat(false);
+      setIsLoanding(true);
+      const response = await deleteChannel(idChannel);
+      setIsLoanding(false);
+      dispatch(setlistChannel(response));
+      setTimeout(() => {
+        getChannelList();
+        setIsSectionWebChat(false);
+      }, 2000);
     } catch (err) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -67,6 +72,7 @@ export const DeleteChannel: FC<IDeleteChannel> = ({ setIsSectionWebChat }) => {
         />
         <ButtonMolecule
           onClick={handleDelete}
+          state={isLoanding ? ButtonState.LOADING : ButtonState.NORMAL}
           text="Eliminar"
           size={Size.MEDIUM}
         />

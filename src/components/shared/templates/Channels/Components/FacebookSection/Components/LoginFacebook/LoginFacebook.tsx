@@ -15,7 +15,7 @@ export const LoginFacebook: FC<IPropsLoginFacebook> = ({ handleAuth }) => {
           <Text>Iniciar sesión con Messenger</Text>
           <span>Para continuar deberas acceder a tu cuenta de facebook.</span>
         </div>
-        <SVGIcon iconFile="/icons/Messenger.svg" />
+        <SVGIcon iconFile="/icons/messenger.svg" />
       </div>
       <StyledButtonFacebook type="button" onClick={handleAuth}>
         <SVGIcon iconFile="/icons/icons8-facebook.svg" />

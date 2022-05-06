@@ -328,8 +328,8 @@ export const ListedRestrictionsLeft: FC<ConfigSectionInterface> = () => {
                 }
                 return a.date < b.date ? 1 : -1;
               })
-              .map((restriction) => (
-                <div key={restriction.id}>
+              .map((restriction, index) => (
+                <div key={index.toString()}>
                   {Number(new Date(restriction.date).getDate()) >=
                   new Date(Date.now()).getDate() ? (
                     <div>Vigente</div>

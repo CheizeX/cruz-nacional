@@ -64,9 +64,6 @@ export const MyAccountSidebarOrganism: FC<
   );
 
   const [accessToken] = useLocalStorage('AccessToken', '');
-  const profilePicture = userDataInState?.urlAvatar
-    ? `${userDataInState.urlAvatar}?token=${accessToken}`
-    : '';
   const [visibleOld, setVisibleOld] = useState(false);
   const [visibleNew, setVisibleNew] = useState(false);
   const [isLoanding, setIsLoanding] = useState(false);
@@ -110,6 +107,9 @@ export const MyAccountSidebarOrganism: FC<
       }
     });
   };
+  const profilePicture = userDataInState?.urlAvatar
+    ? `${userDataInState.urlAvatar}?token=${accessToken}`
+    : '';
 
   const handleClickOld = useCallback(
     (event) => {

@@ -11,5 +11,7 @@ export default {
   argTypes: {},
 } as Meta;
 
-const Template: Story<LoginChangePasswordProps> = () => <LoginChangePassword />;
+const Template: Story<LoginChangePasswordProps> = () => (
+  <LoginChangePassword token="" setIsSuccess={() => true} />
+);
 export const Default = Template.bind({});

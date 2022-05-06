@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import styled, { css } from 'styled-components';
 import { StyledPendingWrapperProps } from '../../ChatsSection/ChatsSection.interface';
 
@@ -25,7 +26,26 @@ export const StyledInConversationWrapper = styled.div<StyledPendingWrapperProps>
   justify-content: center;
   flex-direction: column;
   padding: 12px 0 0 0;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  animation: ${({ trafficLight }) =>
+    trafficLight !== 'NEUTRO' ? 'infinite resplandorAnimation 3s' : 'none'};
+  @keyframes resplandorAnimation {
+    0%,
+    100% {
+      box-shadow: 0px 0px 20px
+        ${({ theme, trafficLight }) =>
+          trafficLight === 'YELLOW'
+            ? theme.Colors.orange[6]
+            : theme.Colors.orange[1]};
+    }
+    50% {
+      box-shadow: 0px 0px 0px
+        ${({ theme, trafficLight }) =>
+          trafficLight === 'YELLOW'
+            ? theme.Colors.orange[6]
+            : theme.Colors.orange[1]};
+    }
+  }
   &:hover {
     background-color: ${({ theme }) => theme.Colors.purples[2]};
     cursor: pointer;
@@ -64,8 +84,6 @@ export const StyledInConversationWrapper = styled.div<StyledPendingWrapperProps>
             & > div {
               & > div {
                 & > svg {
-                  /* outline: 2px solid ${({ theme }) =>
-                    theme.Colors.grays[10]}; */
                   background-color: ${({ theme }) => theme.Colors.grays[3]};
                   & path {
                     color: ${({ theme }) => theme.Colors.grays[10]};
@@ -167,33 +185,53 @@ export const StyledTimeAndState = styled.div`
     width: 43px;
     height: 20px;
     display: flex;
-    margin-left: 30px;
+    margin-left: 20px;
+    min-width: 43px;
+    display: flex;
+    justify-content: space-between;
     & > :nth-child(1) {
       width: 19px;
       height: 19px;
       border-radius: 50%;
       text-align: center;
-      background-color: ${({ theme }) => theme.Colors.grays[7]};
-      & svg {
-        padding-top: 3.5px;
-        width: 60%;
-        & path {
-          fill: ${({ theme }) => theme.Colors.grays[10]};
+      //background-color: ${({ theme }) => theme.Colors.grays[7]};
+      & * {
+        & > svg {
+          padding-top: 3.5px;
+          width: 60%;
+          & > path {
+            fill: ${({ theme }) => theme.Colors.grays[10]};
+          }
         }
       }
     }
     & > :nth-child(2) {
-      margin-left: 5px;
       width: 19px;
       height: 19px;
       text-align: center;
       border-radius: 50%;
       font-size: ${({ theme }) => theme.fontSize[12]};
-      padding-top: 4px;
-      padding-left: 1px;
       background-color: ${({ theme }) => theme.Colors.green[4]};
       color: ${({ theme }) => theme.Colors.grays[10]};
       font-weight: ${({ theme }) => theme.fontWeight[700]};
+      //background-color: teal;
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      & svg {
+        & path {
+          fill: ${({ theme }) => theme.Colors.grays[10]};
+        }
+      }
+      /* & svg:last-child {
+        position: absolute;
+        height: 14px;
+        width: 14px;
+        right: 6px;
+        & path {
+          fill: ${({ theme }) => theme.Colors.purples[1]};
+        }
+      } */
     }
   }
 `;
@@ -214,3 +252,38 @@ export const StyledNotViewedMessages = styled.div`
   border: 2px solid ${({ theme }) => theme.Colors.grays[10]};
   background-color: ${({ theme }) => theme.Colors.purples[1]};
 `;
+
+export const StyledTransferIcon = styled.div`
+  background-color: ${({ theme }) => theme.Colors.grays[7]};
+`;
+export const StyledProactiveIcon = styled.div`
+  width: 19px;
+  height: 19px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: ${({ theme }) => theme.fontSize[12]};
+  background-color: ${({ theme }) => theme.Colors.green[4]};
+  color: ${({ theme }) => theme.Colors.grays[10]};
+  font-weight: ${({ theme }) => theme.fontWeight[700]};
+  background: teal;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  & svg {
+    & path {
+      fill: ${({ theme }) => theme.Colors.grays[10]};
+    }
+  }
+`;
+
+// animation: ${({ hasPriority }) =>
+// hasPriority === true ? 'infinite resplandorAnimation 3s' : 'none'};
+// @keyframes resplandorAnimation {
+// 0%,
+// 100% {
+//   box-shadow: 0px 0px 20px ${({ theme }) => theme.Colors.orange[2]};
+// }
+// 50% {
+//   box-shadow: 0px 0px 0px ${({ theme }) => theme.Colors.orange[2]};
+// }
+// }

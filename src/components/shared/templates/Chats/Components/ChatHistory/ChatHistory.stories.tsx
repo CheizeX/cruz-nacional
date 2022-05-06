@@ -11,6 +11,7 @@ storiesOf('Ailalia/Organisms/LiveChat/ChatsHistory', module).add(
   () => {
     return (
       <ChatsHistory
+        setIsAgent={() => {}}
         setIsContentChat={() => null}
         setIsChannelChat={() => null}
         setLiveChatModal={() => null}

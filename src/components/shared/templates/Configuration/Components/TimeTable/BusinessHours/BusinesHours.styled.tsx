@@ -33,7 +33,7 @@ export const StyledBusinessHoursHeader = styled.div`
     width: 15px;
     height: 15px;
     text-align: center;
-    &: hover {
+    & :hover {
       cursor: pointer;
       & * {
         fill: ${({ theme }) => theme.Colors.grays[5]};

@@ -40,6 +40,7 @@ interface Values {
   name: string;
   role: string;
   tags: Tag[];
+  companyId?: string;
 }
 
 const validationShema = Yup.object({
@@ -75,6 +76,7 @@ export const UserCreate: FC<IUserCreateProps> = ({
         a.findIndex((t) => JSON.stringify(t) === JSON.stringify(v)) === i,
     ),
   };
+
   const onSubmit = async (
     values?: Partial<Values>,
     submitProps?: {
@@ -84,19 +86,28 @@ export const UserCreate: FC<IUserCreateProps> = ({
   ) => {
     try {
       if (values?.email && values?.name && values?.role) {
-        await createUser({
+        const response = await createUser({
           role: values?.role.toUpperCase() as UserRole,
           name: values?.name,
           email: values?.email,
           tags: values?.tags,
+          companyId: values?.companyId || '',
         });
+        if (response.errorMessage === 'Limit reached') {
+          showAlert?.addToast({
+            alert: Toast.ERROR,
+            title: '¡Upps!',
+            message: 'Has alcanzado el número máximo de usuarios permitidos',
+          });
+        } else {
+          showAlert?.addToast({
+            alert: Toast.SUCCESS,
+            title: '¡Perfecto!',
+            message: 'Se ha creado un usuario con exito',
+          });
+        }
         submitProps?.setSubmitting(false);
         submitProps?.resetForm();
-        showAlert?.addToast({
-          alert: Toast.SUCCESS,
-          title: '¡Perfecto!',
-          message: 'Se ha creado un usuario con exito',
-        });
       }
       clearTagsUser();
       // socket.emit('newUser');

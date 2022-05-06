@@ -10,6 +10,9 @@ export type User = {
   tags: Tag[] | undefined;
   status?: UserStatus;
   urlAvatar?: string;
+  invitationAccepted?: boolean;
+  persistent?: boolean;
+  companyId: string;
 };
 
 export type Status = {
@@ -28,6 +31,6 @@ export type DecodedToken = {
   name?: string;
   role?: string;
   urlAvatar: string;
-  _id?: string;
-  companyId?: string;
+  _id: string;
+  companyId: string;
 };

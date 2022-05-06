@@ -1,4 +1,7 @@
 import React, { FC, useCallback, useEffect } from 'react';
+import { IoPeople } from 'react-icons/io5';
+// import { TiArrowSync, TiArrowRepeat } from 'react-icons/ti';
+// import { TiArrowSyncs } from 'react-icons/ai';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import { Channels, Chat } from '../../../../../../models/chat/chat';
@@ -20,11 +23,13 @@ import {
   IPropsStringName,
 } from '../../ChatsSection/ChatsSection.interface';
 import {
+  StyledTransferIcon,
   StyledInConversationChatItem,
   StyledInConversationContainer,
   StyledInConversationWrapper,
   StyledNotViewedMessages,
   StyledTimeAndState,
+  StyledProactiveIcon,
 } from './InConversationChatItem.styles';
 import {
   useAppDispatch,
@@ -41,6 +46,9 @@ import {
 } from '../../../../../../redux/slices/live-chat/chat-history';
 import { baseRestApi } from '../../../../../../api/base';
 import { getTimeAgo } from '../../ChatsSection/ChatsSection.shared';
+import { useToastContext } from '../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../molecules/Toast/Toast.interface';
+import { UserRole } from '../../../../../../models/users/role';
 
 export const InConversationChatItem: FC<
   StyledLabelProps &
@@ -63,32 +71,59 @@ export const InConversationChatItem: FC<
   // const { tagsToFilter, channelsToFilter } = useAppSelector(
   //   (state) => state.optionsToFilterChats,
   // );
+
   const dispatch = useAppDispatch();
+  const showAlert = useToastContext();
 
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
+  // const { chatByInactivity } = useAppSelector(
+  //   (state) => state.liveChat.chatToSetOnConversationIdToState,
+  // );
 
-  const handleResetNoViewedChats = useCallback(async (id: string) => {
-    try {
-      await baseRestApi.patch(
-        `${process.env.NEXT_PUBLIC_REST_API_URL}/chats/resetUnreadMessages/${id}`,
-        {},
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  // const handleTrafficLight = (trafficLight: string) => {
+  //   if (trafficLight === ITrafficLight.YELLOW) {
+  //     return '#F8D753';
+  //   }
+  //   if (trafficLight === ITrafficLight.RED) {
+  //     return '#E6476F';
+  //   }
+  //   return '';
+  // };
+
+  const handleResetNoViewedChats = useCallback(
+    async (id: string) => {
+      try {
+        await baseRestApi.patch(
+          `${process.env.NEXT_PUBLIC_REST_API_URL}/chats/resetUnreadMessages/${id}`,
+          {},
+        );
+      } catch (error) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `INIT-CONVERSATION-ERROR ${error}`,
+        });
+      }
+    },
+    [showAlert],
+  );
 
   const handleSendMessageToUser = useCallback(
     async (clientId: string, channel: string, chatId: string) => {
       setUserSelected(clientId);
       handleResetNoViewedChats(chatId);
 
-      dispatch(setChatsIdChannel(channel));
-      dispatch(setChatsIdClient(clientId));
+      if (channel === 'Webchat') {
+        dispatch(setChatsIdChannel(channel));
+        dispatch(setChatsIdClient(''));
+      } else {
+        dispatch(setChatsIdChannel(channel));
+        dispatch(setChatsIdClient(clientId));
+      }
     },
-    [dispatch, setUserSelected, handleResetNoViewedChats],
+    [setUserSelected, handleResetNoViewedChats, dispatch],
   );
 
   useEffect(() => {
@@ -134,6 +169,7 @@ export const InConversationChatItem: FC<
               focusedItem={chat.client.clientId === userSelected}
               pausedItem={chat.isPaused}
               key={chat.createdAt.toString()}
+              trafficLight="NEUTRO"
               onClick={() =>
                 handleSendMessageToUser(
                   chat.client.clientId,
@@ -157,11 +193,15 @@ export const InConversationChatItem: FC<
                     <SVGIcon iconFile="/icons/messenger.svg" />
                   )}
                   {chat.channel === Channels.INSTAGRAM && (
-                    <SVGIcon iconFile="/icons/Instagram.svg" />
+                    <SVGIcon iconFile="/icons/instagram.svg" />
                   )}
                   {chat.channel === Channels.WEBCHAT && (
                     <SVGIcon iconFile="/icons/webchat.svg" />
                   )}
+                  {chat.channel === Channels.CHAT_API && (
+                    <SVGIcon iconFile="/icons/whatsapp.svg" />
+                  )}
+
                   {chat.unreadMessages > 0 && (
                     <StyledNotViewedMessages>
                       {chat.unreadMessages > 99 ? '99+' : chat.unreadMessages}
@@ -189,20 +229,26 @@ export const InConversationChatItem: FC<
                   </div>
                   <div>
                     {chat.isTransfer === true && (
-                      <div>
+                      <StyledTransferIcon>
                         <SVGIcon iconFile="/icons/exchange_alt.svg" />
-                      </div>
+                      </StyledTransferIcon>
                     )}
+                    {chat.messages[0].from === UserRole.AGENT ? (
+                      <StyledProactiveIcon>
+                        <IoPeople />
+                      </StyledProactiveIcon>
+                    ) : null}
+                    {/* <TiArrowRepeat /> */}
                   </div>
                 </StyledTimeAndState>
               </StyledInConversationChatItem>
               {/* {chat.tags && (
                 <StyledLabelsContainer>
-                  {chat.tags.map((tag: Tag, index: number) => (
-                    <StyledLabel color={tag.color} key={index.toString()}>
-                      <Text>{tag.name}</Text>
+                {chat.tags.map((tag: Tag, index: number) => (
+                  <StyledLabel color={tag.color} key={index.toString()}>
+                  <Text>{tag.name}</Text>
                     </StyledLabel>
-                  ))}
+                    ))}
                 </StyledLabelsContainer>
               )} */}
             </StyledInConversationWrapper>
@@ -210,3 +256,5 @@ export const InConversationChatItem: FC<
     </StyledInConversationContainer>
   );
 };
+
+// MdAutorenew

@@ -37,10 +37,9 @@ export const StyledWrapperOfficialWhatsappSuccess = styled.div`
       margin-top: 20px;
       color: ${({ theme }) => theme.Colors.grays[3]};
       width: 100%;
-
       text-align: center;
       margin: 0 auto;
-      padding: 0 32px;
+      // padding: 0 32px;
     }
   }
 `;

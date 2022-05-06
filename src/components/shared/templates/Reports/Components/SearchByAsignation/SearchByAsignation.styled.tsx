@@ -22,6 +22,13 @@ export const StyledWrapperAsignation = styled.div`
       }
     }
   }
+  & > :last-child {
+    max-height: 174px;
+    overflow: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `;
 export const StyledSearchByAsignation = styled.div<ISearchByAsignation>`
   width: 256px;

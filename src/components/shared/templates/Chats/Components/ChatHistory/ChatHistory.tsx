@@ -26,6 +26,7 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
   setIsOpenModal,
   setIsContentChat,
   setIsChannelChat,
+  setIsAgent,
 }) => {
   const [selected, setSelected] = useState<number>(0);
   const [searchByWords, setSearchByWords] = useState<string>('');
@@ -205,19 +206,82 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
         />
       );
     }
-    return 'La imagen que intantas descargar no se puede visualizar';
+    return 'La imagen que intentas descargar no se puede visualizar';
+  };
+
+  const handleAttachmentAgent = (content: string) => {
+    if (content.substring(content.length - 3, content.length) === 'jpg') {
+      return (
+        <img
+          src={`${
+            process.env.NEXT_PUBLIC_REST_API_URL
+          }/whatsapp360/file/${content.substring(
+            14,
+            content.length,
+          )}${tokenQueryParam}`}
+          alt={content}
+        />
+      );
+    }
+    if (content.substring(content.length - 3, content.length) === 'png') {
+      return (
+        <img
+          src={`${
+            process.env.NEXT_PUBLIC_REST_API_URL
+          }/whatsapp360/file/${content.substring(
+            14,
+            content.length,
+          )}${tokenQueryParam}`}
+          alt={content}
+        />
+      );
+    }
+    if (content.substring(content.length - 4, content.length) === 'jpeg') {
+      return (
+        <img
+          src={`${
+            process.env.NEXT_PUBLIC_REST_API_URL
+          }/whatsapp360/file/${content.substring(
+            14,
+            content.length,
+          )}${tokenQueryParam}`}
+          alt={content}
+        />
+      );
+    }
+    if (content.substring(content.length - 3, content.length) === 'pdf') {
+      return (
+        <iframe
+          src={`${
+            process.env.NEXT_PUBLIC_REST_API_URL
+          }/whatsapp360/file/${content.substring(
+            14,
+            content.length,
+          )}${tokenQueryParam}`}
+          title={`${
+            process.env.NEXT_PUBLIC_REST_API_URL
+          }/whatsapp360/file/${content.substring(
+            14,
+            content.length,
+          )}${tokenQueryParam}`}
+        />
+      );
+    }
+    return 'La imagen que intentas descargar no se puede visualizar';
   };
 
   const openMaxModalAgent = (content: string, channel: string) => {
     setIsOpenModal(true);
     setIsChannelChat(channel);
     setIsContentChat(content);
+    setIsAgent('Agent');
   };
 
   const openMaxModalUser = (content: string, channel: string) => {
     setIsChannelChat(channel);
     setIsContentChat(content);
     setIsOpenModal(true);
+    setIsAgent('User');
   };
 
   useEffect(scrollInnerText, [
@@ -232,7 +296,7 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
     <StyledChatHistory>
       <StyledChatHistoryHeader>
         <div>
-          <SVGIcon iconFile={`/icons/${idChannel}.svg`} />
+          <SVGIcon iconFile={`/icons/${idChannel.toLocaleLowerCase()}.svg`} />
           <Text>Historial de Chats</Text>
         </div>
 
@@ -411,32 +475,9 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                                               />
                                             </button>
                                           </div>
-                                          {handleAttachment(
+                                          {handleAttachmentAgent(
                                             element.content,
-                                            chat.channel,
                                           )}{' '}
-                                          {/* {element._id === isModalAttachment ? (
-                                            <>
-                                              <div>
-                                                <button
-                                                  type="button"
-                                                  onClick={() =>
-                                                    setIsModalAttachment('')
-                                                  }>
-                                                  <SVGIcon
-                                                    iconFile="/icons/minimize.svg"
-                                                    color="white"
-                                                  />
-                                                </button>
-                                              </div>
-                                              <article>
-                                                {handleAttachment(
-                                                  element.content,
-                                                  chat.channel,
-                                                )}{' '}
-                                              </article>
-                                            </>
-                                          ) : null} */}
                                         </>
                                       )}
                                     </>

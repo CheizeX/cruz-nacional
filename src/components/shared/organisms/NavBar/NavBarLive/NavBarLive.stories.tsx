@@ -11,6 +11,7 @@ export default {
 
 const Template: Story = () => (
   <NavBarLive
+    componentsSection=""
     setMyAccount={() => {}}
     onClick={() => {}}
     elipsis={() => <SVGIcon iconFile="/icons/elipse_roja_notificacion.svg" />}

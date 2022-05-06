@@ -4,6 +4,7 @@ import { Tabs } from '../../../organisms/Tabs/Tabs';
 import { StyledConfigurationSectionContainer } from './ConfigurationSection.styled';
 import { TimeTable } from '../Components/TimeTable/TimeTable';
 import { UsersConfig } from '../Components/UsersConfig/UsersConfig';
+import { ContactsConfig } from '../Components/ContactsConfig/ContactsConfig';
 
 export const ConfigurationSection: FC = () => {
   return (
@@ -12,8 +13,11 @@ export const ConfigurationSection: FC = () => {
         <div title="Horarios">
           <TimeTable />
         </div>
-        <div title="Usuarios">
+        <div title="Conversaciones">
           <UsersConfig />
+        </div>
+        <div title="Contactos">
+          <ContactsConfig />
         </div>
       </Tabs>
     </StyledConfigurationSectionContainer>

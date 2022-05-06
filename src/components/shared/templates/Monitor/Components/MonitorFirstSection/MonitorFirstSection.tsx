@@ -14,7 +14,7 @@ import { IFirstSetionProps } from './MonitorFirstSection.interface';
 import { ChatsCardMonitor } from '../ChatsCardMonitor/ChatsCardMonitor';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
-import { ChatStatus } from '../../../../../../models/chat/chat';
+import { Channels, ChatStatus } from '../../../../../../models/chat/chat';
 
 export const MonitorFirstSection: FC<IFirstSetionProps> = ({
   onChange,
@@ -123,7 +123,13 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
                   position={status}
                   isColorPaused={isPaused}>
                   <div>
-                    <SVGIcon iconFile={`/icons/${channel}.svg`} />
+                    <SVGIcon
+                      iconFile={`/icons/${
+                        channel === Channels.CHAT_API || channel === 'WhatsApp'
+                          ? 'whatsapp'
+                          : channel.toLocaleLowerCase()
+                      }.svg`}
+                    />
                   </div>
                   <span>
                     <BadgeMolecule>

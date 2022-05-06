@@ -1,4 +1,7 @@
-import React, { FC, useState } from 'react';
+/* eslint-disable no-nested-ternary */
+import React, { FC, useState, useEffect } from 'react';
+import { IoIosWarning } from 'react-icons/io';
+import { AiFillCloseCircle } from 'react-icons/ai';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
 import { Text } from '../../../atoms/Text/Text';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
@@ -8,17 +11,20 @@ import {
   StyledNavBarLive,
   Wrapper,
   Logo,
-  Ailalia,
   Letter,
   LiveNavDropdownContainer,
   LiveTriggerElement,
   LiveStyledAvatar,
   LiveArrowIcon,
+  ButtonSelectedComponent,
+  BellIcon,
+  StyledWarning,
+  StyledClose,
 } from './NavBarLive.styled';
-import { INavBarLiveProps } from './NavBarLive.interface';
+import { INavBar, INavBarLiveProps } from './NavBarLive.interface';
 import { useAuth } from '../../../../../hooks/auth';
 import { changeStatus } from '../../../../../api/users';
-import { StatusAgent } from '../../../../../models/users/status';
+import { StatusAgent, UserStatus } from '../../../../../models/users/status';
 import {
   useAppDispatch,
   useAppSelector,
@@ -30,17 +36,50 @@ import { MyAccountSidebarOrganism } from '../../MyAccountSidebar/MyAccountSideba
 import useDisplayElementOrNot from '../../../../../hooks/use-display-element-or-not';
 import { IBackOfficeProps } from '../BackOffice/NavBarBackOffice.interface';
 import useLocalStorage from '../../../../../hooks/use-local-storage';
+import { setComponentSection } from '../../../../../redux/slices/section/live-chat-section';
+import { ITrafficLight } from '../../../../../models/chat/chat';
+import { Tooltip } from '../../../atoms/Tooltip/Tooltip';
+import { TooltipPosition } from '../../../atoms/Tooltip/tooltip.interface';
 
-export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps> = ({
-  elipsis,
+export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
+  componentsSection,
 }) => {
-  // Manejo del dropdown de disponibilidad
-  const [statusChecked, setStatusChecked] = useState<string>('Disponible');
-  const [activoCheck, setActivoChecked] = useState<number>(0);
-  const [myAccount, setMyAccount] = React.useState<number>(0);
-
   const showAlert = useToastContext();
   const dispatch = useAppDispatch();
+  // Manejo del dropdown de agentes
+  const { ref, isComponentVisible, setIsComponentVisible } =
+    useDisplayElementOrNot(false);
+
+  const handleNavUserDropdown = () => {
+    setIsComponentVisible(!isComponentVisible);
+  };
+
+  // Manejo de Logout
+  const { signOut } = useAuth();
+  const [accessToken] = useLocalStorage('AccessToken', '');
+  const { userDataInState }: any = useAppSelector(
+    (state) => state.userAuthCredentials,
+  );
+
+  const { chatsOnConversation } = useAppSelector(
+    (state) => state.liveChat.chatsOnConversation,
+  );
+
+  // Manejo de semaforo
+
+  const chatNeutro = chatsOnConversation.filter(
+    (item) => item.trafficLight === ITrafficLight.NEUTRO,
+  ).length;
+  const chatYellow = chatsOnConversation.filter(
+    (item) => item.trafficLight === ITrafficLight.YELLOW,
+  ).length;
+  const chatRed = chatsOnConversation.filter(
+    (item) => item.trafficLight === ITrafficLight.RED,
+  ).length;
+  // Manejo del dropdown de disponibilidad
+  const [statusChecked, setStatusChecked] = useState<string>('');
+  const [activoCheck, setActivoChecked] = useState<number>(0);
+  const [myAccount, setMyAccount] = React.useState<number>(0);
 
   const handleClickStatus = async (
     arg: string,
@@ -60,23 +99,11 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps> = ({
     }
   };
 
-  // Manejo del dropdown de agentes
-  const { ref, isComponentVisible, setIsComponentVisible } =
-    useDisplayElementOrNot(false);
+  const profilePicture =
+    userDataInState?.urlAvatar && userDataInState?.urlAvatar !== undefined
+      ? `${userDataInState.urlAvatar}?token=${accessToken}`
+      : '';
 
-  const handleNavUserDropdown = () => {
-    setIsComponentVisible(!isComponentVisible);
-  };
-
-  // Manejo de Logout
-  const { signOut } = useAuth();
-  const [accessToken] = useLocalStorage('AccessToken', '');
-  const { userDataInState }: any = useAppSelector(
-    (state) => state.userAuthCredentials,
-  );
-  const profilePicture = userDataInState?.urlAvatar
-    ? `${userDataInState.urlAvatar}?token=${accessToken}`
-    : '';
   const handleCloseSession = async () => {
     try {
       await signOut();
@@ -95,103 +122,102 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps> = ({
     setMyAccount(number);
     setIsComponentVisible(false);
   };
+
+  const handleComponentsSection = (component: string) => {
+    dispatch(setComponentSection(component));
+  };
+  useEffect(() => {
+    const statusAgent =
+      userDataInState.status === UserStatus.AVAILABLE
+        ? 'Disponible'
+        : userDataInState.status === UserStatus.BATHROOM
+        ? 'En Pausa - Baño'
+        : userDataInState.status === UserStatus.LUNCH
+        ? 'En Pausa - Almuerzo'
+        : 'En Pausa - En llamado';
+    const numberStatus =
+      userDataInState.status === UserStatus.AVAILABLE
+        ? 0
+        : userDataInState.status === UserStatus.BATHROOM
+        ? 1
+        : userDataInState.status === UserStatus.LUNCH
+        ? 2
+        : 3;
+    setStatusChecked(statusAgent);
+    setActivoChecked(numberStatus);
+  }, [userDataInState.status]);
   return (
     <>
       <StyledNavBarLive>
         <Wrapper>
           <Logo>
             <img src="/images/elipse-chat-blanco.png" alt="sidebar-1" />
-            {/* <SVGIcon iconFile="/icons/Trazado_ailalia.svg" /> */}
           </Logo>
-          <Ailalia>
-            {/* <SVGIcon iconFile="/icons/Trazado_ailalia.svg" /> */}
-          </Ailalia>
           <Letter>
-            <span>
+            <ButtonSelectedComponent
+              isFocus={componentsSection === 'Chat'}
+              onClick={() => handleComponentsSection('Chat')}>
               <BadgeMolecule>
                 <Text>Chats</Text>
               </BadgeMolecule>
-            </span>
-            <span>
+            </ButtonSelectedComponent>
+            {/* <button type="button">
+                <BadgeMolecule>
+                  <Text>Monitor</Text>
+                  {elipsis && elipsis()}
+                </BadgeMolecule>
+              </button> */}
+            <ButtonSelectedComponent
+              isFocus={componentsSection === 'Contactos'}
+              onClick={() => handleComponentsSection('Contactos')}>
               <BadgeMolecule>
-                <Text>Monitor</Text>
-                {elipsis && elipsis()}
+                <Text>Contactos</Text>
               </BadgeMolecule>
-            </span>
-            <span>
-              <BadgeMolecule>
-                <Text>Biblioteca</Text>
-              </BadgeMolecule>
-            </span>
+            </ButtonSelectedComponent>
           </Letter>
         </Wrapper>
         <Wrapper>
           {/* <MessageIcon onClick={onClick ?? (() => {})}>
           {messageIcon && messageIcon()}
         </MessageIcon> */}
-          {/* <BellIcon onClick={onClick ?? (() => {})}>
-          {bellIcon && bellIcon()}
-        </BellIcon> */}
-          {/* <NotificationStyledNavBar /> */}
-          <DropdownStatus
-            statusChecked={statusChecked}
-            activoCheck={activoCheck}
-            handleClickStatus={handleClickStatus}
-          />
-          {/* <Dropdown
-            triggerElement={() => (
-              <TriggerElement statusChecked={statusChecked}>
-                <Text>{statusChecked}</Text>
-                <SVGIcon iconFile="/icons/chevron-square-down.svg" />
-              </TriggerElement>
-            )}>
-            <StyledAgentStatusSropdown>
-              <WrapperChackedAgent
-                position="one"
-                onClick={() => handleClickStatus('Disponible', 0, 'AVAILABLE')}>
-                <StyledButton focusCheck={activoCheck === 0}>
-                  <StyledRadio focusCheck={activoCheck === 0} />
-                </StyledButton>
-                <SVGIcon iconFile="/icons/user_question.svg" />
-                <Text color="black">Disponible</Text>
-              </WrapperChackedAgent>
-              <WrapperChackedAgent
-                position="two"
-                onClick={() =>
-                  handleClickStatus('En Pausa - Almuerzo', 1, 'LUNCH')
-                }>
-                <StyledButton focusCheck={activoCheck === 1}>
-                  <StyledRadio focusCheck={activoCheck === 1} />
-                </StyledButton>
-                <SVGIcon iconFile="/icons/utensils.svg" />
-                <Text color="black">En Pausa - Almuerzo</Text>
-              </WrapperChackedAgent>
-              <WrapperChackedAgent
-                position="three"
-                onClick={() =>
-                  handleClickStatus('En Pausa - Baño', 2, 'BATHROOM')
-                }>
-                <StyledButton focusCheck={activoCheck === 2}>
-                  <StyledRadio focusCheck={activoCheck === 2} />
-                </StyledButton>
-                <SVGIcon iconFile="/icons/toile.svg" />
-                <Text color="black">En Pausa - Baño</Text>
-              </WrapperChackedAgent>
-        
-              <WrapperChackedAgent
-                position="two"
-                onClick={() =>
-                  handleClickStatus('En Pausa - En llamado', 3, 'CALL')
-                }>
-                <StyledButton focusCheck={activoCheck === 3}>
-                  <StyledRadio focusCheck={activoCheck === 3} />
-                </StyledButton>
-                <SVGIcon iconFile="/icons/calling.svg" />
-                <Text color="black">En Pausa - En llamada</Text>
-              </WrapperChackedAgent>
-         
-            </StyledAgentStatusSropdown>
-          </Dropdown> */}
+          <div>
+            <div>
+              {chatNeutro !== 0 ? (
+                <Tooltip text="Chats activos" position={TooltipPosition.left}>
+                  <BellIcon>
+                    <div>{chatNeutro}</div>
+                    <SVGIcon iconFile="/icons/message_icons.svg" />
+                  </BellIcon>
+                </Tooltip>
+              ) : null}
+              {chatYellow !== 0 ? (
+                <Tooltip
+                  text="Advertencia de chats por finalizar"
+                  position={TooltipPosition.bottom}>
+                  <StyledWarning>
+                    <div>{chatYellow}</div>
+                    <IoIosWarning />
+                  </StyledWarning>
+                </Tooltip>
+              ) : null}
+              {chatRed !== 0 ? (
+                <Tooltip
+                  text="Chats en proceso de finalizar por inactividad"
+                  position={TooltipPosition.bottom}>
+                  <StyledClose>
+                    <div>{chatRed}</div>
+                    <AiFillCloseCircle />
+                  </StyledClose>
+                </Tooltip>
+              ) : null}
+            </div>
+
+            <DropdownStatus
+              statusChecked={statusChecked}
+              activoCheck={activoCheck}
+              handleClickStatus={handleClickStatus}
+            />
+          </div>
           <LiveTriggerElement>
             <LiveStyledAvatar>
               {profilePicture && profilePicture !== '' ? (

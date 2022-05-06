@@ -65,7 +65,7 @@ export const ChatTransfer: FC<IChatTransfer> = ({
         message: `${error}`,
       });
     }
-  }, []);
+  }, [dispatch, toasts]);
 
   const getChatsToday = useCallback(async () => {
     try {
@@ -82,12 +82,12 @@ export const ChatTransfer: FC<IChatTransfer> = ({
         message: `${error}`,
       });
     }
-  }, []);
+  }, [dispatch, toasts]);
 
   useEffect(() => {
     getAgentAvailable();
     getChatsToday();
-  }, []);
+  }, [getAgentAvailable, getChatsToday]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchAgent(event.target.value);
@@ -145,74 +145,72 @@ export const ChatTransfer: FC<IChatTransfer> = ({
           {dateAgentAvailable
             ?.filter((item) => item._id === agentToTransfer)
             .map(({ name, _id, tags }) => (
-              <>
-                <AgentToTransfer
-                  key={_id}
-                  name={name}
-                  tag={tags}
-                  isConversation={
-                    chatsTransfer?.filter(
-                      (chat: Chat) =>
-                        chat.status === ChatStatus.ON_CONVERSATION &&
-                        chat.assignedAgent &&
-                        chat.assignedAgent._id === _id,
-                    ).length ?? 0
-                  }
-                  isPause={
-                    chatsTransfer?.filter(
-                      (chat: Chat) =>
-                        chat.status === ChatStatus.ON_CONVERSATION &&
-                        chat.isPaused === true &&
-                        chat.assignedAgent &&
-                        chat.assignedAgent._id === _id,
-                    ).length ?? 0
-                  }
-                  isTransfer={
-                    chatsTransfer?.filter(
-                      (chat: Chat) =>
-                        chat.isTransfer === true &&
-                        chat.assignedAgent &&
-                        chat.assignedAgent._id === _id,
-                    ).length ?? 0
-                  }
-                  isAverages={
-                    chatsTransfer !== undefined
-                      ? (chatsTransfer.filter(
-                          (chat) =>
-                            chat.status === ChatStatus.FINISHED &&
-                            chat.assignedAgent._id &&
-                            chat.assignedAgent._id === _id,
-                        ).length === 0
-                          ? 0
-                          : chatsTransfer
-                              .filter(
-                                (chat: any) =>
-                                  chat.status === ChatStatus.FINISHED &&
-                                  chat.assignedAgent &&
-                                  chat.assignedAgent._id === _id &&
-                                  chat,
-                              )
-                              .map(
-                                (item) =>
-                                  new Date(item.updatedAt).getTime() -
-                                  new Date(item.createdAt).getTime(),
-                              )
-                              .reduce(
-                                (acum, value) => Math.floor(acum + value),
-                                0,
-                              ) /
-                            1000 /
-                            60 /
-                            chatsTransfer.filter(
-                              (item: any) =>
-                                item.assignedAgent &&
-                                item.assignedAgent._id === _id,
-                            ).length
-                        ).toFixed(0) ?? 0
-                      : 0
-                  }
-                />
-              </>
+              <AgentToTransfer
+                key={_id}
+                name={name}
+                tag={tags}
+                isConversation={
+                  chatsTransfer?.filter(
+                    (chat: Chat) =>
+                      chat.status === ChatStatus.ON_CONVERSATION &&
+                      chat.assignedAgent &&
+                      chat.assignedAgent._id === _id,
+                  ).length ?? 0
+                }
+                isPause={
+                  chatsTransfer?.filter(
+                    (chat: Chat) =>
+                      chat.status === ChatStatus.ON_CONVERSATION &&
+                      chat.isPaused === true &&
+                      chat.assignedAgent &&
+                      chat.assignedAgent._id === _id,
+                  ).length ?? 0
+                }
+                isTransfer={
+                  chatsTransfer?.filter(
+                    (chat: Chat) =>
+                      chat.isTransfer === true &&
+                      chat.assignedAgent &&
+                      chat.assignedAgent._id === _id,
+                  ).length ?? 0
+                }
+                isAverages={
+                  chatsTransfer !== undefined
+                    ? (chatsTransfer.filter(
+                        (chat) =>
+                          chat.status === ChatStatus.FINISHED &&
+                          chat.assignedAgent._id &&
+                          chat.assignedAgent._id === _id,
+                      ).length === 0
+                        ? 0
+                        : chatsTransfer
+                            .filter(
+                              (chat: any) =>
+                                chat.status === ChatStatus.FINISHED &&
+                                chat.assignedAgent &&
+                                chat.assignedAgent._id === _id &&
+                                chat,
+                            )
+                            .map(
+                              (item) =>
+                                new Date(item.updatedAt).getTime() -
+                                new Date(item.createdAt).getTime(),
+                            )
+                            .reduce(
+                              (acum, value) => Math.floor(acum + value),
+                              0,
+                            ) /
+                          1000 /
+                          60 /
+                          chatsTransfer.filter(
+                            (item: any) =>
+                              item.assignedAgent &&
+                              item.assignedAgent._id === _id,
+                          ).length
+                      ).toFixed(0) ?? 0
+                    : 0
+                }
+              />
             ))}
         </div>
       </StyledChatTransferBodySection>

@@ -4,7 +4,7 @@ import { IContainerWhatsApp } from './UnOfficialWhatsApp.interface';
 export const StyledAddWhatsApp = styled.div`
   width: 34.5rem;
   min-width: 608px;
-  height: 34rem;
+  height: 35rem;
   border-radius: 0.625rem;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   padding: 1.25rem 0 1.125rem 0;
@@ -43,12 +43,13 @@ export const StyledHeaderChannelAdd = styled.div`
 `;
 
 export const StyledBodyAddChannel = styled.div<IContainerWhatsApp>`
-  height: 25rem;
+  height: 27rem;
   display: flex;
   width: 100%;
   border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[9]};
   & > :nth-child(1) {
     width: 15rem;
+    min-width: 15rem;
     background-blend-mode: lighten;
     background-color: ${({ theme }) => theme.Colors.purples[1]};
     background-image: url('/images/Background_Modal.svg');
@@ -140,7 +141,10 @@ export const StyledBodyAddChannel = styled.div<IContainerWhatsApp>`
     }
   }
   & > :nth-child(2) {
+    width: 100%;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
   }
 `;
 

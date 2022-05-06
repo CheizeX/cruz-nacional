@@ -53,4 +53,15 @@ export const adminSection: BackofficeSection[] = [
   },
 ];
 
+export const adminSectionRestricted: BackofficeSection[] = [
+  {
+    name: 'Reportes',
+    icon: '/icons/reports.svg',
+  },
+  {
+    name: 'Suscripciones',
+    icon: '/icons/subscription.svg',
+  },
+];
+
 export const fullVersionSections: BackofficeSection[] = [];

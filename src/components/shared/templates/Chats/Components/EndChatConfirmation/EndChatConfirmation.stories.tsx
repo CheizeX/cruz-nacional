@@ -8,6 +8,7 @@ storiesOf('Ailalia/Organisms/LiveChat/EndChatConfirmation', module).add(
       <EndChatConfirmation
         setLiveChatModal={() => null}
         setOpenEndChat={() => null}
+        handleFinishedChat={() => null}
       />
     );
   },

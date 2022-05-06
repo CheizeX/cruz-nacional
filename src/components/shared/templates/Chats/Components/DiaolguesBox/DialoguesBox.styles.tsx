@@ -58,7 +58,7 @@ export const StyledUserDialogue = styled.div<StyledOnConversationWrapperProps>`
       }
       & article {
         transition: all 1s ease-in-out;
-        z-index: 1;
+        z-index: 2;
         background-color: ${({ theme }) => theme.Colors.grays[1]};
         position: absolute;
         width: 100%;
@@ -87,7 +87,7 @@ export const StyledUserDialogue = styled.div<StyledOnConversationWrapperProps>`
       }
       & > button {
         transition: all 1s ease-in-out;
-        z-index: 2;
+        z-index: 3;
         position: absolute;
         top: 10px;
         right: 13px;
@@ -359,7 +359,7 @@ export const StyledAgentAvatar = styled(StyledClientAndAgentAvatars)`
   }
 `;
 
-export const StyledUserPendingDialogue = styled.div`
+export const StyledUserPendingDialogue = styled.div<IWrapperColorDialogues>`
   min-height: 65px;
   max-width: 380px;
   width: fit-content;
@@ -378,7 +378,8 @@ export const StyledUserPendingDialogue = styled.div`
     }
     & > :first-child {
       border-radius: 0px 10px 10px 10px;
-      background-color: ${({ theme }) => theme.Colors.grays[10]};
+      background-color: ${({ theme, chatFrom }) =>
+        chatFrom && chatFrom === 'Bot' ? '#4D5ECA' : theme.Colors.grays[10]};
       color: ${({ theme }) => theme.Colors.grays[1]};
       padding: 14px 15px;
       font-weight: 400;

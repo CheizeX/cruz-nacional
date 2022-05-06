@@ -22,7 +22,7 @@ import {
   FilterChannelsProps,
   FilterChannel,
 } from '../ChatsFilter/ChatFilter/ChatFilter.interface';
-import { setSeccionIsPending } from '../../../../../../redux/slices/live-chat/chat-history';
+import { setPendingSession } from '../../../../../../redux/slices/live-chat/chat-history';
 
 export const ChatsListHeader: FC<
   SortUsers &
@@ -54,9 +54,9 @@ export const ChatsListHeader: FC<
 
   useEffect(() => {
     if (!isPendings) {
-      dispatch(setSeccionIsPending(false));
+      dispatch(setPendingSession(false));
     } else {
-      dispatch(setSeccionIsPending(isPendings));
+      dispatch(setPendingSession(isPendings));
     }
   });
 

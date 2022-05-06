@@ -4,6 +4,7 @@ export interface SelectedUserProps {
   setUserSelected: React.Dispatch<React.SetStateAction<string>>;
   userSelected?: string;
 }
+
 export interface IWrapperColorDialogues {
   chatFrom: string;
 }
@@ -54,6 +55,10 @@ export interface TabProps {
   setActiveByDefaultTab: React.Dispatch<SetStateAction<number>>;
   activeByDefaultTab?: number;
 }
+
+export interface IPropsFormContacts {
+  agentName: string;
+}
 export interface Objeto {
   name?: string;
   text?: string;
@@ -68,6 +73,7 @@ export interface Objeto {
 export interface StyledPendingWrapperProps {
   focusedItem?: boolean;
   pausedItem?: boolean;
+  trafficLight?: string;
 }
 
 export interface StyledOnConversationWrapperProps {

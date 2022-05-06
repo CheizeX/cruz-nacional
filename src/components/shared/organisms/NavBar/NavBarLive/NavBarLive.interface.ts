@@ -10,3 +10,10 @@ export interface INavBarLiveProps {
   elipsis?: () => JSX.Element;
   onClick?: MouseEventHandler;
 }
+
+export interface INavBarContainer {
+  isFocus: boolean;
+}
+export interface INavBar {
+  componentsSection: string;
+}

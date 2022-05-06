@@ -1,12 +1,15 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Chat } from '../../../models/chat/chat';
 
 interface ChatToSetOnConversationIdInterface {
   chatToSetOnConversationInStateId: string;
+  chatByInactivity: Chat;
 }
 
 const initialState: ChatToSetOnConversationIdInterface = {
   chatToSetOnConversationInStateId: '',
+  chatByInactivity: {} as Chat,
 };
 
 export const chatToSetOnConversationToStateId = createSlice({
@@ -19,9 +22,12 @@ export const chatToSetOnConversationToStateId = createSlice({
     ) => {
       state.chatToSetOnConversationInStateId = action.payload;
     },
+    setChatByInactivity: (state, action: PayloadAction<Chat>) => {
+      state.chatByInactivity = action.payload;
+    },
   },
 });
 
-export const { setChatToSetOnConversationInStateId } =
+export const { setChatToSetOnConversationInStateId, setChatByInactivity } =
   chatToSetOnConversationToStateId.actions;
 export default chatToSetOnConversationToStateId.reducer;

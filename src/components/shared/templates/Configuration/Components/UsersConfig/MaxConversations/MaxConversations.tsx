@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react';
+import { FaInfoCircle } from 'react-icons/fa';
 import {
   ButtonMolecule,
   ButtonState,
@@ -19,6 +20,9 @@ import {
   useAppSelector,
 } from '../../../../../../../redux/hook/hooks';
 import { getGeneralConfigurationData } from '../../../../../../../redux/slices/configuration/configuration-info';
+import { Tooltip } from '../../../../../atoms/Tooltip/Tooltip';
+import { TooltipTarget } from '../../../../../atoms/Tooltip/tooltip.styled';
+import { TooltipPosition } from '../../../../../atoms/Tooltip/tooltip.interface';
 
 export const MaxConversations: FC = () => {
   const dispatch = useAppDispatch();
@@ -62,7 +66,14 @@ export const MaxConversations: FC = () => {
   return (
     <StyledMaxConversations>
       <StyledMaxConversationsHeader>
-        <Text>Máximo de conversaciones por agente</Text>
+        <Text>Conversaciones por agente</Text>
+        <Tooltip
+          text="Define la cantidad máxima de conversaciones que puede atender un agente al mismo tiempo. Cuando el valor es 0 significa que el agente puede tomar la cantidad de conversaciones que quiera."
+          position={TooltipPosition.bottom}>
+          <TooltipTarget>
+            <FaInfoCircle />
+          </TooltipTarget>
+        </Tooltip>
       </StyledMaxConversationsHeader>
       <StyledMaxConversationsBody>
         <StyledInputTypeNumber

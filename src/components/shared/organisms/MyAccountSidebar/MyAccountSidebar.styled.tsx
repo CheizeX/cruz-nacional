@@ -14,7 +14,7 @@ export const StyledMyAccountSidebar = styled.div`
   min-height: 48rem;
   width: 22.25rem;
   box-shadow: -4px 0px 10px rgba(0, 0, 0, 0.15);
-  z-index: 2;
+  z-index: 3;
   transition: all 0.3s ease-in-out;
 `;
 

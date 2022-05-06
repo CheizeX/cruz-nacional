@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { FcCancel } from 'react-icons/fc';
 import { useToastContext } from './useToast';
 import { Toast } from './Toast.interface';
 import { SVGIcon } from '../../atoms/SVGIcon/SVGIcon';
@@ -21,18 +22,23 @@ export const ShowToast: FC = () => {
         notification.toasts.map((toast, id) => (
           <StyledToast key={toast.id} alert={toast.alert}>
             {toast.alert === Toast.SUCCESS ? (
-              <Icon>
+              <Icon alert={toast.alert}>
                 <SVGIcon iconFile="/icons/success.svg" />
               </Icon>
             ) : null}
             {toast.alert === Toast.WARNING ? (
-              <Icon>
+              <Icon alert={toast.alert}>
                 <SVGIcon iconFile="/icons/warning.svg" />
               </Icon>
             ) : null}
             {toast.alert === Toast.ERROR ? (
-              <Icon>
+              <Icon alert={toast.alert}>
                 <SVGIcon iconFile="/icons/danger.svg" />
+              </Icon>
+            ) : null}
+            {toast.alert === Toast.INACTIVE ? (
+              <Icon alert={toast.alert}>
+                <FcCancel />
               </Icon>
             ) : null}
             <Wraper>

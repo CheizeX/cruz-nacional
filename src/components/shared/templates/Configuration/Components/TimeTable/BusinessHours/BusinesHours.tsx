@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-nested-ternary */
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, Fragment, useCallback, useMemo, useState } from 'react';
 import {
   ButtonMolecule,
   ButtonState,
@@ -49,8 +49,8 @@ import { getConfigurationData } from '../../../../../../../redux/slices/configur
 export const BusinessHours: FC<ConfigSectionInterface> = () => {
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
-  const [modalBusinessTime, setModalBusinessTime] = useState(false);
 
+  const [modalBusinessTime, setModalBusinessTime] = useState(false);
   const [startTimeController, setStartTimeController] = useState(false);
   const [endTimeController, setEndTimeController] = useState(false);
   const [startSecondTimeController, setStartSecondTimeController] =
@@ -353,9 +353,9 @@ export const BusinessHours: FC<ConfigSectionInterface> = () => {
           <StyledBusinessHoursBodySetted>
             <StyledBusinessHoursBodySettedGroupedDays>
               {groupedDaysDivided &&
-                groupedDaysDivided.map((day: any) => (
-                  <>
-                    <Text color="red" key={`${`${day[0].name}a`}`}>
+                groupedDaysDivided.map((day: any, index: number) => (
+                  <Fragment key={index.toString()}>
+                    <Text color="red">
                       {day.length === 1 && day[0].name}
                       {day.length === 2 && `${day[0].name} y ${day[1].name}`}
                       {day.length > 2 &&
@@ -369,7 +369,7 @@ export const BusinessHours: FC<ConfigSectionInterface> = () => {
                       </Text>
                     </div>
                     {day[0].secondTime && (
-                      <div key={day[0].id}>
+                      <div>
                         <span />
                         <Text color="gray">
                           Desde{' '}
@@ -378,7 +378,7 @@ export const BusinessHours: FC<ConfigSectionInterface> = () => {
                         </Text>
                       </div>
                     )}
-                  </>
+                  </Fragment>
                 ))}
             </StyledBusinessHoursBodySettedGroupedDays>
           </StyledBusinessHoursBodySetted>

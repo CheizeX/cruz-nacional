@@ -33,73 +33,44 @@ export const StyledSubscriptionSectionHeaderInfo = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  text-align: center;
-  height: 100%;
-  width: 100%;
-  font-size: 12px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.Colors.grays[3]};
-  & > :first-child {
-    flex-direction: column;
-    padding: 0 25px;
-    height: 100%;
-    width: 86%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    & > h2 {
-      padding-left: 7px;
-      font-weight: 500;
-      color: ${({ theme }) => theme.Colors.grays[1]};
-      font-size: 22px;
-      text-align: left;
-      width: 100%;
-      margin: auto;
-      line-height: 1.4rem;
-      margin-right: 10px;
-    }
-    & > span {
-      font-size: 14px;
-      font-weight: 800;
-    }
-  }
-  & > :last-child {
-    height: 100%;
-    padding: 0 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: ${({ theme }) => theme.Colors.grays[10]};
-    border-top-right-radius: 10px;
-    color: ${({ theme }) => theme.Colors.grays[5]};
-    font-weight: 700;
-    border-left: 1px solid ${({ theme }) => theme.Colors.grays[9]};
-    & p {
-      text-align: center;
-      width: fit-content;
-      font-size: 38px;
-      color: ${({ theme }) => theme.Colors.purples[3]};
-      font-weight: 800;
-      padding: 3px 0;
-    }
-  }
-`;
-
-export const StyledSelectedPlanHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
   height: 100%;
-  width: 100%;
-  & > h2 {
-    font-size: 20px;
+  width: fit-content;
+  font-size: 12px;
+  font-weight: 500;
+  & > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    margin: 0 auto;
     & > span {
-      padding-left: 5px;
-      font-size: 32px;
-      font-weight: 700;
-      color: ${({ theme }) => theme.Colors.green[3]};
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: ${({ theme }) => theme.Colors.grays[1]};
+      height: 50px;
+      font-size: 22px;
+      padding-right: 10px;
+      padding-left: 20px;
+      border: 3px solid ${({ theme }) => theme.Colors.grays[10]};
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    & > p {
+      border: 3px solid ${({ theme }) => theme.Colors.grays[9]};
+      box-shadow: 0px 3px 10px 0px ${({ theme }) => theme.Colors.grays[7]};
+      display: flex;
+      align-items: center;
+      height: 50px;
+      font-size: 34px;
+      color: ${({ theme }) => theme.Colors.grays[10]};
+      background-color: ${({ theme }) => theme.Colors.green[4]};
+      font-weight: 500;
+      padding: 10px 20px;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      border-radius: 10px;
     }
   }
 `;
@@ -142,8 +113,8 @@ export const StyledSubscriptionSectionCard = styled.div<SubscriptionSectionProps
   ${({ active, theme }) =>
     active &&
     `
-    outline: 7px solid ${theme.Colors.grays[9]}; 
-    box-shadow: 0px 1px 15px 2px  ${theme.Colors.grays[1]};
+    outline: 3px solid goldenrod;
+    box-shadow: 0px 1px 15px 2px  ${theme.Colors.grays[7]};
   `}
   & > div {
     width: 100%;
@@ -171,12 +142,11 @@ export const StyledSubscriptionSectionCard = styled.div<SubscriptionSectionProps
         background-color: ${({ theme }) => theme.Colors.grays[10]};
         & path {
           fill: ${({ theme }) => theme.Colors.green[4]};
-          ${({ active, theme }) =>
+          ${({ active }) =>
             active &&
             `
-    fill:  ${theme.Colors.purples[3]};
-    /* box-shadow: 0px 2px 10px 0px  ${theme.Colors.purples[3]}; */
-  `}
+              fill:  goldenrod;
+          `}
         }
       }
     }
@@ -224,7 +194,7 @@ export const StyledSubscriptionSectionCardHeader = styled.span<SubscriptionSecti
       active &&
       `
     font-size: 28px;
-    color: ${theme.Colors.green[3]};
+    color: goldenrod;
     &::before {
       // the content of the span is the same as the content of the h1
       font-size: 20px;
@@ -258,11 +228,10 @@ export const StyledSubscriptionSectionEnterpriseCard = styled.div<SubscriptionSe
   max-width: 633px;
   align-self: flex-start;
   height: 380px;
-  ${({ active, theme }) =>
+  ${({ active }) =>
     active &&
     `
-    outline: 7px solid ${theme.Colors.grays[9]}; 
-    box-shadow: 0px 1px 15px 2px  ${theme.Colors.grays[1]};
+    outline: 3px solid goldenrod; 
   `};
   & a {
     min-height: 40px;
@@ -291,7 +260,6 @@ export const StyledSubscriptionSectionEnterpriseCardHeader = styled.div<Subscrip
   ${({ active, theme }) =>
     active &&
     `
-
     justify-content: center;
     &::before {
       // the content of the span is the same as the content of the h1

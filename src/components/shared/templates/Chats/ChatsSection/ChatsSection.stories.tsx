@@ -10,6 +10,11 @@ export default {
 
 const Template: Story<UploadableFile> = ({ id, errors, file }) => (
   <ChatsSection
+    // setUserSelected=""
+    // setActiveByDefaultTab={0}
+    setActiveByDefaultTab={() => null}
+    setUserSelected={() => null}
+    userSelected=""
     checkedTags={[1, 2]}
     setCheckedTags={() => {}}
     channel={[1, 2]}

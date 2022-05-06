@@ -1,9 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import * as Yup from 'yup';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import axios, { AxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/router';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import {
   StyledTrialFormContainer,
   StyledTrialFormLayout,
@@ -14,6 +16,13 @@ import {
   Size,
 } from '../../../../atoms/Button/Button';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
+import { PlanName } from '../../../SubscriptionPlans/SubscriptionSection/SubscriptionSection.interface';
+import { useToastContext } from '../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../molecules/Toast/Toast.interface';
+
+interface TrialFormProps {
+  plan: PlanName;
+}
 
 const validationSchema = Yup.object({
   companyName: Yup.string().required('El nombre de la empresa es requerido'),
@@ -28,13 +37,6 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email('El email es inválido')
     .required('El email es requerido'),
-  phone: Yup.string()
-    .required('El teléfono es requerido')
-    .matches(
-      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-      'El teléfono es inválido',
-    ),
-
   password: Yup.string()
     .required('La contraseña es requerida')
     .min(6, 'La contraseña debe tener al menos 6 caracteres')
@@ -44,18 +46,21 @@ const validationSchema = Yup.object({
     'Las contraseñas no coinciden',
   ),
 });
-const initialValues = {
-  companyName: '',
-  name: '',
-  lastName: '',
-  phone: '',
-  email: '',
-  password: '',
-  verifyPassword: '',
-};
 
-export const TrialForm: FC = () => {
+export const TrialForm: FC<TrialFormProps> = ({ plan }) => {
   const router = useRouter();
+  const showAlert = useToastContext();
+  const [phone, setPhone] = useState('');
+
+  const initialValues = {
+    companyName: '',
+    name: '',
+    lastName: '',
+    phone,
+    email: '',
+    password: '',
+    verifyPassword: '',
+  };
 
   const onSubmit = async (values: {
     companyName: string;
@@ -65,29 +70,38 @@ export const TrialForm: FC = () => {
     email: string;
     password: string;
   }) => {
-    try {
-      const axiosConfig: AxiosRequestConfig = {
-        baseURL: process.env.NEXT_PUBLIC_REST_API_URL,
-        url: '/general',
-        method: 'post',
-        data: {
-          companyName: values.companyName,
-          name: values.name,
-          lastName: values.lastName,
-          phone: values.phone,
-          email: values.email,
-          password: values.password,
-        },
-      };
-      const { data } = await axios(axiosConfig);
-
-      if (data.success) {
-        router.push(`/`);
+    if (
+      plan === PlanName.BUSINESS ||
+      plan === PlanName.CORPORATE ||
+      plan === PlanName.START ||
+      plan === PlanName.GROWTH
+    ) {
+      try {
+        const axiosConfig: AxiosRequestConfig = {
+          baseURL: process.env.NEXT_PUBLIC_REST_API_URL,
+          url: '/general',
+          method: 'post',
+          data: {
+            companyName: values.companyName,
+            name: values.name,
+            lastName: values.lastName,
+            phone,
+            email: values.email,
+            password: values.password,
+            plan,
+          },
+        };
+        const { data } = await axios(axiosConfig);
+        if (data.success) {
+          router.push(`/`);
+        }
+      } catch (error) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'Error',
+          message: `${error}`,
+        });
       }
-
-      console.log(data);
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -111,9 +125,7 @@ export const TrialForm: FC = () => {
                   Completa los siguientes campos para poder acceder al período
                   de evaluación
                 </h1>
-
                 <Form>
-                  {/* <h1>Datos personales:</h1> */}
                   <Field type="text" name="name" placeholder="Nombre" />
                   <div>
                     <ErrorMessage name="name" component="div" />
@@ -126,10 +138,19 @@ export const TrialForm: FC = () => {
                   <div>
                     <ErrorMessage name="email" component="div" />
                   </div>
-                  <Field
-                    type="phone"
-                    name="phone"
-                    placeholder="Número de teléfono"
+                  <PhoneInput
+                    inputProps={{
+                      required: true,
+                      autoFocus: true,
+                      name: 'phone',
+                    }}
+                    onChange={(e) => {
+                      setPhone(e);
+                    }}
+                    value={phone}
+                    country="cl"
+                    enableSearch
+                    searchPlaceholder="Buscar país..."
                   />
                   <div>
                     <ErrorMessage name="phone" component="div" />

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { FC, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
@@ -9,9 +10,6 @@ import {
   SubscriptionSectionPersonalizedItems,
 } from './SubscriptionSection.shared';
 import {
-  StyledSubscriptionSectionWebchatBody,
-  StyledSubscriptionSectionWebchatHeader,
-  StyledSubscriptionSectionWebchat,
   StyledSubscriptionSectionEnterpriseCardBody,
   StyledSubscriptionSectionEnterpriseCardHeader,
   StyledSubscriptionSectionCardHeader,
@@ -21,110 +19,170 @@ import {
   StyledSubscriptionSectionHeader,
   StyledSubscriptionSectionBody,
   StyledSubscriptionSectionEnterpriseCard,
-  StyledSelectedPlanHeader,
 } from './SubscriptionSection.styled';
 import { StripeForm } from './CheckoutStripeForm/CheckoutStripeForm';
 import { ButtonMolecule } from '../../../atoms/Button/Button';
-import { SubscriptionSectionProps } from './SubscriptionSection.interface';
+import {
+  PlanName,
+  SubscriptionDataProps,
+  SubscriptionSectionProps,
+} from './SubscriptionSection.interface';
 import { ModalMolecule } from '../../../molecules/Modal/Modal';
-
-export const userData = {
-  userName: 'Felipe',
-  plan: 'Start',
-  trial: false,
-  trialEnd: '',
-};
+import { useAppSelector } from '../../../../../redux/hook/hooks';
+import { Text } from '../../../atoms/Text/Text';
+import { PaymentsInfoSection } from './Sections/InvoicesSection';
+import { ChangePlan } from './ChangePlan/ChangePlan';
 
 const stripe = loadStripe(
   String(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!),
 );
 
-export const SubscriptionSection: FC<SubscriptionSectionProps> = () => {
+export const SubscriptionSection: FC<
+  SubscriptionSectionProps & SubscriptionDataProps
+> = () => {
+  const { plan, endDate } = useAppSelector(
+    (state) => state.subscriptionsInfo.subscriptionsData,
+  );
+
   const [showCard, setShowCard] = useState(false);
+  const [changePlan, setChangePlan] = useState(false);
   const [planNameSelected, setPlanNameSelected] = useState('');
 
   const handlePlanClick = (planName: string) => {
     setPlanNameSelected(planName);
-    setShowCard(true);
+    if (
+      plan === PlanName.ENTERPRISE_TRIAL ||
+      plan === PlanName.BUSINESS_TRIAL ||
+      plan === PlanName.CORPORATE_TRIAL ||
+      plan === PlanName.GROWTH_TRIAL ||
+      plan === PlanName.START_TRIAL
+    ) {
+      setShowCard(true);
+    } else {
+      setChangePlan(true);
+    }
   };
+
+  // Fecha de fin de expiración dinámica
+  const date = new Date(endDate || '');
+  const dateNow = new Date();
+  const diff = date.getTime() - dateNow.getTime();
+  const days = Math.round(diff / (1000 * 60 * 60 * 24));
+  const rtf = new Intl.RelativeTimeFormat('es-ES', {
+    numeric: 'auto',
+    style: 'long',
+  });
+  const daysLeft = rtf?.format(
+    Math.round(diff / (1000 * 60 * 60 * 24)) || 0,
+    'day',
+  );
 
   return (
     <StyledSubscriptionSection>
       <StyledSubscriptionSectionHeader>
-        {userData.trial ? (
+        {plan === PlanName.ENTERPRISE_TRIAL ||
+        plan === PlanName.BUSINESS_TRIAL ||
+        plan === PlanName.CORPORATE_TRIAL ||
+        plan === PlanName.GROWTH_TRIAL ||
+        plan === PlanName.START_TRIAL ? (
           <StyledSubscriptionSectionHeaderInfo>
-            <div>
-              <h2>Período de evaluación del producto</h2>
-            </div>
-            <div>
-              <p> 20 </p>
-              <h1>días restantes</h1>
-            </div>
+            {days >= 0 ? (
+              <div>
+                <Text>El período de evaluación del producto finalizará</Text>
+                {days > 2 ? (
+                  <p>{daysLeft}</p>
+                ) : (
+                  <p
+                    style={{
+                      backgroundColor: '#fba833f7',
+                    }}>
+                    {daysLeft}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div>
+                <Text
+                  style={{
+                    border: '3px solid white',
+                  }}>
+                  Período de evaluación del producto
+                </Text>
+                <p
+                  style={{
+                    backgroundColor: '#fb333df7',
+                  }}>
+                  FINALIZADO
+                </p>
+              </div>
+            )}
           </StyledSubscriptionSectionHeaderInfo>
         ) : (
-          <StyledSelectedPlanHeader>
-            <h2>
-              <span>{userData.plan.toLocaleUpperCase()}</span>
-            </h2>
-          </StyledSelectedPlanHeader>
+          <Elements stripe={stripe}>
+            <PaymentsInfoSection />
+          </Elements>
         )}
       </StyledSubscriptionSectionHeader>
       <StyledSubscriptionSectionBody>
         <div>
-          {planes.map((plan, index) => (
+          {planes.map((planItem, index) => (
             <StyledSubscriptionSectionCard
               key={index.toString()}
-              active={userData.plan === plan.name}>
+              active={plan?.replace('_TRIAL', '') === planItem.name}>
               <StyledSubscriptionSectionCardHeader
-                active={userData.plan === plan.name}>
+                active={plan?.replace('_TRIAL', '') === planItem.name}>
                 <h1>
-                  <span>{plan.name}</span>
+                  <span>{planItem.name}</span>
                 </h1>
-                {plan.name !== userData.plan && plan.price && (
-                  <h3>${plan.price},00</h3>
-                )}
+                {planItem.name !== plan?.replace('_TRIAL', '') &&
+                  planItem.price && <h3>${planItem.price},00</h3>}
               </StyledSubscriptionSectionCardHeader>
-              {plan.name !== 'Enterprise' &&
+              {planItem.name !== PlanName.ENTERPRISE &&
                 SubscriptionSectionItems?.map(({ id, item }) => (
                   <div key={id}>
                     <SVGIcon iconFile="/icons/success.svg" />
                     <span>
-                      {id === 0 && plan.name === 'Start' && '2 '}
-                      {id === 0 && plan.name === 'Growth' && '2 '}
-                      {id === 0 && plan.name === 'Business' && '5 '}
-                      {id === 0 && plan.name === 'Corporate' && '10 '}
+                      {id === 0 && planItem.name === PlanName.START && '2 '}
+                      {id === 0 && planItem.name === PlanName.GROWTH && '2 '}
+                      {id === 0 && planItem.name === PlanName.BUSINESS && '5 '}
+                      {id === 0 &&
+                        planItem.name === PlanName.CORPORATE &&
+                        '10 '}
                       {item}
                     </span>
                   </div>
                 ))}
-              {plan.name !== 'Enterprise' && plan.name !== 'Start' && (
-                <>
-                  <div key="7">
-                    <SVGIcon iconFile="/icons/success.svg" />
-                    <span
-                      style={{
-                        fontSize: '14px',
-                      }}>
-                      {' '}
-                      WhatsApp QR
-                    </span>
-                  </div>
-                  <div key="8">
-                    <SVGIcon iconFile="/icons/success.svg" />
-                    <span
-                      style={{
-                        fontSize: '14px',
-                      }}>
-                      {' '}
-                      WhatsApp Business API
-                    </span>
-                  </div>
-                </>
-              )}
-              {plan.name === userData.plan ? null : (
+              {planItem.name !== PlanName.ENTERPRISE &&
+                planItem.name !== PlanName.START && (
+                  <>
+                    <div key="7">
+                      <SVGIcon iconFile="/icons/success.svg" />
+                      <span
+                        style={{
+                          fontSize: '14px',
+                        }}>
+                        {' '}
+                        WhatsApp QR
+                      </span>
+                    </div>
+                    {planItem.name === PlanName.CORPORATE && (
+                      <div key="8">
+                        <SVGIcon iconFile="/icons/success.svg" />
+                        <span
+                          style={{
+                            fontSize: '14px',
+                          }}>
+                          {' '}
+                          WhatsApp Business API
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )}
+              {planItem.name === plan ? null : (
                 <ButtonMolecule
-                  text={`Contratar${'  '} ${plan.name}`}
-                  onClick={() => handlePlanClick(plan.name)}
+                  text={`Contratar${'  '} ${planItem.name}`}
+                  onClick={() => handlePlanClick(planItem.name)}
                 />
               )}
             </StyledSubscriptionSectionCard>
@@ -132,13 +190,13 @@ export const SubscriptionSection: FC<SubscriptionSectionProps> = () => {
 
           <div>
             <StyledSubscriptionSectionEnterpriseCard
-              active={userData.plan === 'Enterprise'}>
+              active={plan === PlanName.ENTERPRISE}>
               <StyledSubscriptionSectionEnterpriseCardHeader
-                active={userData.plan === 'Enterprise'}>
+                active={plan === PlanName.ENTERPRISE}>
                 <h1> Enterprise </h1>
               </StyledSubscriptionSectionEnterpriseCardHeader>
               <StyledSubscriptionSectionEnterpriseCardBody
-                active={userData.plan === 'Enterprise'}>
+                active={plan === PlanName.ENTERPRISE}>
                 <div>
                   {SubscriptionSectionPersonalizedItems.map(({ id, item }) => (
                     <div key={id}>
@@ -148,7 +206,7 @@ export const SubscriptionSection: FC<SubscriptionSectionProps> = () => {
                   ))}
                 </div>
               </StyledSubscriptionSectionEnterpriseCardBody>
-              {userData.plan === 'Enterprise' ? null : (
+              {plan === PlanName.ENTERPRISE ? null : (
                 <a
                   href="https://app.elipse.ai/conversemos-elipse-chat-personalizado"
                   target="_blank"
@@ -157,30 +215,6 @@ export const SubscriptionSection: FC<SubscriptionSectionProps> = () => {
                 </a>
               )}
             </StyledSubscriptionSectionEnterpriseCard>
-            {userData.plan === 'Webchat' ? (
-              <StyledSubscriptionSectionWebchat
-                active={userData.plan === 'Webchat'}>
-                <StyledSubscriptionSectionWebchatHeader>
-                  <h1>Webchat</h1>
-                  <h3>Gratuito!</h3>
-                </StyledSubscriptionSectionWebchatHeader>
-                <StyledSubscriptionSectionWebchatBody
-                  active={userData.plan === 'Webchat'}>
-                  <div>
-                    <SVGIcon iconFile="/icons/success.svg" />
-                    <span>Webchat</span>
-                  </div>
-                  <div>
-                    <SVGIcon iconFile="/icons/success.svg" />
-                    <span>2 Agentes</span>
-                  </div>
-                  <div>
-                    <SVGIcon iconFile="/icons/success.svg" />
-                    <span>1 Supervisor</span>
-                  </div>
-                </StyledSubscriptionSectionWebchatBody>
-              </StyledSubscriptionSectionWebchat>
-            ) : null}
           </div>
         </div>
       </StyledSubscriptionSectionBody>
@@ -194,6 +228,14 @@ export const SubscriptionSection: FC<SubscriptionSectionProps> = () => {
             />
           </ModalMolecule>
         </Elements>
+      )}
+      {changePlan && (
+        <ModalMolecule isModal={changePlan} setModal={setChangePlan}>
+          <ChangePlan
+            planNameSelected={planNameSelected}
+            setChangePlan={setChangePlan}
+          />
+        </ModalMolecule>
       )}
     </StyledSubscriptionSection>
   );

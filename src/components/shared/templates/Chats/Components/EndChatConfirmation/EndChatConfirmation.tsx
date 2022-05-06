@@ -16,7 +16,7 @@ import {
 
 export const EndChatConfirmation: FC<IEndChatConfirmationProps> = ({
   setOpenEndChat,
-  submitForm,
+  handleFinishedChat,
 }) => {
   return (
     <StyledEndChatConfirmation>
@@ -39,8 +39,7 @@ export const EndChatConfirmation: FC<IEndChatConfirmationProps> = ({
         <ButtonMolecule
           text="Finalizar"
           size={Size.MEDIUM}
-          type="submit"
-          onClick={submitForm}
+          onClick={handleFinishedChat}
         />
       </StyledFooterEndChatConfirmation>
     </StyledEndChatConfirmation>

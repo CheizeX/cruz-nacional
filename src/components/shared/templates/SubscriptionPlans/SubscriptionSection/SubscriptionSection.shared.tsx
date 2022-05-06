@@ -14,7 +14,7 @@ export const SubscriptionSectionItems = [
   },
   {
     id: 2,
-    item: 'Soporte priorizado',
+    item: 'Soporte vía mail',
   },
   {
     id: 3,
@@ -71,22 +71,22 @@ export const SubscriptionSectionPersonalizedItems = [
 
 export const planes = [
   {
-    name: 'Start',
+    name: 'START',
     price: '49',
     link: 'https://buy.stripe.com/dR6cOa1Zf9si98IaEK',
   },
   {
-    name: 'Growth',
+    name: 'GROWTH',
     price: '99',
     link: 'https://buy.stripe.com/00g8xU5br0VM5Ww3cf',
   },
   {
-    name: 'Business',
+    name: 'BUSINESS',
     price: '199',
     link: 'https://buy.stripe.com/cN2dSe5brcEudoY5ko',
   },
   {
-    name: 'Corporate',
+    name: 'CORPORATE',
     price: '399',
     link: 'https://buy.stripe.com/00g3dA6fv9siet24gl',
   },

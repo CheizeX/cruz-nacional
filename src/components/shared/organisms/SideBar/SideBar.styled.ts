@@ -139,6 +139,7 @@ export const SideBarTopContainer = styled.div<SideBarContainersProps>`
         }
       }
     `};
+  }
 `;
 
 export const SideBarBodyContainer = styled.div<SideBarContainersProps>`
@@ -218,6 +219,31 @@ export const StyledWrapperButton = styled.button<SideBarContainersProps>`
         focused ? theme.Colors.purples[1] : theme.Colors.grays[10]};
       fill: ${({ focused, theme }) =>
         focused ? theme.Colors.purples[1] : theme.Colors.grays[10]};
+    }
+    & > :last-child {
+      & > div {
+        & > div {
+          margin-left: 7px;
+          & > svg {
+            animation: blinker 1s infinite;
+            @keyframes blinker {
+              1% {
+                opacity: 0.2;
+              }
+            }
+            border-radius: 50%;
+            outline: 2px solid ${({ theme }) => theme.Colors.grays[10]};
+            width: 18px;
+            height: 18px;
+            background: ${({ theme }) => theme.Colors.grays[10]};
+            & > path {
+              width: 20px;
+              height: 20px;
+              fill: red;
+            }
+          }
+        }
+      }
     }
   }
 

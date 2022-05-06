@@ -6,6 +6,8 @@ export enum Channels {
   MESSENGER = 'Messenger',
   INSTAGRAM = 'Instagram',
   WEBCHAT = 'Webchat',
+  WASSENGER = 'Wassenger',
+  CHAT_API = 'Chat-API',
 }
 
 export enum ChatStatus {
@@ -73,4 +75,17 @@ export type Chat = {
   finishedStatus?: ChatFinishedStatus;
   feedback?: string;
   hasHistory?: boolean;
+  trafficLight?: string;
 };
+
+export type IPropsChannel = {
+  _id?: string;
+  name: string;
+  clientId: string;
+};
+
+export enum ITrafficLight {
+  YELLOW = 'YELLOW',
+  RED = 'RED',
+  NEUTRO = 'NEUTRO',
+}

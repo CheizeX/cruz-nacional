@@ -15,10 +15,11 @@ export const StyledMaxConversations = styled.div`
 `;
 
 export const StyledMaxConversationsHeader = styled.div`
+  position: relative;
   width: 100%;
   height: 50px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[9]};
   padding: 0 25px;
@@ -26,19 +27,25 @@ export const StyledMaxConversationsHeader = styled.div`
     font-weight: 500;
     color: ${({ theme }) => theme.Colors.grays[1]};
   }
-  & > button {
-    width: 15px;
-    height: 15px;
-    text-align: center;
-    &: hover {
-      cursor: pointer;
-      & * {
-        fill: ${({ theme }) => theme.Colors.grays[5]};
+
+  & > div {
+    transform: translateX(30%);
+    & > div {
+      & > div {
+        & > svg {
+          width: 18px;
+          height: 18px;
+          & > path {
+            fill: ${({ theme }) => theme.Colors.purples[3]};
+          }
+        }
       }
     }
-    & * {
-      fill: ${({ theme }) => theme.Colors.grays[6]};
-    }
+  }
+  & > svg {
+    width: 20px;
+    height: 20px;
+    fill: ${({ theme }) => theme.Colors.grays[1]};
   }
 `;
 

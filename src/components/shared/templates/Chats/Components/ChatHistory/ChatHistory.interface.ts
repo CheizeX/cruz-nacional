@@ -7,6 +7,7 @@ export interface IChatHistoryProps {
   setIsChannelChat: React.Dispatch<React.SetStateAction<string>>;
   setIsContentChat: React.Dispatch<React.SetStateAction<string>>;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAgent: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface IContainerHistory {

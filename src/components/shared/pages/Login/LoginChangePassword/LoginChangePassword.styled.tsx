@@ -18,8 +18,8 @@ export const StyledTitle = styled.div`
   width: 100%;
   height: 20px;
   display: flex;
-  margin-top: 32px;
-  margin-bottom: 23px;
+  margin-top: 16px;
+  margin-bottom: 16px;
   justify-content: center;
   align-items: flex-end;
   & > span {
@@ -31,7 +31,7 @@ export const StyledSubTitle = styled.div`
   width: 100%;
   height: 34px;
   display: flex;
-  margin-bottom: 26px;
+  margin-bottom: 20px;
   justify-content: center;
   align-items: flex-end;
   padding-left: 35px;
@@ -46,6 +46,7 @@ export const StyledInput = styled.div`
   width: 340px;
   height: 40px;
   margin-left: 36px;
+  margin-bottom: 25px;
   & > div {
     background: ${({ theme }) => theme && theme.Colors.grays[9]};
   }

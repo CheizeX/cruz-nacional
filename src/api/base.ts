@@ -24,6 +24,11 @@ export class BaseRestApi {
       return config;
     });
   }
+  // axios.defaults.headers = {
+  //   'Cache-Control': 'no-cache',
+  //   'Pragma': 'no-cache',
+  //   'Expires': '0',
+  // };
 
   async get<T = unknown>(uri: string): Promise<any> {
     try {
@@ -54,12 +59,15 @@ export class BaseRestApi {
     }
   }
 
-  async post<T = unknown>(uri: string, body: unknown): Promise<T> {
+  async post<T = unknown>(uri: string, body: unknown): Promise<any> {
     try {
       const response = await this.instance.post<ISuccessResponse<T>>(uri, body);
       // if (!response.data.success) {
       //   router.push('/');
       // }
+      if (!response.data.success) {
+        return response.data;
+      }
       return response.data.result;
     } catch (err: any) {
       appLogger.warn(err);
@@ -95,6 +103,7 @@ export class BaseRestApi {
       );
       // if (!response.data.success)
       //   throw new Error(JSON.stringify(response.data));
+
       return response.data.result;
     } catch (err: any) {
       appLogger.warn(err);
@@ -117,7 +126,7 @@ export class BaseRestApi {
     }
   }
 
-  async patch<T = unknown>(uri: string, body: unknown): Promise<T> {
+  async patch<T = unknown>(uri: string, body: unknown): Promise<any> {
     try {
       const response = await this.instance.patch<ISuccessResponse<T>>(
         uri,
@@ -126,6 +135,9 @@ export class BaseRestApi {
 
       // if (!response.data.success)
       //   throw new Error(JSON.stringify(response.data));
+      if (!response.data.success) {
+        return response.data;
+      }
       return response.data.result;
     } catch (err: any) {
       appLogger.warn(err);

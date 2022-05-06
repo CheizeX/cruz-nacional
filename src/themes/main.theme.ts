@@ -40,7 +40,7 @@ export const mainTheme: DefaultTheme = {
       3: '#F78F28',
       4: '#FA5F5F',
       5: '#EB502A',
-      6: '#ee964b',
+      6: '#F8D753',
     },
   },
   fontSize: {

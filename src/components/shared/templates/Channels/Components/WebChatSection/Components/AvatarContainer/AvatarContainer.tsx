@@ -62,10 +62,6 @@ export const AvatarContainer: FC<ICustomAvatar> = ({
       setCustomizeMyAvatar(false);
     }
   };
-  // const handleClick = (event: any) => {
-  //   console.log(hiddenFileInput, 'holaaaaaaaaaaa');
-  //   hiddenFileInput.current.click();
-  // };
   return (
     <>
       <StyledAvatarContainer>

@@ -9,7 +9,11 @@ const mySelector = (
 
 export const StyledDropdownStatus = styled.div<IPropsWraperDropdownStatus>`
   position: relative;
-  width: 142px;
+  max-width: 220px;
+  display: flex;
+  justify-content: end;
+  min-width: 220px;
+  width: max-content;
   & > button {
     border-radius: 24px;
     background: ${({ statusChecked, theme }) =>
@@ -30,14 +34,20 @@ export const StyledDropdownStatus = styled.div<IPropsWraperDropdownStatus>`
         null,
       )};
     padding: 4px 12px;
+    justify-content: space-between;
     width: max-content;
     cursor: pointer;
     margin-left: 1px;
     display: flex;
-    min-width: 109px;
     min-height: 31px;
+    & > span {
+      display: flex;
+      width: fit-content;
+    }
     & > div {
       padding: 6px;
+      width: 10px;
+      height: 10px;
       span {
         line-height: 4px;
       }
@@ -67,6 +77,8 @@ export const StyledAgentStatusDropdown = styled.div`
   position: absolute;
   z-index: 1;
   margin-top: 10px;
+  top: 38px;
+  left: 0;
   & > :nth-child(4) {
     & > :nth-child(2) {
       & > div {

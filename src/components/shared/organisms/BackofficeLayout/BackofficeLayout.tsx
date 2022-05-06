@@ -1,8 +1,13 @@
+/* eslint-disable no-nested-ternary */
 import React, { FC, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useJwt } from 'react-jwt';
-import { adminSection, supervisorSection } from '../../../../config/backoffice';
+import {
+  adminSection,
+  supervisorSection,
+  adminSectionRestricted,
+} from '../../../../config/backoffice';
 import { SVGIcon } from '../../atoms/SVGIcon/SVGIcon';
 import { BackOffice } from '../NavBar/BackOffice/NavBarBackOffice';
 import { SideBarOrganism } from '../SideBar/SideBar';
@@ -21,6 +26,7 @@ import { Loader } from '../../atoms/Loader/Loader';
 import { ChannelsSection } from '../../templates/Channels/ChannelsSection/ChannelsSection';
 import { SubscriptionSection } from '../../templates/SubscriptionPlans/SubscriptionSection/SubscriptionSection';
 import { ConfigurationSection } from '../../templates/Configuration/ConfigurationSection/ConfigurationSection';
+import { PlanStatus } from '../../templates/SubscriptionPlans/SubscriptionSection/SubscriptionSection.interface';
 
 const StyledContainer = styled.main`
   display: flex;
@@ -49,10 +55,6 @@ export const BackofficeLayout: FC<
   startDate,
   endDate,
 }) => {
-  const [collapseArrow, setCollapseArrow] = React.useState<boolean>(false);
-  const [selectedSection, setSelectedSection] =
-    React.useState<string>('Monitor');
-
   const { push } = useRouter();
 
   const [accessToken] = useLocalStorage('AccessToken', '');
@@ -61,10 +63,20 @@ export const BackofficeLayout: FC<
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
   );
+  const { planStatus } = useAppSelector(
+    (state) => state.subscriptionsInfo.subscriptionsData,
+  );
+
+  const [collapseArrow, setCollapseArrow] = React.useState<boolean>(false);
+  const [selectedSection, setSelectedSection] = React.useState<string>(
+    planStatus === PlanStatus.ACTIVE ? 'Monitor' : 'Suscripciones',
+  );
 
   const sections =
     userDataInState && userDataInState.role === UserRole.SUPERVISOR
       ? supervisorSection
+      : planStatus === PlanStatus.INACTIVE
+      ? adminSectionRestricted
       : adminSection;
 
   useEffect(() => {
@@ -74,7 +86,7 @@ export const BackofficeLayout: FC<
     if (decodedToken && decodedToken?.role === UserRole.AGENT) {
       push('/live-chat');
     }
-  }, [userDataInState, decodedToken]);
+  }, [userDataInState, decodedToken, accessToken, push]);
 
   return (
     <>

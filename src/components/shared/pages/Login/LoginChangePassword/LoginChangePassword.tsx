@@ -5,7 +5,6 @@ import {
   StyledLoginPassword,
   StyledTitle,
   StyledSubTitle,
-  FirstMessage,
   StyledInput,
   SecondMessage,
   StyledRestrictions,
@@ -22,13 +21,16 @@ import { ContainerInput } from '../../../molecules/Input/ContainerInput';
 import { LoginViewsWrapper } from '../../../organisms/LoginViewsWrapper/LoginViewsWrapper';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { useToastContext } from '../../../molecules/Toast/useToast';
+import { baseRestApi } from '../../../../../api/base';
 
 type Values = {
   password: string;
+  confirm: string;
 };
 
 const initialValues = {
   password: '',
+  confirm: '',
 };
 
 const validationSchema = Yup.object({
@@ -36,15 +38,23 @@ const validationSchema = Yup.object({
     .min(8, 'Debe tener al menos 8 caracteres')
     .matches(/^(\S+$)/, 'No debe tener espacios vacíos')
     .required('Debe introducir una contraseña'),
+  confirm: Yup.string()
+    .min(8, 'Debe tener al menos 8 caracteres')
+    .matches(/^(\S+$)/, 'No debe tener espacios vacíos')
+    .required('Debe introducir una contraseña')
+    .oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden'),
 });
+
 export interface LoginChangePasswordProps {
   onClick?: MouseEventHandler;
-  onSubmit?: (password: string) => void | Promise<void>;
+  token: string;
+  setIsSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const LoginChangePassword: FC<LoginChangePasswordProps> = ({
   onClick = () => {},
-  onSubmit: onSubmitExternal,
+  token,
+  setIsSuccess,
 }) => {
   const [visible, setVisible] = useState(false);
   const toasts = useToastContext();
@@ -64,22 +74,36 @@ export const LoginChangePassword: FC<LoginChangePasswordProps> = ({
       resetForm: () => void;
     },
   ) => {
+    submitProps?.setSubmitting(true);
     try {
-      if (onSubmitExternal && _values?.password)
-        onSubmitExternal(_values.password);
-
+      const response = await baseRestApi.patch(
+        `${process.env.NEXT_PUBLIC_AUTH_API_URL}/resetPassword/${token}`,
+        {
+          newPassword: _values?.password,
+          confirmedNewPassword: _values?.confirm,
+        },
+      );
       submitProps?.setSubmitting(false);
       submitProps?.resetForm();
-      toasts?.addToast({
-        alert: Toast.SUCCESS,
-        title: '¡Perfect!',
-        message: 'La iteración ha sido asignada con éxito',
-      });
+      if (response === 'RESTORED') {
+        setIsSuccess(true);
+        toasts?.addToast({
+          alert: Toast.SUCCESS,
+          title: 'CONTRASEÑA CAMBIADA',
+          message: 'La contraseña ha sido cambiada con éxito',
+        });
+      } else {
+        toasts?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: 'La contraseña no ha sido cambiada',
+        });
+      }
     } catch (error) {
       toasts?.addToast({
         alert: Toast.ERROR,
-        title: '¡Oops!',
-        message: `${error}`,
+        title: 'ERROR',
+        message: `La contraseña no ha podido ser cambiada.`,
       });
     }
   };
@@ -89,7 +113,7 @@ export const LoginChangePassword: FC<LoginChangePasswordProps> = ({
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}>
-      {({ errors, touched, isValid }) => {
+      {({ errors, touched, isValid, values }) => {
         return (
           <LoginViewsWrapper>
             <StyledLoginPassword>
@@ -101,15 +125,10 @@ export const LoginChangePassword: FC<LoginChangePasswordProps> = ({
               <Form>
                 <StyledSubTitle>
                   <Text size="14px" weight="400">
-                    Ingresa tu nueva contraseña, considerando las restricciones
-                    indicadas
+                    A continuación ingresa tu nueva contraseña considerando las
+                    restricciones indicadas:
                   </Text>
                 </StyledSubTitle>
-                <FirstMessage>
-                  <Text size="12px" weight="500">
-                    Nueva Contraseña
-                  </Text>
-                </FirstMessage>
                 <StyledInput>
                   <Field
                     as={ContainerInput}
@@ -123,6 +142,19 @@ export const LoginChangePassword: FC<LoginChangePasswordProps> = ({
                   />
                   <ErrorMessage name="password" component={StyleErrors} />
                 </StyledInput>
+                <StyledInput>
+                  <Field
+                    as={ContainerInput}
+                    name="confirm"
+                    id="confirm"
+                    setFocus={() => null}
+                    type={visible ? 'text' : 'password'}
+                    valid={touched.password && !errors.password}
+                    onClick={handleClick}
+                    LeftIcon={() => <SVGIcon iconFile="/icons/eye.svg" />}
+                  />
+                  <ErrorMessage name="confirm" component={StyleErrors} />
+                </StyledInput>
                 <SecondMessage>
                   <Text size="12px" weight="500">
                     Tu Contraseña debe:
@@ -135,13 +167,19 @@ export const LoginChangePassword: FC<LoginChangePasswordProps> = ({
                   </Text>
                   <SVGIcon iconFile="/icons/check_password.svg" />
                   <Text size="12px" weight="400">
-                    No contener espacios vacios.
+                    No contener espacios vacíos.
                   </Text>
                 </StyledRestrictions>
                 <ButtonMolecule
+                  type="button"
                   text="Cambiar"
                   size={Size.MEDIUM}
-                  state={!isValid ? ButtonState.DISABLED : ButtonState.NORMAL}
+                  state={
+                    !isValid || values.confirm === '' || values.password === ''
+                      ? ButtonState.DISABLED
+                      : ButtonState.NORMAL
+                  }
+                  onClick={() => onSubmit(values)}
                 />
               </Form>
             </StyledLoginPassword>
@@ -151,5 +189,3 @@ export const LoginChangePassword: FC<LoginChangePasswordProps> = ({
     </Formik>
   );
 };
-
-export default LoginChangePassword;
