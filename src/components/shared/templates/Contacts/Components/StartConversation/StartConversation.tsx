@@ -145,7 +145,9 @@ export const StartConversation: FC<IStartConversation> = ({
           {' '}
           <SVGIcon
             iconFile={`/icons/${
-              selectedChannel === '' ? 'WhatsApp' : selectedChannel
+              selectedChannel === '' || selectedChannel === Channels.CHAT_API
+                ? 'WhatsApp'
+                : selectedChannel
             }.svg`}
           />
           <Text>{selectedByClient.name}</Text>
