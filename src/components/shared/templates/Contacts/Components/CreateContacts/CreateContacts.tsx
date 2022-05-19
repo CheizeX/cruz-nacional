@@ -123,7 +123,7 @@ export const CreateContacts: FC<IPropsCreateContacts> = ({
         name: Channels.CHAT_API,
         clientId: '',
       },
-      status: '',
+      status: 'Activo',
     });
     setIsOpenModal(false);
   };
@@ -142,6 +142,7 @@ export const CreateContacts: FC<IPropsCreateContacts> = ({
           <ContainerInput
             name="name"
             value={createContact.name}
+            type="text"
             setFocus={() => null}
             onChange={(e) => handleInputChange(e)}
           />
@@ -162,6 +163,7 @@ export const CreateContacts: FC<IPropsCreateContacts> = ({
           <Text>Email</Text>
           <ContainerInput
             name="email"
+            type="email"
             value={createContact.email}
             valid={isValid}
             setFocus={() => null}

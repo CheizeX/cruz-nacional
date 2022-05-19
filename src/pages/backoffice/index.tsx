@@ -28,7 +28,7 @@ const BackofficePage: NextPage<
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
   );
-  socket.emit('joinSupervisorRooms', userDataInState?.companyId);
+  socket?.emit('joinSupervisorRooms', userDataInState?.companyId);
 
   return (
     <BackofficeLayout

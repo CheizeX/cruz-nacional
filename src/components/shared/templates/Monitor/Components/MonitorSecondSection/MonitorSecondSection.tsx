@@ -66,13 +66,6 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
     return null;
   };
 
-  // const imageOnErrorHandler = (
-  //   event: React.SyntheticEvent<HTMLImageElement, Event>,
-  // ) => {
-  //   event.currentTarget.src = '/icons/unknown_user.svg';
-  //   event.currentTarget.className = 'error';
-  // };
-
   return (
     <StyledWrapperSectionMonitor>
       <StyledHeaderFirstSection>
@@ -95,12 +88,14 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
           number={countAgent}
           position="AVAILABLE"
           icon="/icons/user_Accept.svg"
+          setFilterChat={() => null}
         />
         <ChatsCardMonitor
           name="En Pausa"
           number={agentNotAvailable && agentNotAvailable.length}
           position="BATHROOM"
           icon="/icons/user_watch.svg"
+          setFilterChat={() => null}
         />
       </WrapperFirtSectionCard>
       <ContainerInput

@@ -40,8 +40,8 @@ export const StyledSearchByAsignation = styled.div<ISearchByAsignation>`
   padding-left: 2px;
   & > :nth-child(1) {
     height: fit-content;
-    background: ${({ checkedAgent, theme }) =>
-      checkedAgent ? theme.Colors.purples[1] : theme.Colors.grays[8]};
+    /* background: ${({ checkedAgent, theme }) =>
+      checkedAgent ? theme.Colors.purples[1] : theme.Colors.grays[8]}; */
   }
   & > :nth-child(2) {
     width: 24px;

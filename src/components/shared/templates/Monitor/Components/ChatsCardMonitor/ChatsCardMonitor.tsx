@@ -9,9 +9,12 @@ export const ChatsCardMonitor: FC<ICardProps & ICardContainer> = ({
   name,
   number,
   icon,
+  setFilterChat,
 }) => {
   return (
-    <StyledCardMonitor position={position ?? 'ON_CONVERSATION'}>
+    <StyledCardMonitor
+      position={position ?? 'ON_CONVERSATION'}
+      onClick={() => setFilterChat(position)}>
       <Text>{number ?? '5'}</Text>
       <Text>{name ?? 'Por Asignar'}</Text>
       <SVGIcon iconFile={icon ?? '/icons/user_question.svg'} />

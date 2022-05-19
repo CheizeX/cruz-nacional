@@ -96,10 +96,18 @@ export const UserCreate: FC<IUserCreateProps> = ({
         if (response.errorMessage === 'Limit reached') {
           showAlert?.addToast({
             alert: Toast.ERROR,
-            title: '¡Upps!',
+            title: '¡Ups!',
             message: 'Has alcanzado el número máximo de usuarios permitidos',
           });
-        } else {
+        }
+        if (response.errorMessage === 'User exists') {
+          showAlert?.addToast({
+            alert: Toast.ERROR,
+            title: '¡Ups!',
+            message: 'Este usuario ya existe.',
+          });
+        }
+        if (response.success === true) {
           showAlert?.addToast({
             alert: Toast.SUCCESS,
             title: '¡Perfecto!',

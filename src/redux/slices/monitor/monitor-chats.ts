@@ -29,6 +29,16 @@ export const monitorManagementStore = createSlice({
     setChatsToday: (state, action: PayloadAction<Chat[]>) => {
       state.chatsToday = action.payload;
     },
+    setSortedByFirstDateChats: (state) => {
+      state.chatsToday = state.chatsToday.sort((a, b) =>
+        a.createdAt > b.createdAt ? 1 : -1,
+      );
+    },
+    setSortedByLastDateChats: (state) => {
+      state.chatsToday = state.chatsToday.sort((a, b) =>
+        a.createdAt < b.createdAt ? 1 : -1,
+      );
+    },
     setCountPause: (state, action: PayloadAction<number>) => {
       state.countPause = action.payload;
     },
@@ -50,5 +60,7 @@ export const {
   setCountOnConversation,
   setCountFinished,
   setCountPending,
+  setSortedByFirstDateChats,
+  setSortedByLastDateChats,
 } = monitorManagementStore.actions;
 export default monitorManagementStore.reducer;

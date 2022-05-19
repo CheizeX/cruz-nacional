@@ -88,29 +88,13 @@ export const WebChatSection: FC<IPropsWebChat> = ({
         const response = await createWebChat({
           name: customTitle,
           description: customDescription,
-          animation: 'yes',
+          animation: isAnimation,
           avatar: customAvatar,
           primaryColor,
           secondaryColor,
         });
 
         if (response === 'Creating webchat') {
-          showAlert?.addToast({
-            alert: Toast.SUCCESS,
-            title: '¡Perfecto!',
-            message: `Se creo el Web Chat satisfactoriamente`,
-          });
-        }
-      } else {
-        const result = await createWebChat({
-          name: customTitle,
-          description: customDescription,
-          animation: 'no',
-          avatar: customAvatar,
-          primaryColor,
-          secondaryColor,
-        });
-        if (result === 'Creating webchat') {
           showAlert?.addToast({
             alert: Toast.SUCCESS,
             title: '¡Perfecto!',

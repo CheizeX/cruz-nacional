@@ -11,10 +11,14 @@ import { useCreateAccount } from '../../hooks/create-account';
 const CreateAccountPage: NextPage = () => {
   const { onboardingStep, handleCreateAccount } = useCreateAccount();
   const router = useRouter();
-  useEffect(() => {
+
+  const handleOnboarding = async () => {
     if (router.asPath !== router.route) {
-      handleCreateAccount();
+      await handleCreateAccount();
     }
+  };
+  useEffect(() => {
+    handleOnboarding();
   }, [router]);
 
   if (onboardingStep === CreateAccountStep.CORRECT) return <CreateAccount />;

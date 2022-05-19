@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useCallback } from 'react';
 import { IoIosWarning } from 'react-icons/io';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
@@ -104,7 +104,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
       ? `${userDataInState.urlAvatar}?token=${accessToken}`
       : '';
 
-  const handleCloseSession = async () => {
+  const handleCloseSession = useCallback(async () => {
     try {
       await signOut();
       setIsComponentVisible(false);
@@ -116,7 +116,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
         message: `${error}`,
       });
     }
-  };
+  }, []);
 
   const handleMyAccount = (number: number) => {
     setMyAccount(number);
@@ -126,26 +126,35 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   const handleComponentsSection = (component: string) => {
     dispatch(setComponentSection(component));
   };
+
   useEffect(() => {
     const statusAgent =
-      userDataInState.status === UserStatus.AVAILABLE
-        ? 'Disponible'
+      userDataInState.status === UserStatus.CALL
+        ? 'En Pausa - En llamado'
         : userDataInState.status === UserStatus.BATHROOM
         ? 'En Pausa - Baño'
         : userDataInState.status === UserStatus.LUNCH
         ? 'En Pausa - Almuerzo'
-        : 'En Pausa - En llamado';
+        : 'Disponible';
+
     const numberStatus =
-      userDataInState.status === UserStatus.AVAILABLE
-        ? 0
+      userDataInState.status === UserStatus.CALL
+        ? 3
         : userDataInState.status === UserStatus.BATHROOM
         ? 1
         : userDataInState.status === UserStatus.LUNCH
         ? 2
-        : 3;
+        : 0;
     setStatusChecked(statusAgent);
     setActivoChecked(numberStatus);
   }, [userDataInState.status]);
+
+  useEffect(() => {
+    if (!localStorage.getItem('AccessToken')) {
+      handleCloseSession();
+    }
+  }, [accessToken]);
+
   return (
     <>
       <StyledNavBarLive>

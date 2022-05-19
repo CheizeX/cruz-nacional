@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import styled, { css } from 'styled-components';
+import { ITrafficLight } from '../../../../../../models/chat/chat';
 import { StyledPendingWrapperProps } from '../../ChatsSection/ChatsSection.interface';
 
 export const StyledInConversationContainer = styled.div`
@@ -27,25 +28,35 @@ export const StyledInConversationWrapper = styled.div<StyledPendingWrapperProps>
   flex-direction: column;
   padding: 12px 0 0 0;
   // box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  animation: ${({ trafficLight }) =>
-    trafficLight !== 'NEUTRO' ? 'infinite resplandorAnimation 3s' : 'none'};
-  @keyframes resplandorAnimation {
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-name: ${({ trafficLight }) =>
+    // eslint-disable-next-line no-nested-ternary
+    trafficLight === ITrafficLight.YELLOW
+      ? 'twinkleYellow'
+      : trafficLight === ITrafficLight.RED
+      ? 'twinkleRed'
+      : 'none'};
+
+  @keyframes twinkleYellow {
     0%,
     100% {
-      box-shadow: 0px 0px 20px
-        ${({ theme, trafficLight }) =>
-          trafficLight === 'YELLOW'
-            ? theme.Colors.orange[6]
-            : theme.Colors.orange[1]};
+      box-shadow: 0px 0px 20px ${({ theme }) => theme.Colors.orange[6]};
     }
     50% {
-      box-shadow: 0px 0px 0px
-        ${({ theme, trafficLight }) =>
-          trafficLight === 'YELLOW'
-            ? theme.Colors.orange[6]
-            : theme.Colors.orange[1]};
+      box-shadow: 0px 0px 0px ${({ theme }) => theme.Colors.orange[6]};
     }
   }
+  @keyframes twinkleRed {
+    0%,
+    100% {
+      box-shadow: 0px 0px 20px ${({ theme }) => theme.Colors.orange[1]};
+    }
+    50% {
+      box-shadow: 0px 0px 0px ${({ theme }) => theme.Colors.orange[1]};
+    }
+  }
+
   &:hover {
     background-color: ${({ theme }) => theme.Colors.purples[2]};
     cursor: pointer;

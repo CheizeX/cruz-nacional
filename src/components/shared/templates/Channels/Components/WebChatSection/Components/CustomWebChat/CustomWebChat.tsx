@@ -36,7 +36,9 @@ export const CustomWebChat: FC<ICustomWebChat> = ({
               {!customizeMyAvatar ? (
                 <SVGIcon iconFile={`/avatars/${avatar}.svg`} />
               ) : (
-                <img src={avatar} alt={avatar} />
+                <>
+                  <img src={avatar} alt={avatar} />
+                </>
               )}
             </StyledAvatar>
             <div>
@@ -88,7 +90,7 @@ export const CustomWebChat: FC<ICustomWebChat> = ({
             isAnimation={isAnimation}>
             <div>
               {!customizeMyAvatar ? (
-                <SVGIcon iconFile={`/avatars/${avatar}`} />
+                <SVGIcon iconFile={`/avatars/${avatar}.svg`} />
               ) : (
                 <img src={avatar} alt={avatar} />
               )}

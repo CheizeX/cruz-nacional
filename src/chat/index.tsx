@@ -1,17 +1,20 @@
-import { createContext, FC } from 'react';
+import { createContext, FC, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 export const websocketContext = createContext(null);
 
 export const WebsocketProvider: FC = ({ children }) => {
-  let socket: any;
-  if (!socket) {
-    socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? '');
+  const [socket, setSocket] = useState<any>(null);
 
-    socket.on('connection', () => {
-      socket.on('disconnect', () => {});
-    });
-  }
+  useEffect(() => {
+    const socketConnection = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? '');
+    setSocket(socketConnection);
+  }, [setSocket]);
+
+  useEffect(() => {
+    socket?.on('connect', () => {});
+    socket?.on('disconnect', () => {});
+  }, [socket]);
 
   return (
     <websocketContext.Provider value={socket}>

@@ -78,19 +78,6 @@ export const InConversationChatItem: FC<
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
-  // const { chatByInactivity } = useAppSelector(
-  //   (state) => state.liveChat.chatToSetOnConversationIdToState,
-  // );
-
-  // const handleTrafficLight = (trafficLight: string) => {
-  //   if (trafficLight === ITrafficLight.YELLOW) {
-  //     return '#F8D753';
-  //   }
-  //   if (trafficLight === ITrafficLight.RED) {
-  //     return '#E6476F';
-  //   }
-  //   return '';
-  // };
 
   const handleResetNoViewedChats = useCallback(
     async (id: string) => {
@@ -169,7 +156,7 @@ export const InConversationChatItem: FC<
               focusedItem={chat.client.clientId === userSelected}
               pausedItem={chat.isPaused}
               key={chat.createdAt.toString()}
-              trafficLight="NEUTRO"
+              trafficLight={chat.trafficLight}
               onClick={() =>
                 handleSendMessageToUser(
                   chat.client.clientId,

@@ -1,22 +1,26 @@
 import { FC, useState } from 'react';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
-import { ChatsHistory } from '../ChatHistory/ChatHistory';
-import { StyledSeccionChatHistory } from './SeccionChatHistory.styled';
-import { IPropsSeccionChatHistory } from './SeccionChatHistory.interface';
+import { ConversationView } from '../ConversationHistory/ConversationView';
+import { StyledWrapperSectionChat } from './SectionConversationView.styled';
+import { IPropsSectionConversation } from './SectionConversationView.interface';
+import { UserRole } from '../../../../../../models/users/role';
 
-export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
-  liveChatModal,
-  setLiveChatModal,
+export const SectionConversationView: FC<IPropsSectionConversation> = ({
+  setIsOpenModal,
+  chatConversationView,
 }) => {
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [isContentChat, setIsContentChat] = useState<string>('');
-  const [isChannelChat, setIsChannelChat] = useState<string>('');
-  const [isAgent, setIsAgent] = useState<string>('');
+  const [modalPreviewImage, selModalPreviewIamge] = useState<boolean>(false);
+
+  const [openModalId, setOpenModalId] = useState<string>('');
+  const [infoImage, setInfoImage] = useState({
+    content: '',
+    channel: '',
+  });
   const [accessToken] = useLocalStorage('AccessToken', '');
   const tokenQueryParam = `?token=${accessToken}`;
 
-  const handleModalAttachment = (content: string, channel: string) => {
+  const handleAttachmentUser = (content: string, channel: string) => {
     if (content.substring(content.length - 3, content.length) === 'jpg') {
       return (
         <img
@@ -76,8 +80,7 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
     }
     return <p>Esta imagen no se puede visualizar</p>;
   };
-
-  const handleModalAttachmentAgent = (content: string) => {
+  const handleAttachmentAgent = (content: string) => {
     if (content.substring(content.length - 3, content.length) === 'jpg') {
       return (
         <img
@@ -140,25 +143,26 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
 
   return (
     <>
-      {isOpenModal ? (
-        <StyledSeccionChatHistory>
-          <button type="button" onClick={() => setIsOpenModal(false)}>
+      {modalPreviewImage ? (
+        <StyledWrapperSectionChat>
+          <button type="button" onClick={() => selModalPreviewIamge(false)}>
             <SVGIcon iconFile="/icons/minimize.svg" color="white" />
           </button>
           <article>
-            {isAgent === 'Agent'
-              ? handleModalAttachmentAgent(isContentChat)
-              : handleModalAttachment(isContentChat, isChannelChat)}
+            {openModalId === UserRole.AGENT
+              ? handleAttachmentAgent(infoImage.content)
+              : handleAttachmentUser(infoImage.content, infoImage.channel)}
           </article>
-        </StyledSeccionChatHistory>
+        </StyledWrapperSectionChat>
       ) : (
-        <ChatsHistory
-          setLiveChatModal={setLiveChatModal}
-          liveChatModal={liveChatModal}
+        <ConversationView
           setIsOpenModal={setIsOpenModal}
-          setIsContentChat={setIsContentChat}
-          setIsChannelChat={setIsChannelChat}
-          setIsAgent={setIsAgent}
+          setOpenModalId={setOpenModalId}
+          selModalPreviewIamge={selModalPreviewIamge}
+          setInfoImage={setInfoImage}
+          handleAttachmentAgent={handleAttachmentAgent}
+          handleAttachmentUser={handleAttachmentUser}
+          chatConversationView={chatConversationView}
         />
       )}
     </>

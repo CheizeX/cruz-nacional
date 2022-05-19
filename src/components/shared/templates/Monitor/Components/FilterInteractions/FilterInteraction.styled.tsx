@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 export const WrapperFilterInteractions = styled.div`
   position: relative;
-  width: 36px;
-  top: 8px;
+  /* width: 36px;
+  top: 8px; */
 `;
 export const StyledFilterInteraction = styled.div`
   position: absolute;

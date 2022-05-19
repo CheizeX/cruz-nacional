@@ -74,7 +74,7 @@ export type IWebChat = {
   primaryColor: string;
   secondaryColor: string;
   avatar: string;
-  animation: string;
+  animation: boolean;
 };
 
 export type IPropsInstagram = {

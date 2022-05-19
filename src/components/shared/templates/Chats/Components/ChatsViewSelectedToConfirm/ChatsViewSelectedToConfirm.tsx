@@ -136,6 +136,7 @@ export const ChatsViewSelectedToConfirm: FC<
 
   const handleSetUserToOnConversation = async () => {
     // if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
+
     try {
       await baseRestApi.patch(
         `/chats/initConversation/${chatToSetInConversationId}`,
@@ -143,6 +144,7 @@ export const ChatsViewSelectedToConfirm: FC<
           accessToken,
         },
       );
+
       setUserSelected(`${userSelected}` as string);
       setActiveByDefaultTab(1);
     } catch (error) {

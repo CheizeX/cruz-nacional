@@ -43,8 +43,8 @@ export const FilterByAgents = styled.div<IFilterByAgentProps>`
     & > svg {
       stroke: ${({ theme }) => theme.Colors.grays[10]};
     }
-    background: ${({ checkedAgent, theme }) =>
-      checkedAgent ? theme.Colors.purples[1] : theme.Colors.grays[8]};
+    /* background: ${({ checkedAgent, theme }) =>
+      checkedAgent ? theme.Colors.purples[1] : theme.Colors.grays[8]}; */
   }
   & > :nth-child(2) {
     width: 24px;

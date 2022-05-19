@@ -67,17 +67,17 @@ export const BackofficeLayout: FC<
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
 
-  const [collapseArrow, setCollapseArrow] = React.useState<boolean>(false);
-  const [selectedSection, setSelectedSection] = React.useState<string>(
-    planStatus === PlanStatus.ACTIVE ? 'Monitor' : 'Suscripciones',
-  );
-
   const sections =
     userDataInState && userDataInState.role === UserRole.SUPERVISOR
       ? supervisorSection
       : planStatus === PlanStatus.INACTIVE
       ? adminSectionRestricted
       : adminSection;
+
+  const [collapseArrow, setCollapseArrow] = React.useState<boolean>(false);
+  const [selectedSection, setSelectedSection] = React.useState<string>(
+    planStatus === PlanStatus.INACTIVE ? sections[1].name : sections[0].name,
+  );
 
   useEffect(() => {
     if (!accessToken) {

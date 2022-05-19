@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { websocketContext } from '../../chat';
 import { LiveChatsPage } from '../../components/shared/pages/LiveChatsPage/LiveChatsPage';
 import { UploadableFile } from '../../components/shared/templates/Chats/Components/UploadFiles/UploadFiles.interface';
@@ -26,10 +26,12 @@ const LiveChatPage: NextPage<
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
   );
-  socket.emit('joinRooms', {
-    userId: userDataInState?._id,
-    companyId: userDataInState?.companyId,
-  });
+  useEffect(() => {
+    socket?.emit('joinRooms', {
+      userId: userDataInState?._id,
+      companyId: userDataInState?.companyId,
+    });
+  }, [socket, userDataInState]);
 
   return (
     <>

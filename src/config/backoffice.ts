@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 export type BackofficeSection = {
   name: string;
   icon: string;

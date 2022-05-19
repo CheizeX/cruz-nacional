@@ -15,4 +15,5 @@ export interface IMonitorSecondSection {
   filterByState: (arg: number) => void;
   handleClear: () => void | Promise<void>;
   handleStateAgents: () => void | Promise<void>;
+  setFilterChat: React.Dispatch<React.SetStateAction<string>>;
 }

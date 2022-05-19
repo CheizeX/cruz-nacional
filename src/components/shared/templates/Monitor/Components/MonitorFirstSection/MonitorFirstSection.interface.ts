@@ -22,6 +22,13 @@ export interface IFirstSetionProps {
   statusAgent: number[];
   byChannels: number[];
   IDAgents: string[];
+  orderByInteraction: boolean;
   onHandleToggle: () => void | Promise<void>;
   resetHandle: () => void | Promise<void>;
+  setFilterChat: React.Dispatch<React.SetStateAction<string>>;
+  handleSearchChatToday: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setOrderByInteraction: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setClientIdConversation: React.Dispatch<React.SetStateAction<string>>;
+  totalChats: number;
 }

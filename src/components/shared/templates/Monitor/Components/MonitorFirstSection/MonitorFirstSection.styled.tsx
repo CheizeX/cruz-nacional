@@ -25,7 +25,16 @@ export const StyledHeaderFirstSection = styled.div`
     display: flex;
     align-items: center;
     margin: 0 23px;
-    div {
+    & > button {
+      cursor: pointer;
+      &:hover {
+        & > span {
+          color: ${({ theme }) => theme.Colors.purples[1]};
+          box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+        }
+      }
+    }
+    & > :nth-child(2) {
       min-width: 22px;
       min-height: 22px;
       display: flex;
@@ -40,31 +49,111 @@ export const StyledHeaderFirstSection = styled.div`
       border-radius: 50%;
     }
   }
-  & > button {
-    margin-top: 20px;
-    margin-right: 8px;
-    & :hover {
-      cursor: pointer;
-      & * {
-        fill: ${({ theme }) => theme.Colors.grays[5]};
+  & > div {
+    display: flex;
+    width: 340px;
+    justify-content: space-between;
+    align-items: center;
+    & > :first-child {
+      width: 15.3rem;
+      height: 2.4rem;
+      & > button:first-child {
+        display: none;
+      }
+      & > button:last-child {
+        & > div {
+          & * {
+            & > svg {
+              & > path {
+                fill: ${({ theme }) => theme.Colors.grays[7]};
+              }
+            }
+          }
+        }
       }
     }
-    & :active {
-      cursor: pointer;
-      & * {
-        fill: ${({ theme }) => theme.Colors.grays[6]};
+
+    & > :last-child {
+      width: 68px;
+      height: 100%;
+      justify-content: space-between;
+      display: flex;
+      align-items: center;
+      & > button {
+        display: flex;
+        max-width: 30px;
+        height: 100%;
+        cursor: pointer;
+        &:hover {
+          & > div {
+            & * {
+              & > svg {
+                & > path {
+                  fill: ${({ theme }) => theme.Colors.grays[4]};
+                }
+              }
+            }
+          }
+        }
+        & div {
+          width: 15px;
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+      }
+      & > div {
+        width: 30px;
+        height: 100%;
+        & > button {
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+          &:hover {
+            & > div {
+              & * {
+                & > svg {
+                  & > path {
+                    fill: ${({ theme }) => theme.Colors.grays[4]};
+                  }
+                }
+              }
+            }
+          }
+          & div {
+            max-width: 30px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+          }
+        }
       }
     }
-  }
-  & > :nth-child(3) {
-    z-index: 2;
+    /* & > button {
+      margin-top: 20px;
+      margin-right: 8px;
+      & :hover {
+        cursor: pointer;
+        & * {
+          fill: ${({ theme }) => theme.Colors.grays[5]};
+        }
+      }
+      & :active {
+        cursor: pointer;
+        & * {
+          fill: ${({ theme }) => theme.Colors.grays[6]};
+        }
+      }
+    } */
+    & > :nth-child(3) {
+      z-index: 2;
+    }
   }
 `;
 
 export const WrapperCard = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-bottom: 10px;
   div {
     & > div {
       & > div {
@@ -91,39 +180,33 @@ export const StyledAgentSection = styled.div<IContainerProps>`
   width: 607px;
   height: 56px;
   border-radius: 10px;
-  display: flex;
   align-items: center;
   background-color: ${({ theme, index }) =>
     index && index % 2 !== 0 ? theme.Colors.grays[10] : theme.Colors.grays[9]};
-  & > div:first-child {
-    height: 33px;
+  display: grid;
+  grid-template-columns: 0.8fr 1.5fr 1.2fr 1.5fr 1.5fr 0.8fr;
+  & > :nth-child(1) {
     display: flex;
     align-items: center;
-    margin: 12px 25px;
+    min-height: 56px;
+    max-height: 56px;
+    justify-content: center;
+    width: 100%;
     & > div {
-      & > div {
-        & > div {
-          & > svg {
-            width: 33px;
-            height: 33px;
-          }
+      width: 30px;
+      height: 30px;
+      & * {
+        & > svg {
+          width: 30px;
+          height: 30px;
         }
       }
     }
   }
-  & span {
-    color: ${({ theme }) => theme.Colors.grays[3]};
-    font-weight: ${({ theme }) => theme.fontWeight[600]};
-    font-size: ${({ theme }) => theme.fontSize[12]};
-    line-height: 14px;
-    color: ${({ position, theme }) =>
-      mySelector(
-        position === 'ASSIGNMENT_PENDING',
-        theme.Colors.grays[6],
-        null,
-      )};
-  }
+
   & > :nth-child(2) {
+    display: flex;
+    width: 100%;
     justify-content: center;
     & > div {
       color: ${({ theme }) => theme.Colors.grays[10]};
@@ -151,17 +234,35 @@ export const StyledAgentSection = styled.div<IContainerProps>`
   }
   & > :nth-child(3) {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
+    width: 100%;
+    & > span {
+      color: ${({ theme }) => theme.Colors.grays[1]};
+      font-weight: ${({ theme }) => theme.fontWeight[600]};
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      line-height: 14px;
+    }
+  }
+  & > :nth-child(4) {
+    display: flex;
+    justify-content: space-evenly;
     align-items: center;
-    & > div {
+    padding-left: 6px;
+    & > img {
       width: 32px;
       height: 32px;
-      margin-right: 9px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 8px;
+    }
+    & > div {
+      width: 30px;
+      height: 30px;
       & * {
         & > svg {
-          width: 32px;
-          height: 32px;
-          & > :nth-child(2) {
+          width: 30px;
+          height: 30px;
+          & > :last-child {
             & > rect {
               fill: ${({ theme, index }) =>
                 index && index % 2 !== 0
@@ -172,27 +273,46 @@ export const StyledAgentSection = styled.div<IContainerProps>`
         }
       }
     }
-    & > img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 8px;
-    }
   }
-  & > :nth-child(4) {
+  & > :nth-child(5) {
     display: flex;
-    padding: 0;
     justify-content: space-evenly;
-    & > div {
-      & * {
-        & > svg {
-          & > path {
-            fill: ${({ theme }) => theme.Colors.grays[7]};
+    align-items: center;
+    color: ${({ theme }) => theme.Colors.grays[5]};
+    font-weight: ${({ theme }) => theme.fontWeight[600]};
+    font-size: ${({ theme }) => theme.fontSize[12]};
+    line-height: 14px;
+    & > :first-child {
+      width: 12px;
+      height: 12px;
+      & > div {
+        & * {
+          & > svg {
+            & > path {
+              fill: ${({ theme }) => theme.Colors.grays[7]};
+            }
           }
         }
       }
     }
+  }
+  & > :nth-child(6) {
+    display: flex;
+    justify-content: center;
+    & > button {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+    }
+  }
+  & span {
+    color: ${({ theme, position }) =>
+      position === 'ASSIGNMENT_PENDING'
+        ? theme.Colors.grays[6]
+        : theme.Colors.grays[3]};
+    font-weight: ${({ theme }) => theme.fontWeight[600]};
+    font-size: ${({ theme }) => theme.fontSize[12]};
+    line-height: 14px;
   }
 `;
 
@@ -200,75 +320,47 @@ export const WrapperAgents = styled.div`
   height: 456px;
   width: 607px;
   margin: auto;
-  & > :nth-child(1) {
-    width: 600px;
-    margin: -16px 3px;
-    z-index: 1;
+  overflow: scroll;
+  & ::-webkit-scrollbar {
+    display: none;
+  }
+  /* & > :first-child {
+    width: 100%;
     display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    & > button {
+      width: 42px;
+      height: 20px;
+      display: flex;
+      cursor: pointer;
+    }
+  } */
+  & > :first-child {
+    width: 100%;
+    z-index: 1;
     background: ${({ theme }) => theme.Colors.grays[10]};
-    position: relative;
-    & > :nth-child(1) {
-      padding-left: 20px;
-      width: 188px;
-      display: flex;
-      justify-content: space-between;
-      margin-right: 124px;
-    }
-    & > :nth-child(2) {
-      display: flex;
-      justify-content: space-between;
-      width: 254px;
-    }
+    display: grid;
+    grid-template-columns: 0.8fr 1.5fr 1.2fr 1.5fr 1.5fr 0.8fr;
+    grid-auto-rows: 20px;
     & span {
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
       color: ${({ theme }) => theme.Colors.grays[1]};
       font-weight: ${({ theme }) => theme.fontWeight[600]};
       font-size: ${({ theme }) => theme.fontSize[12]};
       line-height: 14px;
     }
   }
-  & :nth-child(2) {
-    height: 433px;
-    & > :nth-child(2) {
-      overflow: scroll;
-      min-height: 442px;
-      max-height: 442px;
-      margin-top: 30px;
-      height: 448px;
-      &::-webkit-scrollbar {
-        display: none;
-      }
+  & > section {
+    & ::-webkit-scrollbar {
+      display: none;
     }
-    & > div {
-      & span {
-        width: 163px;
-        margin: 0 8px;
-        display: flex;
-        justify-content: center;
-        & :nth-child(1) {
-          padding-left: 10px;
-        }
-        & :nth-child(2) {
-          padding-left: 10px;
-          width: 150px;
-          margin: 0 8px;
-        }
-        & :nth-child(4) {
-          padding: 0px 12px;
-          & > span {
-            display: flex;
-            justify-content: center;
-          }
-          & > div {
-            position: relative;
-            left: 16px;
-          }
-        }
-        & span {
-          font-weight: ${({ theme }) => theme.fontWeight[600]};
-          font-size: ${({ theme }) => theme.fontSize[12]};
-          line-height: 14px;
-        }
-      }
+    & > :nth-child(2n) {
+      border-radius: 10px;
+      background: ${({ theme }) => theme.Colors.grays[10]};
     }
   }
 `;

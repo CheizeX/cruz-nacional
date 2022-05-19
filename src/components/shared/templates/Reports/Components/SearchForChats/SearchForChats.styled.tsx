@@ -12,6 +12,7 @@ export const StyledSearchForChats = styled.div`
   & > :nth-child(2) {
     overflow: scroll;
     max-height: 551px;
+    //padding: 20px;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -23,16 +24,18 @@ export const StyledTitle = styled.div`
   position: relative;
   min-height: 40px;
   align-items: center;
-  width: 680px;
+  max-width: 679px;
+  margin: auto;
+  width: 100%;
   z-index: 1;
-  margin-left: 24px;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr 1.3fr 1fr 1fr;
   & > span {
     color: ${({ theme }) => theme.Colors.grays[1]};
     font-size: ${({ theme }) => theme.fontSize[12]};
     font-weight: ${({ theme }) => theme.fontWeight[600]};
     line-height: ${({ theme }) => theme.fontSize[14]};
-    width: 25%;
     display: flex;
     justify-content: center;
   }
@@ -46,9 +49,15 @@ export const WrapperReports = styled.div<IContainerReports>`
     index && index % 2 !== 0 ? theme.Colors.grays[10] : theme.Colors.grays[9]};
   display: flex;
   align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr 1.3fr 1fr 1fr;
   & > div:first-child {
     height: 33px;
     display: flex;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
     align-items: center;
     & > div {
       & > div {
@@ -60,20 +69,16 @@ export const WrapperReports = styled.div<IContainerReports>`
         }
       }
     }
-    & > span {
-      color: ${({ theme }) => theme.Colors.grays[1]};
-      font-weight: ${({ theme }) => theme.fontWeight[500]};
-      font-size: ${({ theme }) => theme.fontSize[12]};
-      line-height: 14px;
-    }
   }
   & > :nth-child(1) {
-    width: 25%;
     display: flex;
     justify-content: center;
   }
   & > :nth-child(2) {
-    width: 25%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
     display: flex;
     justify-content: center;
     & > div {
@@ -96,14 +101,33 @@ export const WrapperReports = styled.div<IContainerReports>`
     }
   }
   & > :nth-child(3) {
-    width: 25%;
+    width: 100%;
     display: flex;
     justify-content: center;
   }
   & > :nth-child(4) {
-    width: 25%;
+    justify-content: center;
+    width: 100%;
+    display: flex;
+  }
+  & > :nth-child(5) {
+    width: 100%;
     display: flex;
     justify-content: center;
+  }
+  & > :nth-child(6) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+    & > button {
+      height: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+    }
   }
   & > span {
     color: ${({ theme }) => theme.Colors.grays[1]};

@@ -28,11 +28,11 @@ const validationSchema = Yup.object({
   companyName: Yup.string().required('El nombre de la empresa es requerido'),
   name: Yup.string()
     .required('El nombre es requerido')
-    .matches(/^[a-zA-Z\s]*$/, 'El nombre solo puede contener letras')
+    .matches(/^[a-zA-Z\s]*$/, 'El nombre solamente puede contener letras')
     .min(2, 'El nombre es muy corto'),
   lastName: Yup.string()
     .required('El apellido es requerido')
-    .matches(/^[a-zA-Z\s]*$/, 'El nombre solo puede contener letras')
+    .matches(/^[a-zA-Z\s]*$/, 'El nombre solamente puede contener letras')
     .min(2, 'El apellido es muy corto'),
   email: Yup.string()
     .email('El email es inválido')
@@ -71,10 +71,10 @@ export const TrialForm: FC<TrialFormProps> = ({ plan }) => {
     password: string;
   }) => {
     if (
-      plan === PlanName.BUSINESS ||
-      plan === PlanName.CORPORATE ||
-      plan === PlanName.START ||
-      plan === PlanName.GROWTH
+      plan.toUpperCase() === PlanName.BUSINESS ||
+      plan.toUpperCase() === PlanName.CORPORATE ||
+      plan.toUpperCase() === PlanName.START ||
+      plan.toUpperCase() === PlanName.GROWTH
     ) {
       try {
         const axiosConfig: AxiosRequestConfig = {
@@ -92,8 +92,15 @@ export const TrialForm: FC<TrialFormProps> = ({ plan }) => {
           },
         };
         const { data } = await axios(axiosConfig);
+
         if (data.success) {
           router.push(`/`);
+        } else {
+          showAlert?.addToast({
+            alert: Toast.WARNING,
+            title: 'LO SENTIMOS',
+            message: `El Email o el Nombre de la empresa ya están en uso`,
+          });
         }
       } catch (error) {
         showAlert?.addToast({

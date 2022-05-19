@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useCallback } from 'react';
+import { FC, useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { IType } from '../Components/LeftPanelReports/LeftPanel.interface';
 import { LeftPanelReports } from '../Components/LeftPanelReports/LeftPanelReports';
@@ -6,7 +6,10 @@ import { RightPanelReports } from '../Components/RightPanelReports/RightPanelRep
 import { StyledWrapperReports } from './ReportsSection.styled';
 import { readingUsers } from '../../../../../api/users';
 import { UserStatus } from '../../../../../models/users/status';
-import { useAppDispatch } from '../../../../../redux/hook/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../redux/hook/hooks';
 import { setDataAgents } from '../../../../../redux/slices/reports/reports-data-agents';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Channels, ChatStatus } from '../../../../../models/chat/chat';
@@ -25,6 +28,7 @@ export const ReportsSection: FC = () => {
   const [filterState, setFilterState] = useState<Array<number>>([]);
   const [filterChannel, setFilterChannel] = useState<Array<number>>([]);
   const [filterAsignation, setFilterAsignation] = useState<Array<string>>([]);
+  const [searchReports, setSearchReports] = useState<string>('');
 
   const onChangeStart = (newDate: Date | null) => {
     setDateStart(newDate);
@@ -32,6 +36,14 @@ export const ReportsSection: FC = () => {
   const onChangeEnd = (newDate: Date | null) => {
     setDateEnd(newDate);
   };
+
+  const onChangeReports = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchReports(event.target.value);
+  };
+
+  const { datsReports } = useAppSelector(
+    (state) => state.reports.reportsQueryState,
+  );
 
   const handleFilterState = (id: number) => {
     const currentState = filterState?.indexOf(id);
@@ -102,7 +114,7 @@ export const ReportsSection: FC = () => {
   const handleToggle = async () => {
     const queryParams = `${
       process.env.NEXT_PUBLIC_REST_API_URL
-    }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?type=all&channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=read`;
+    }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?type=all&channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=read&extension=`;
     try {
       const response = await baseRestApi.get(queryParams);
       if (response.success === false) {
@@ -119,10 +131,10 @@ export const ReportsSection: FC = () => {
     }
   };
 
-  const handleDownload = async () => {
+  const handleDownload = async (extension: string) => {
     const queryParams = `${
       process.env.NEXT_PUBLIC_REST_API_URL
-    }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?type=all&channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=download`;
+    }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?type=all&channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=download&extension=${extension}`;
     try {
       const response = await axios({
         url: queryParams,
@@ -146,6 +158,16 @@ export const ReportsSection: FC = () => {
       });
     }
   };
+  const dataFilterReports = useMemo(() => {
+    if (!searchReports) return datsReports;
+    return datsReports.filter(
+      (item) =>
+        item.client.name.toLowerCase().includes(searchReports.toLowerCase()) ||
+        item.assignedAgent?.name
+          .toLocaleLowerCase()
+          .includes(searchReports.toLowerCase()),
+    );
+  }, [datsReports, searchReports]);
 
   const handleReset = () => {
     setFilterState([]);
@@ -176,7 +198,11 @@ export const ReportsSection: FC = () => {
         handleToggle={handleToggle}
         handleReset={handleReset}
       />
-      <RightPanelReports handleDownload={handleDownload} />
+      <RightPanelReports
+        handleDownload={handleDownload}
+        onChangeReports={onChangeReports}
+        datsReports={dataFilterReports}
+      />
     </StyledWrapperReports>
   );
 };

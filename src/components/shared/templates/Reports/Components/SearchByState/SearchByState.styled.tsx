@@ -26,8 +26,8 @@ export const StyledSearchByState = styled.div<IFilterStateProps>`
   padding-left: 2px;
   & > :nth-child(1) {
     height: fit-content;
-    background: ${({ checkedState, theme }) =>
-      checkedState ? theme.Colors.purples[1] : theme.Colors.grays[8]};
+    /* background: ${({ checkedState, theme }) =>
+      checkedState ? theme.Colors.purples[1] : theme.Colors.grays[8]}; */
   }
   & > :nth-child(2) {
     margin-left: 15px;

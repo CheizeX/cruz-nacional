@@ -22,6 +22,7 @@ export const DropdownStatus: FC<IPropsDropdownStatus> = ({
   const handleToggle = () => {
     setIsComponentVisible(!isComponentVisible);
   };
+
   return (
     <StyledDropdownStatus statusChecked={statusChecked}>
       <button type="button" onClick={handleToggle}>

@@ -126,7 +126,7 @@ export const ContactsBox: FC<IContactsProps> = ({
                       {item.channels.length === 1 ? (
                         <SVGIcon
                           iconFile={`/icons/${
-                            item.channels[0].name === 'Wassenger'
+                            item.channels[0].name === 'Chat-API'
                               ? 'Whatsapp'
                               : item.channels[0].name
                           }.svg`}
@@ -140,11 +140,6 @@ export const ContactsBox: FC<IContactsProps> = ({
                       )}
                     </span>
                     <Text
-                      lineThrough={
-                        !contactStatus?.find(
-                          (status: StatusProps) => status.name === item.status,
-                        )
-                      }
                       color={
                         contactStatus?.find(
                           (name: StatusProps) =>
@@ -152,7 +147,7 @@ export const ContactsBox: FC<IContactsProps> = ({
                             item.status.toLowerCase(),
                         )?.color || 'tomato'
                       }>
-                      {item.status ? item.status : ''}
+                      {item.status}
                     </Text>
                     <span>
                       <button

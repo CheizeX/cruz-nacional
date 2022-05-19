@@ -52,35 +52,11 @@ export const StyledCardOnCoversation = styled.div`
           }
         }
       }
-}
     }
+  }
     & > :nth-child(2) {
       font-size: 0.75rem;
       line-height: 14px;
     }
   }
-  /* & > :nth-child(1) {
-    & > :first-child {
-      font-size: ${({ theme }) => theme.fontSize[32]};
-      font-weight: ${({ theme }) => theme.fontWeight[700]};
-    }
-    & > :nth-child(2) {
-      margin-top: 5px;
-      font-size: ${({ theme }) => theme.fontSize[14]};
-      font-weight: ${({ theme }) => theme.fontWeight[700]};
-    }
-    & > div {
-      right: 12px;
-      top: 2px;
-      position: absolute;
-      width: 37px;
-      height: 32px;
-      & * {
-        width: 37px;
-        height: 32px;
-        font-size: ${({ theme }) => theme.fontSize[12]};
-        font-weight: ${({ theme }) => theme.fontWeight[700]};
-      }
-    }
-  } */
 `;

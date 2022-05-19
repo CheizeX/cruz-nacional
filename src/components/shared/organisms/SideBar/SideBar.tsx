@@ -1,6 +1,12 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/button-has-type */
 import React, { FC } from 'react';
-import { BackofficeSection } from '../../../../config/backoffice';
+import {
+  adminSection,
+  supervisorSection,
+  adminSectionRestricted,
+  BackofficeSection,
+} from '../../../../config/backoffice';
 import { useAppSelector } from '../../../../redux/hook/hooks';
 import { SVGIcon } from '../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../atoms/Text/Text';
@@ -14,6 +20,7 @@ import {
   SideBarBodyContainer,
   StyledWrapperButton,
 } from './SideBar.styled';
+import { UserRole } from '../../../../models/users/role';
 
 export const SideBarOrganism: FC<StyledSideBarProps & CollapseSidebar> = ({
   backofficeSections,
@@ -24,14 +31,24 @@ export const SideBarOrganism: FC<StyledSideBarProps & CollapseSidebar> = ({
   const { planStatus } = useAppSelector(
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
+  const { userDataInState } = useAppSelector(
+    (state) => state.userAuthCredentials,
+  );
 
-  const [focusedSection, setFcusedSection] = React.useState<string>(
-    planStatus === PlanStatus.ACTIVE ? 'Monitor' : 'Suscripciones',
+  const sections =
+    userDataInState && userDataInState.role === UserRole.SUPERVISOR
+      ? supervisorSection
+      : planStatus === PlanStatus.INACTIVE
+      ? adminSectionRestricted
+      : adminSection;
+
+  const [focusedSection, setFocusedSection] = React.useState<string>(
+    planStatus === PlanStatus.INACTIVE ? sections[1].name : sections[0].name,
   );
 
   const handleClick = (section: BackofficeSection) => {
     setSelectedSection(section.name);
-    setFcusedSection(section.name);
+    setFocusedSection(section.name);
   };
 
   return (

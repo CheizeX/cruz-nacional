@@ -18,10 +18,16 @@ const Icon = styled.svg`
 `;
 
 const StyledCheckbox = styled.div<CheckboxProps>`
-  background: ${({ checked, theme }) =>
-    checked ? theme.Colors.purples[1] : theme.Colors.grays[5]};
+  /* background: ${({ checked, theme }) =>
+    checked ? theme.Colors.purples[1] : theme.Colors.grays[5]}; */
   border-radius: 3px;
+  box-shadow: inset 0 0 0 2px #dcdcdc;
+  background: ${({ theme }) => theme.Colors.grays[10]};
   display: inline-block;
+  & > svg {
+    stroke: ${({ theme, checked }) =>
+      checked ? theme.Colors.purples[1] : theme.Colors.grays[10]};
+  }
 
   // *** si recibe la prop isTransparent ***
   ${(props) =>
@@ -33,6 +39,9 @@ const StyledCheckbox = styled.div<CheckboxProps>`
         stroke: ${({ theme, checked }) =>
           checked ? theme.Colors.purples[3] : theme.Colors.grays[10] + 80};
       }
+      /* & > svg {
+        stroke: ${({ theme }) => theme.Colors.purples[3]};
+      } */
     `}
 `;
 

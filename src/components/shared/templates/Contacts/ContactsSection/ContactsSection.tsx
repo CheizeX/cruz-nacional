@@ -20,6 +20,9 @@ import { StartConversation } from '../Components/StartConversation/StartConversa
 import { RejectConversation } from '../Components/RejectConversation/RejectConversation';
 import { IContacts } from './Contacts.interface';
 import { getGeneralConfigurationData } from '../../../../../redux/slices/configuration/configuration-info';
+import { setlistChannel } from '../../../../../redux/slices/channels/list-channel';
+import { getAllChannel } from '../../../../../api/channels';
+import { ListChannel } from '../../../../../models/channels/channel';
 
 export const ContactsSetion: FC<IContacts> = ({
   setActiveByDefaultTab,
@@ -43,6 +46,23 @@ export const ContactsSetion: FC<IContacts> = ({
   const { listChannel } = useAppSelector(
     (state) => state.channel.listChannelState,
   );
+
+  const getChannelList = useCallback(async () => {
+    try {
+      const response = await getAllChannel();
+      if (response.success === false) {
+        dispatch(setlistChannel({} as ListChannel));
+      } else {
+        dispatch(setlistChannel(response));
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  }, [dispatch, showAlert]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchContacts(event.target.value);
@@ -81,8 +101,9 @@ export const ContactsSetion: FC<IContacts> = ({
 
   useEffect(() => {
     readListContacts();
+    getChannelList();
     dispatch(getGeneralConfigurationData());
-  }, [readListContacts, dispatch]);
+  }, [readListContacts, dispatch, getChannelList]);
 
   return (
     <WrapperContactsSection>

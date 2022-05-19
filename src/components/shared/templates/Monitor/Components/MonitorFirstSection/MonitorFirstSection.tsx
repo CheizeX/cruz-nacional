@@ -15,6 +15,7 @@ import { ChatsCardMonitor } from '../ChatsCardMonitor/ChatsCardMonitor';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
 import { Channels, ChatStatus } from '../../../../../../models/chat/chat';
+import { ContainerInput } from '../../../../molecules/Input/ContainerInput';
 
 export const MonitorFirstSection: FC<IFirstSetionProps> = ({
   onChange,
@@ -26,9 +27,17 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
   statusAgent,
   byChannels,
   IDAgents,
+  orderByInteraction,
   onHandleToggle,
   resetHandle,
+  setFilterChat,
+  handleSearchChatToday,
+  setOrderByInteraction,
+  setClientIdConversation,
+  setIsOpenModal,
+  totalChats,
 }) => {
+  // const dispatch = useAppDispatch();
   const [timeChat, setTimeChat] = useState(Date.now());
   const [accessToken] = useLocalStorage('AccessToken', '');
 
@@ -47,6 +56,16 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
     }
     return 'Chat en Pausa';
   };
+
+  const handleClick = () => {
+    setOrderByInteraction(!orderByInteraction);
+  };
+
+  const handleOption = async (ClientId: string) => {
+    setClientIdConversation(ClientId);
+    setIsOpenModal(true);
+  };
+
   useEffect(() => {
     const intervalToGetActualTime = setInterval(() => {
       setTimeChat(Date.now());
@@ -57,21 +76,44 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
     <StyledMonitorFirstSection>
       <StyledHeaderFirstSection>
         <span>
-          <Text color="black">Chats de hoy</Text>
-          <div>{chats && chats.length}</div>
+          <button
+            type="button"
+            onClick={() => setFilterChat('')}
+            name="Todos los Chats Hoy">
+            <Text color="black">Chats de hoy</Text>
+          </button>
+          <div>{totalChats}</div>
         </span>
-        <FilterInteractions
-          dateAgent={dateAgent}
-          onChange={onChange}
-          filterAgents={filterAgents}
-          filterChannels={filterChannels}
-          filterStatus={filterStatus}
-          statusAgent={statusAgent}
-          byChannels={byChannels}
-          IDAgents={IDAgents}
-          onHandleToggle={onHandleToggle}
-          resetHandle={resetHandle}
-        />
+        <div>
+          <ContainerInput
+            setFocus={() => null}
+            onChange={handleSearchChatToday}
+            placeHolder="Buscar por agente o cliente..."
+            LeftIcon={() => <SVGIcon iconFile="/icons/search-solid.svg" />}
+          />
+          <div>
+            <button type="button" onClick={handleClick}>
+              <SVGIcon iconFile="/icons/watch.svg" />
+              {orderByInteraction ? (
+                <SVGIcon iconFile="/icons/upArrow.svg" />
+              ) : (
+                <SVGIcon iconFile="/icons/downArrow.svg" />
+              )}
+            </button>
+            <FilterInteractions
+              dateAgent={dateAgent}
+              onChange={onChange}
+              filterAgents={filterAgents}
+              filterChannels={filterChannels}
+              filterStatus={filterStatus}
+              statusAgent={statusAgent}
+              byChannels={byChannels}
+              IDAgents={IDAgents}
+              onHandleToggle={onHandleToggle}
+              resetHandle={resetHandle}
+            />
+          </div>
+        </div>
       </StyledHeaderFirstSection>
       <div>
         <WrapperCard>
@@ -80,41 +122,51 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
             number={countPending}
             position="ASSIGNMENT_PENDING"
             icon="/icons/user_question.svg"
+            setFilterChat={setFilterChat}
           />
           <ChatsCardMonitor
             name="En Conversación"
             number={countOnConversation}
             position="ON_CONVERSATION"
             icon="/icons/en-conversacion.svg"
+            setFilterChat={setFilterChat}
           />
           <ChatsCardMonitor
             name="Chats en Pausa"
             number={countPause}
             position="ON_PAUSE"
             icon="/icons/pause.svg"
+            setFilterChat={setFilterChat}
           />
           <ChatsCardMonitor
             name="Finalizadas"
             number={countFinished}
             position="FINISHED"
             icon="/icons/user_question.svg"
+            setFilterChat={setFilterChat}
           />
         </WrapperCard>
         <WrapperAgents>
-          <span>
-            <span>
-              <Text color="black">Canal</Text>
-              <Text color="black">Estado</Text>
-            </span>
-            <span>
-              <Text color="black">Agente</Text>
-              <Text color="black">Últ. Interacción</Text>
-            </span>
-          </span>
           <div>
+            <Text color="black">Canal</Text>
+            <Text color="black">Estado</Text>
+            <Text color="black">Cliente</Text>
+            <Text color="black">Agente</Text>
+            <Text color="black">Últ. Interacción</Text>
+            <Text color="black">Opciones</Text>
+          </div>
+          <section>
             {chats?.map(
               (
-                { _id, assignedAgent, channel, status, createdAt, isPaused },
+                {
+                  _id,
+                  assignedAgent,
+                  channel,
+                  status,
+                  createdAt,
+                  isPaused,
+                  client,
+                },
                 index,
               ) => (
                 <StyledAgentSection
@@ -131,12 +183,15 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
                       }.svg`}
                     />
                   </div>
-                  <span>
+                  <div>
                     <BadgeMolecule>
                       {handleStatus(status, isPaused)}
                     </BadgeMolecule>
-                  </span>
-                  <span>
+                  </div>
+                  <div>
+                    <Text>{client.name && client.name.slice(0, 10)}</Text>
+                  </div>
+                  <div>
                     {dateAgent
                       ?.filter(
                         (item) =>
@@ -156,11 +211,13 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
                             </div>
                           )) ?? <SVGIcon iconFile="/icons/unknown_user.svg" />,
                       )}
-                    {!assignedAgent
-                      ? 'Sin Asignación'
-                      : assignedAgent.name.slice(0, 16)}
-                  </span>
-                  <span>
+                    <Text>
+                      {!assignedAgent
+                        ? 'Sin Asignación'
+                        : assignedAgent.name.slice(0, 8)}
+                    </Text>
+                  </div>
+                  <div>
                     {status !== 'ASSIGNMENT_PENDING' ? (
                       <SVGIcon iconFile="/icons/small_watch.svg" />
                     ) : null}
@@ -209,11 +266,16 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
                           </Text>
                         )
                       : ' '}
-                  </span>
+                  </div>
+                  <div>
+                    <button type="button" onClick={() => handleOption(_id)}>
+                      <SVGIcon iconFile="/icons/list_icons.svg" />
+                    </button>
+                  </div>
                 </StyledAgentSection>
               ),
             ) ?? []}
-          </div>
+          </section>
         </WrapperAgents>
       </div>
     </StyledMonitorFirstSection>

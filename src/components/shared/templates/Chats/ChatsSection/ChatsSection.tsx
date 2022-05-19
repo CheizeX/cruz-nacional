@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useCallback, useEffect, useContext } from 'react';
 import { useJwt } from 'react-jwt';
 import { ChatsList } from '../Components/ChatsList/ChatsList';
@@ -24,7 +25,7 @@ import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import {
   useAppDispatch,
-  // useAppSelector,
+  useAppSelector,
 } from '../../../../../redux/hook/hooks';
 import { setChatsPendings } from '../../../../../redux/slices/live-chat/pending-chats';
 import { setChatsOnConversation } from '../../../../../redux/slices/live-chat/on-conversation-chats';
@@ -68,9 +69,9 @@ export const ChatsSection: FC<
   const { decodedToken } = useJwt(accessToken);
 
   const dispatch = useAppDispatch();
-  // const { chatsOnConversation } = useAppSelector(
-  //   (state) => state.liveChat.chatsOnConversation,
-  // );
+  const { chatsOnConversation } = useAppSelector(
+    (state) => state.liveChat.chatsOnConversation,
+  );
 
   // const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
   // const [userSelected, setUserSelected] = useState<string>('');
@@ -98,12 +99,6 @@ export const ChatsSection: FC<
     },
   );
 
-  // const stringLengthValidation = (arg: string) => {
-  //   if (arg.length > 12) {
-  //     return `${arg.slice(0, 12)}...`;
-  //   }
-  //   return arg;
-  // };
   // Funcion para buscar por nombre y rut
   // const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setSearchByName(event.target.value);
@@ -120,6 +115,7 @@ export const ChatsSection: FC<
   const getOnConversationChats = useCallback(async () => {
     try {
       const response = await readChat(ChatStatus.ON_CONVERSATION);
+
       if (response.success === false) {
         dispatch(setChatsOnConversation([]));
       } else {
@@ -133,12 +129,13 @@ export const ChatsSection: FC<
       });
       localStorage.removeItem('AccessToken');
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
 
   // trae todos los chats que se encuentran ASSIGNMENT_PENDING
   const getPendingChats = useCallback(async () => {
     try {
       const pendings = await readChat(ChatStatus.ASSIGNMENT_PENDING);
+
       if (pendings.success === false) {
         dispatch(setChatsPendings([]));
       } else {
@@ -147,12 +144,12 @@ export const ChatsSection: FC<
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
-        title: 'Token Expirado',
-        message: `El tiempo de sesión ha expirado, intente volver a loguearse`,
+        title: 'Sesión expirada',
+        message: `Intente volver a loguearse`,
       });
       localStorage.removeItem('AccessToken');
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
 
   const readByAgent = useCallback(async () => {
     try {
@@ -168,33 +165,29 @@ export const ChatsSection: FC<
         message: `${error}`,
       });
     }
-  }, [decodedToken, dispatch, showAlert]);
+  }, [decodedToken, dispatch]);
 
   // --------------- <<< WEB SOCKET EVENTS >>> -----------------
   // Escucha los chats de usuarios o agentes según el parámetro que se le pase
-  const getNewMessageFromNewUserOrAgent = useCallback(
-    async (event: string) => {
-      socket?.on(event, async (data: Chat[]) => {
-        dispatch(setChatsOnConversation(data));
-      });
-    },
-    [dispatch, socket],
-  );
+  const getNewMessageFromNewUserOrAgent = useCallback(async (event: string) => {
+    socket?.on(event, async (data: Chat[]) => {
+      dispatch(setChatsOnConversation(data));
+    });
+  }, []);
 
   // Escucha los mensajes de usuarios que ya enviaron el primer mensaje, pero que todavía no se encuentran ON_CONVERSATION
   const getNewPendingChat = useCallback(async () => {
-    socket?.on('connect', () => {});
     socket?.on('newUserMessageToBeAssigned', (data: Chat[]) => {
       dispatch(setChatsPendings(data));
     });
-  }, [dispatch, socket]);
+  }, []);
 
   // escucha los chats de nuevos usuarios
   const wsNewChat = useCallback(async () => {
     socket?.on('newChat', (data: Chat[]) => {
       dispatch(setChatsPendings(data));
     });
-  }, [dispatch, socket]);
+  }, []);
 
   // Trae los chats Pendientes
   const wsGetPendingChats = useCallback(async () => {
@@ -202,7 +195,7 @@ export const ChatsSection: FC<
       // setUserSelected('');
       dispatch(setChatsPendings(data));
     });
-  }, [dispatch, socket]);
+  }, []);
 
   // Trae los chats transferidos
   const wsGetTransferedChats = useCallback(async () => {
@@ -211,21 +204,21 @@ export const ChatsSection: FC<
         dispatch(setChatsOnConversation(data));
       }
     });
-  }, [dispatch, socket, userSelected]);
+  }, [dispatch, userSelected]);
 
   // escucha los chats que pasan a on_conversation
   const wsNewChatAssigned = useCallback(async () => {
     socket?.on('newChatAssigned', (data: Chat[]) => {
       dispatch(setChatsOnConversation(data));
     });
-  }, [dispatch, socket]);
+  }, []);
 
   // escucha los chats que cambian a pausado
   const newPausedConversation = useCallback(async () => {
     socket?.on('newPausedConversation', (data: Chat[]) => {
       dispatch(setChatsOnConversation(data));
     });
-  }, [dispatch, socket]);
+  }, []);
   //-----------------------------------------------------------------------
   // escucha si se ha iniciado sessión desde otro navegador.
   const wsClosePreviousSession = useCallback(async () => {
@@ -235,28 +228,25 @@ export const ChatsSection: FC<
       // localStorage.removeItem('AccessToken');
       // router.push('/');
     });
-  }, [socket]);
+  }, []);
 
   // escucha si hay un chat cerrado por inactividad
-  // const wsCloseByInactivity = useCallback(async () => {
-  //   socket?.on('closeChatByInactivity', (chat: Chat) => {
-  //     showAlert?.addToast({
-  //       alert: Toast.INACTIVE,
-  //       title: 'Chat cerrado por inactividad',
-  //       message: `${stringLengthValidation(
-  //         chat.client.name,
-  //       )} - ${stringLengthValidation(chat.client.clientId)} ${chat.channel}`,
-  //       durationTime: true,
-  //     });
-  //     dispatch(
-  //       setChatsOnConversation(
-  //         chatsOnConversation.filter((item: Chat) => item._id !== chat._id),
-  //       ),
-  //     );
-  //     setUserSelected('');
-  //     // dispatch(setChatByInactivity(chat));
-  //   });
-  // }, [chatsOnConversation, dispatch, setUserSelected, showAlert, socket]);
+  const wsCloseByInactivity = useCallback(async () => {
+    socket?.on('closeChatByInactivity', (chat: Chat) => {
+      showAlert?.addToast({
+        alert: Toast.INACTIVE,
+        title: 'Chat cerrado por inactividad',
+        message: `${chat.client.name} - ${chat.client.clientId} - ${chat.channel}`,
+        durationTime: true,
+      });
+      dispatch(
+        setChatsOnConversation(
+          chatsOnConversation.filter((item: Chat) => item._id !== chat._id),
+        ),
+      );
+      setUserSelected('');
+    });
+  }, [chatsOnConversation]);
 
   useEffect(() => {
     getPendingChats();
@@ -273,19 +263,21 @@ export const ChatsSection: FC<
     wsGetTransferedChats();
     newPausedConversation();
     wsClosePreviousSession();
-    // wsCloseByInactivity();
+    wsCloseByInactivity();
   }, [
     getNewMessageFromNewUserOrAgent,
     getNewPendingChat,
     newPausedConversation,
     socket,
-    // wsCloseByInactivity,
+    wsCloseByInactivity,
     wsClosePreviousSession,
     wsGetPendingChats,
     wsGetTransferedChats,
     wsNewChat,
     wsNewChatAssigned,
   ]);
+  // useEffect(() => {
+  // }, [socket]);
 
   // useEffect(() => {
   //   dispatch(setUserDataInState(decodedToken as DecodedToken));

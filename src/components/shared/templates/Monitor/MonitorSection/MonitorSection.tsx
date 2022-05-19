@@ -23,6 +23,8 @@ import {
   setCountFinished,
   setCountPause,
   setCountOnConversation,
+  setSortedByLastDateChats,
+  setSortedByFirstDateChats,
 } from '../../../../../redux/slices/monitor/monitor-chats';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { useToastContext } from '../../../molecules/Toast/useToast';
@@ -34,6 +36,8 @@ import { setInfoByAgent } from '../../../../../redux/slices/monitor/monitor-info
 import { setAllUser } from '../../../../../redux/slices/monitor/monitor-all-agents';
 import { baseRestApi } from '../../../../../api/base';
 import { setCountAgentsAvailable } from '../../../../../redux/slices/monitor/count-agent';
+import { ModalMolecule } from '../../../molecules/Modal/Modal';
+import { SectionConversationView } from '../Components/SectionConversationView/SectionConversationView';
 
 const StyledMonitoSection = styled.section`
   display: flex;
@@ -51,6 +55,11 @@ export const MonitorSection: FC = () => {
   const [IDAgents, setIDAgents] = useState<Array<string>>([]);
   const [byAgentAvailable, setByAgentAvailable] = useState<Array<string>>([]);
   const [stateByAgent, seStateByAgent] = useState<Array<number>>([]);
+  const [filterChats, setFilterChat] = useState<string>('');
+  const [agentInput, setAgentInput] = useState<string>('');
+  const [orderByInteraction, setOrderByInteraction] = useState<boolean>(false);
+  const [clientIdConversation, setClientIdConversation] = useState<string>('');
+  const [openIsModal, setIsOpenModal] = useState<boolean>(false);
 
   const { chatsToday } = useAppSelector(
     (state) => state.monitor.monitorTodayChatState,
@@ -67,10 +76,17 @@ export const MonitorSection: FC = () => {
   const { countAgent } = useAppSelector(
     (state) => state.monitor.monitorCountAgentsAvailableState,
   );
-  // const { userDataInState } = useAppSelector(
-  //   (state) => state.userAuthCredentials,
-  // );
-  const [agentInput, setAgentInput] = useState<string>('');
+
+  const chatConversationView = chatsToday?.filter(
+    (chat) => chat._id === clientIdConversation,
+  );
+
+  const handleSearchChatToday = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setFilterChat(event.target.value);
+  };
+
   const handleOnChangeState = (id: number) => {
     const currentIndex = statusAgent.indexOf(id);
     const newChecked = [...statusAgent];
@@ -205,7 +221,8 @@ export const MonitorSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [showAlert]);
+
   // se agrego una nueva propiedad de CALL para realizar el fitro de busqueda por status.
   const handleOnClick = async () => {
     const responseState = stateByAgent.map(
@@ -287,6 +304,16 @@ export const MonitorSection: FC = () => {
     }
   };
 
+  // Visualizar imagenes
+
+  useEffect(() => {
+    if (orderByInteraction) {
+      dispatch(setSortedByLastDateChats());
+    } else {
+      dispatch(setSortedByFirstDateChats());
+    }
+  }, [dispatch, orderByInteraction]);
+
   useEffect(() => {
     getAgentsAvailable();
     getAgentsNotAvailable();
@@ -331,11 +358,26 @@ export const MonitorSection: FC = () => {
       dispatch(setAgentsAvailable(agentAvailable));
       dispatch(setAgentsNotAvailable(agentNotAvailable));
     });
-  }, [socket, agentsAvailable, dispatch]);
+  }, [socket, agentsAvailable]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAgentInput(event.target.value);
   };
+
+  const filterChatsToday = useMemo(() => {
+    if (!filterChats) return chatsToday;
+    return chatsToday?.filter(
+      (chat: Chat) =>
+        (chat.status.includes(filterChats) && !chat.isPaused) ||
+        chat.assignedAgent?.name
+          .toLocaleLowerCase()
+          .includes(filterChats.toLocaleLowerCase()) ||
+        chat.client?.name
+          .toLocaleLowerCase()
+          .includes(filterChats.toLocaleLowerCase()) ||
+        (filterChats === 'ON_PAUSE' && chat.isPaused),
+    );
+  }, [chatsToday, filterChats]);
 
   const dateAgent = useMemo(() => {
     if (!agentInput) return agentsAvailable;
@@ -353,9 +395,10 @@ export const MonitorSection: FC = () => {
   return (
     <StyledMonitoSection>
       <MonitorFirstSection
+        totalChats={chatsToday.length ?? 0}
         onChange={onChange}
         dateAgent={dateAllAgents}
-        chats={chatsToday}
+        chats={filterChatsToday}
         statusAgent={statusAgent}
         byChannels={byChannels}
         IDAgents={IDAgents}
@@ -364,6 +407,12 @@ export const MonitorSection: FC = () => {
         filterAgents={handleOnChangeAgents}
         onHandleToggle={handleToggle}
         resetHandle={getChatsToday}
+        setFilterChat={setFilterChat}
+        handleSearchChatToday={handleSearchChatToday}
+        setOrderByInteraction={setOrderByInteraction}
+        orderByInteraction={orderByInteraction}
+        setIsOpenModal={setIsOpenModal}
+        setClientIdConversation={setClientIdConversation}
       />
       <MonitorSecondSection
         countAgent={countAgent}
@@ -379,7 +428,14 @@ export const MonitorSection: FC = () => {
         handleChange={handleOnClick}
         handleClear={getAgentsAvailable}
         handleStateAgents={handleClickState}
+        setFilterChat={setFilterChat}
       />
+      <ModalMolecule isModal={openIsModal}>
+        <SectionConversationView
+          setIsOpenModal={setIsOpenModal}
+          chatConversationView={chatConversationView}
+        />
+      </ModalMolecule>
     </StyledMonitoSection>
   );
 };

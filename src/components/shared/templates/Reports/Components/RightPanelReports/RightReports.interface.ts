@@ -1,5 +1,9 @@
+import { Chat } from '../../../../../../models/chat/chat';
+
 export interface IPropsRightReport {
-  handleDownload: () => void | Promise<void>;
+  handleDownload: (extension: string) => void | Promise<void>;
+  onChangeReports: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  datsReports: Chat[];
 }
 
 export interface IPropsWrappeReport {

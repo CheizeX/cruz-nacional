@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useCallback } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useJwt } from 'react-jwt';
 import { NavBarLive } from '../../organisms/NavBar/NavBarLive/NavBarLive';
@@ -11,16 +11,11 @@ import {
   FilterChannelsProps,
   FilterChannel,
 } from '../../templates/Chats/Components/ChatsFilter/ChatFilter/ChatFilter.interface';
-import { useAppDispatch, useAppSelector } from '../../../../redux/hook/hooks';
+import { useAppSelector } from '../../../../redux/hook/hooks';
 import useLocalStorage from '../../../../hooks/use-local-storage';
 import { UserRole } from '../../../../models/users/role';
 import { Loader } from '../../atoms/Loader/Loader';
 import { ContactsSetion } from '../../templates/Contacts/ContactsSection/ContactsSection';
-import { setlistChannel } from '../../../../redux/slices/channels/list-channel';
-import { useToastContext } from '../../molecules/Toast/useToast';
-import { Toast } from '../../molecules/Toast/Toast.interface';
-import { ListChannel } from '../../../../models/channels/channel';
-import { getAllChannel } from '../../../../api/channels';
 
 export const LiveChatsPage: FC<
   UploadableFile & FilterChannelsProps & FilterChannel & IBackOfficeProps
@@ -37,8 +32,6 @@ export const LiveChatsPage: FC<
   setMyAccount,
 }) => {
   const { push } = useRouter();
-  const showAlert = useToastContext();
-  const dispatch = useAppDispatch();
 
   const [accessToken] = useLocalStorage('AccessToken', '');
   const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
@@ -52,22 +45,6 @@ export const LiveChatsPage: FC<
   const { componentsSection }: any = useAppSelector(
     (state) => state.section.componentsSectionState,
   );
-  const getChannelList = useCallback(async () => {
-    try {
-      const response = await getAllChannel();
-      if (response.success === false) {
-        dispatch(setlistChannel({} as ListChannel));
-      } else {
-        dispatch(setlistChannel(response));
-      }
-    } catch (err) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `${err}`,
-      });
-    }
-  }, [dispatch, showAlert]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -81,13 +58,6 @@ export const LiveChatsPage: FC<
       push('/backoffice');
     }
   }, [accessToken, decodedToken, push, userDataInState]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      getChannelList();
-    }, 1000);
-  }, [getChannelList]);
-
   return (
     <>
       {decodedToken && decodedToken.role === UserRole.AGENT ? (

@@ -32,12 +32,17 @@ export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
         <Text>Canal</Text>
         <Text>Estado</Text>
         <Text>Agente</Text>
+        <Text>Cliente</Text>
         <Text>Fecha</Text>
+        <Text>Opciones</Text>
       </StyledTitle>
       <div>
         {datsReports &&
           datsReports.map(
-            ({ _id, channel, status, assignedAgent, createdAt }, index) => (
+            (
+              { _id, channel, status, assignedAgent, createdAt, client },
+              index,
+            ) => (
               <WrapperReports key={_id} index={index} position={status}>
                 <div>
                   <SVGIcon
@@ -45,7 +50,6 @@ export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
                       channel === Channels.CHAT_API ? 'Whatsapp' : channel
                     }.svg`}
                   />
-                  <Text>{channel}</Text>
                 </div>
                 <span>
                   <BadgeMolecule>
@@ -55,11 +59,17 @@ export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
                   </BadgeMolecule>
                 </span>
                 <Text>{!assignedAgent ? '  ' : assignedAgent.name}</Text>
+                <Text>{client.name}</Text>
                 <Text>
                   {new Date(createdAt).getDate()}{' '}
                   {months[new Date(createdAt).getMonth()]}{' '}
                   {new Date(createdAt).getFullYear()}
                 </Text>
+                <span>
+                  <button type="button">
+                    <SVGIcon iconFile="/icons/list_icons.svg" />
+                  </button>
+                </span>
               </WrapperReports>
             ),
           )}

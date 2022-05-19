@@ -66,6 +66,20 @@ export const AddedUsersSection: FC = () => {
   // crear hook para toast
   const showAlert = useToastContext();
 
+  const handleLetterLimitName = (name: string) => {
+    if (name.length > 21) {
+      return `${name.slice(0, 21)}...`;
+    }
+    return name;
+  };
+
+  const handleLetterLimitEmail = (email: string) => {
+    if (email.length > 26) {
+      return `${email.slice(0, 26)}...`;
+    }
+    return email;
+  };
+
   const handleChackedTags = (id: string) => {
     const currentIndex = checkedAsignationTags.indexOf(id);
     const newChecked = [...checkedAsignationTags];
@@ -357,8 +371,8 @@ export const AddedUsersSection: FC = () => {
               avatar={user.urlAvatar}
               key={user._id}>
               <StyledUsernameEmail>
-                <Text>{user.name}</Text>
-                <Text>{user.email}</Text>
+                <Text>{handleLetterLimitName(user.name)}</Text>
+                <Text>{handleLetterLimitEmail(user.email)}</Text>
               </StyledUsernameEmail>
             </UserCardMolecule>
           )) ?? []}

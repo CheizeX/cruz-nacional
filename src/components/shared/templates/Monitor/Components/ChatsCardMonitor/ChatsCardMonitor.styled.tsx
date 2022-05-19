@@ -7,8 +7,9 @@ const mySelector = (
   otherwise: string | null,
 ) => (condition ? then : otherwise);
 
-export const StyledCardMonitor = styled.div<ICardContainer>`
+export const StyledCardMonitor = styled.button<ICardContainer>`
   position: relative;
+  cursor: pointer;
   background-color: ${({ position, theme }) =>
     mySelector(
       position === 'ASSIGNMENT_PENDING',
