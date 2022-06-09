@@ -3,6 +3,7 @@ import { User } from '../users/user';
 
 export enum Channels {
   WHATSAPP = 'WhatsApp',
+  WHATSAPPMIN = 'Whatsapp',
   MESSENGER = 'Messenger',
   INSTAGRAM = 'Instagram',
   WEBCHAT = 'Webchat',

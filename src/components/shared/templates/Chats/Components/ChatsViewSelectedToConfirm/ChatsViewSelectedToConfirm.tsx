@@ -242,6 +242,12 @@ export const ChatsViewSelectedToConfirm: FC<
           bodyObject,
         );
       }
+      if (chatToTalkWithUser?.channel === 'Whatsapp') {
+        await baseRestApi.patch(
+          `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
+          bodyObject,
+        );
+      }
       if (chatToTalkWithUser?.channel === 'Messenger') {
         await baseRestApi.patch(
           `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
