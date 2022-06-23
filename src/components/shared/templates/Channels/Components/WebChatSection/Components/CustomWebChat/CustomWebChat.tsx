@@ -19,6 +19,7 @@ export const CustomWebChat: FC<ICustomWebChat> = ({
   customizeMyAvatar,
   customIsColor,
   isAnimation,
+  greetingMessage,
 }) => {
   return (
     <StyledCustomWebChat>
@@ -89,21 +90,20 @@ export const CustomWebChat: FC<ICustomWebChat> = ({
             secondaryColor={secondaryColor}
             isAnimation={isAnimation}>
             <div>
-              {!customizeMyAvatar ? (
-                <SVGIcon iconFile={`/avatars/${avatar}.svg`} />
-              ) : (
-                <img src={avatar} alt={avatar} />
-              )}
               <div>
-                <Text>
-                  Hola mi nombre es Elipse mi función es responder preguntas ¿En
-                  qué puedo ayudarte?
-                </Text>
+                {!customizeMyAvatar ? (
+                  <SVGIcon iconFile={`/avatars/${avatar}.svg`} />
+                ) : (
+                  <img src={avatar} alt={avatar} />
+                )}
+                <div>
+                  <Text>{greetingMessage}</Text>
+                </div>
               </div>
-            </div>
-            <div>
               <div>
-                <Text>Hola Buen día! Me gustaria hablar con un agente.</Text>
+                <div>
+                  <Text>Hola Buen día! Me gustaria hablar con un agente.</Text>
+                </div>
               </div>
             </div>
             <div>

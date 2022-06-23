@@ -20,6 +20,9 @@ import {
 } from './UserCard.styled';
 import { IUserCardMoleculeProps } from './UseCard.interface';
 import useLocalStorage from '../../../../hooks/use-local-storage';
+import { UserRole } from '../../../../models/users/role';
+import { Tooltip } from '../../atoms/Tooltip/Tooltip';
+import { TooltipPosition } from '../../atoms/Tooltip/tooltip.interface';
 
 export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
   isAdmin,
@@ -32,6 +35,7 @@ export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
   infoUserEmail,
   infoUserRole,
   avatar,
+  invitation,
 }) => {
   // Redux
   const dispatch = useAppDispatch();
@@ -52,40 +56,49 @@ export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
     dispatch(setUserByInfoEmail(infoUserEmail));
   };
   return (
-    <StyledUserCardMolecule isAdmin={isAdmin}>
-      <StyledCardHeader>
+    <StyledUserCardMolecule isAdmin={isAdmin} invitation={invitation}>
+      <StyledCardHeader isAdmin={isAdmin} invitation={invitation}>
         <span>
           {isAdmin && <SVGIcon iconFile="/icons/user_card_admin.svg" />}
+          {!invitation && (
+            <Tooltip
+              text="Invitación en proceso."
+              position={TooltipPosition.right}>
+              <SVGIcon iconFile="/icons/watch.svg" />
+            </Tooltip>
+          )}
         </span>
-        <Dropdown
-          triggerElement={() => (
-            <TriggerElement>
-              <SVGIcon iconFile="/icons/user_options.svg" />
-            </TriggerElement>
-          )}>
-          <DropdownContainer>
-            <BadgeMolecule
-              bgColor="transparent"
-              leftIcon={() => <SVGIcon iconFile="/icons/pen.svg" />}>
-              <button
-                type="button"
-                onClick={() => handleCardClick('Editar', userID, byNameUser)}>
-                <Text>Editar</Text>
-              </button>
-            </BadgeMolecule>
-            <BadgeMolecule
-              bgColor="transparent"
-              leftIcon={() => <SVGIcon iconFile="/icons/delete.svg" />}>
-              <button
-                type="button"
-                onClick={() =>
-                  handleCardClick('deleteUser', userID, byNameUser)
-                }>
-                <Text>Eliminar </Text>
-              </button>
-            </BadgeMolecule>
-          </DropdownContainer>
-        </Dropdown>
+        {infoUserRole !== UserRole.ADMIN && invitation && (
+          <Dropdown
+            triggerElement={() => (
+              <TriggerElement>
+                <SVGIcon iconFile="/icons/user_options.svg" />
+              </TriggerElement>
+            )}>
+            <DropdownContainer>
+              <BadgeMolecule
+                bgColor="transparent"
+                leftIcon={() => <SVGIcon iconFile="/icons/pen.svg" />}>
+                <button
+                  type="button"
+                  onClick={() => handleCardClick('Editar', userID, byNameUser)}>
+                  <Text>Editar</Text>
+                </button>
+              </BadgeMolecule>
+              <BadgeMolecule
+                bgColor="transparent"
+                leftIcon={() => <SVGIcon iconFile="/icons/delete.svg" />}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleCardClick('deleteUser', userID, byNameUser)
+                  }>
+                  <Text>Eliminar </Text>
+                </button>
+              </BadgeMolecule>
+            </DropdownContainer>
+          </Dropdown>
+        )}
       </StyledCardHeader>
       <StyledAvatar>
         {avatar && avatar !== '' ? (

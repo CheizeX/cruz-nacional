@@ -428,7 +428,6 @@ export const MonitorSection: FC = () => {
         handleChange={handleOnClick}
         handleClear={getAgentsAvailable}
         handleStateAgents={handleClickState}
-        setFilterChat={setFilterChat}
       />
       <ModalMolecule isModal={openIsModal}>
         <SectionConversationView

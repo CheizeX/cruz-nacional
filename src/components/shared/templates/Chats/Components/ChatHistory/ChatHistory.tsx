@@ -19,7 +19,7 @@ import { Text } from '../../../../atoms/Text/Text';
 import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
 import { RootState } from '../../../../../../redux';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
-import { Chat, Message } from '../../../../../../models/chat/chat';
+import { Chat, ContentType, Message } from '../../../../../../models/chat/chat';
 
 export const ChatsHistory: FC<IChatHistoryProps> = ({
   setLiveChatModal,
@@ -162,6 +162,7 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
         />
       );
     }
+
     if (content.substring(content.length - 3, content.length) === 'png') {
       return (
         <img
@@ -397,7 +398,7 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                     <SectionContainerChats key={chat._id}>
                       {chat.messages.map((element: Message, index) => (
                         <div id={element._id}>
-                          {element.contentType !== 'ATTACHAMENT'
+                          {element.contentType !== ContentType.ATTACHMENT
                             ? handleWord(element.content)
                             : null}
                           {element.from !== 'AGENT' ? (

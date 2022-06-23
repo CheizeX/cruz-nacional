@@ -7,6 +7,7 @@ export interface ICustomWebChat {
   secondaryColor: string;
   customIsColor: boolean;
   isAnimation: boolean;
+  greetingMessage: string;
 }
 
 export interface IPropsCustom {

@@ -1,4 +1,5 @@
 import { SetStateAction } from 'react';
+import { ContentType } from '../../../../../models/chat/chat';
 
 export interface SelectedUserProps {
   setUserSelected: React.Dispatch<React.SetStateAction<string>>;
@@ -7,6 +8,7 @@ export interface SelectedUserProps {
 
 export interface IWrapperColorDialogues {
   chatFrom: string;
+  contentTypeProps: ContentType;
 }
 export interface SortUsers {
   setSortedChats: React.Dispatch<React.SetStateAction<boolean>>;

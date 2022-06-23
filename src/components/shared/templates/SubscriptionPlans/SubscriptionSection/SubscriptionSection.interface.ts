@@ -9,7 +9,7 @@ export interface SubscriptionSectionProps {
 }
 
 export enum PlanName {
-  // TRIAL = 'TRIAL',
+  FREE = 'FREE',
   START = 'START',
   GROWTH = 'GROWTH',
   BUSINESS = 'BUSINESS',
@@ -20,6 +20,7 @@ export enum PlanName {
   BUSINESS_TRIAL = 'BUSINESS_TRIAL',
   CORPORATE_TRIAL = 'CORPORATE_TRIAL',
   ENTERPRISE_TRIAL = 'ENTERPRISE_TRIAL',
+  AGENT = 'AGENT',
 }
 export enum PlanStatus {
   ACTIVE = 'ACTIVE',
@@ -35,19 +36,44 @@ export interface PaymentMethodsProps {
   brand: string;
   funding: string;
 }
-
 export interface SubscriptionDataProps {
   initDate?: string;
   endDate?: string;
+  trialEndDate?: string;
   plan?: PlanName | string;
-  nextPlan?: {
-    plan: PlanName | string;
-    invitationsAvailable: number;
-  };
   planStatus?: PlanStatus | string;
   _id?: string;
   paymentMethods?: PaymentMethodsProps[];
   mainPaymentMethod?: string;
+  generalPlan: GeneralPlanDataProps;
+  trial?: boolean;
+  persistentAgentsCount: number;
+}
+
+export interface GeneralPlanDataProps {
+  agentes: number;
+  agentes_a_eliminar: number;
+  agentes_extra: number;
+  agentes_registrados: number;
+  supervisores: number;
+  supervisores_registrados: number;
+  administradores: number;
+  webchat: boolean;
+  bot: boolean;
+  bot_personalizado: boolean;
+  messenger: boolean;
+  instagram: boolean;
+  unofficialWhatsApp: boolean;
+  officialWhatsApp: boolean;
+  conversaciones_proactivas: boolean;
+  soporte_via_email: boolean;
+  soporte_personalizado: boolean;
+  invitaciones_enviadas: number;
+  invitaciones_disponibles: number;
+  stripe_end_date: string;
+  stripe_init_date: string;
+  downgrade: boolean;
+  persistentAgentsCount: number;
 }
 export interface InvoicesDataProps {
   id: string;
@@ -64,4 +90,7 @@ export interface SubscriptionSectionItemsProps {
   title?: string;
   buttonTitle?: string;
   stripeId?: string;
+  numberOfAgentsToAdd?: string;
+  setNumberOfAgentsToAdd: Dispatch<SetStateAction<string>>;
+  paymentMethods?: any[];
 }

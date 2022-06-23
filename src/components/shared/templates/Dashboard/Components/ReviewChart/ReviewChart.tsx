@@ -87,6 +87,7 @@ export const ReviewChart: FC<IPropsReview> = ({
       Satisfactorio: item.satisfactory,
     };
   });
+
   const handleClick = () => {
     setIsComponentVisible(!isComponentVisible);
     setSelectedComponent('REVIEW');
@@ -96,19 +97,8 @@ export const ReviewChart: FC<IPropsReview> = ({
     <StyledReviewChart>
       <StyledReviewChatsHeader>
         <Text>Chats Satisfactorios e Insatisfactorios</Text>
-        {/* <Dropdown
-          onClick={handleClose}
-          triggerElement={() => (
-            <BadgeMolecule
-              leftIcon={() => <SVGIcon iconFile="/icons/candelar_alt.svg" />}>
-              <Text>{datePicker}</Text>
-            </BadgeMolecule>
-          )}> */}
         <div>
-          <button
-            type="button"
-            // disabled={reviewChats.length < 1}
-            onClick={handleClick}>
+          <button type="button" onClick={handleClick}>
             <BadgeMolecule
               leftIcon={() => <SVGIcon iconFile="/icons/candelar_alt.svg" />}>
               <Text>{datePicker}</Text>
@@ -161,7 +151,6 @@ export const ReviewChart: FC<IPropsReview> = ({
             </div>
           ) : null}
         </div>
-        {/* </Dropdown> */}
       </StyledReviewChatsHeader>
       <StyledChart>
         {reviewChats.length < 1 ? (
@@ -199,20 +188,6 @@ export const ReviewChart: FC<IPropsReview> = ({
                 rotation: -45,
                 lineWidth: 6,
                 spacing: 10,
-              },
-            ]}
-            fill={[
-              {
-                match: {
-                  id: 'fries',
-                },
-                id: 'dots',
-              },
-              {
-                match: {
-                  id: 'sandwich',
-                },
-                id: 'lines',
               },
             ]}
             borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}

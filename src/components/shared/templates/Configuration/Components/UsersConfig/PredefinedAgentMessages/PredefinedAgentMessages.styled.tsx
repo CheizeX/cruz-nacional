@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-identical-functions */
 import styled from 'styled-components';
 
 export const StyledPredefinedAgentMessages = styled.div`

@@ -8,6 +8,7 @@ export const StyledWrapperAgent = styled.div`
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   border-radius: 10px;
   padding-bottom: 15px;
+  padding-top: 8px;
   & > span {
     display: flex;
     justify-content: space-between;
@@ -17,7 +18,7 @@ export const StyledWrapperAgent = styled.div`
   & > :last-child {
     border-radius: 10px;
     margin: 0 auto;
-    height: 290px;
+    height: 260px;
     overflow: scroll;
 
     width: 95%;

@@ -14,84 +14,46 @@ export const SubscriptionSectionItems = [
   },
   {
     id: 2,
-    item: 'Soporte vía mail',
+    item: 'Soporte vía email',
   },
   {
     id: 3,
     item: 'Webchat',
-  },
-  {
-    id: 4,
-    item: 'Facebook Messenger',
-  },
-  {
-    id: 5,
-    item: 'Instagram',
   },
 ];
 
-export const SubscriptionSectionPersonalizedItems = [
-  {
-    id: 0,
-    item: 'Licencias personalizadas',
-  },
-  {
-    id: 1,
-    item: 'Supervisores ilimitados',
-  },
-  {
-    id: 2,
-    item: 'Soporte priorizado',
-  },
-  {
-    id: 3,
-    item: 'Webchat',
-  },
+export const SubscriptionStartPlanItems = [
   {
     id: 4,
-    item: 'Facebook Messenger',
+    item: 'Bot ',
   },
   {
     id: 5,
-    item: 'Instagram',
+    item: 'Facebook Messenger',
   },
   {
     id: 6,
-    item: 'Chatbot con inteligencia artificial',
+    item: 'Instagram',
   },
   {
     id: 7,
-    item: 'WhatsApp QR ',
+    item: ' Conversaciones proactivas por WhatsApp',
   },
-  {
-    id: 8,
-    item: 'WhatsApp Business API ',
-  },
+  // {
+  //   id: 8,
+  //   item: ' WhatsApp QR',
+  // },
 ];
 
 export const planes = [
   {
     name: 'START',
-    price: '49',
+    price: '99',
     link: 'https://buy.stripe.com/dR6cOa1Zf9si98IaEK',
   },
-  {
-    name: 'GROWTH',
-    price: '99',
-    link: 'https://buy.stripe.com/00g8xU5br0VM5Ww3cf',
-  },
-  {
-    name: 'BUSINESS',
-    price: '199',
-    link: 'https://buy.stripe.com/cN2dSe5brcEudoY5ko',
-  },
-  {
-    name: 'CORPORATE',
-    price: '399',
-    link: 'https://buy.stripe.com/00g3dA6fv9siet24gl',
-  },
 ];
-// const Subscription = () => {
-//   return 'Show page working ! ';
-// };
-// export default Subscription;
+
+export const prices = {
+  START: '99',
+  agent: '29',
+};

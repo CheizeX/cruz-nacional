@@ -3,7 +3,6 @@ import { User } from '../users/user';
 
 export enum Channels {
   WHATSAPP = 'WhatsApp',
-  WHATSAPPMIN = 'Whatsapp',
   MESSENGER = 'Messenger',
   INSTAGRAM = 'Instagram',
   WEBCHAT = 'Webchat',
@@ -15,6 +14,17 @@ export enum ChatStatus {
   ASSIGNMENT_PENDING = 'ASSIGNMENT_PENDING',
   ON_CONVERSATION = 'ON_CONVERSATION',
   FINISHED = 'FINISHED',
+}
+
+export enum ContentType {
+  TEXT = 'TEXT',
+  ATTACHMENT = 'ATTACHMENT',
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+  AUDIO = 'AUDIO',
+  FILE = 'FILE',
+  INTERACTIVE_LIST = 'INTERACTIVE_LIST',
+  INTERACTIVE_BUTTON = 'INTERACTIVE_BUTTON',
 }
 
 export type StatusChats = {
@@ -47,8 +57,8 @@ export type Client = {
 
 export type Message = {
   from: string;
-  content: string;
-  contentType: string;
+  content: any;
+  contentType: ContentType;
   createdAt: Date;
   updatedAt: Date;
   size?: string;
@@ -77,6 +87,7 @@ export type Chat = {
   feedback?: string;
   hasHistory?: boolean;
   trafficLight?: string;
+  isTrafficLight?: boolean;
 };
 
 export type IPropsChannel = {

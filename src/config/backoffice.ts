@@ -14,6 +14,10 @@ export const supervisorSection: BackofficeSection[] = [
     icon: '/icons/sidebar-2.svg',
   },
   {
+    name: 'Estadisticas',
+    icon: '/icons/sidebar_monitor.svg',
+  },
+  {
     name: 'Reportes',
     icon: '/icons/reports.svg',
   },
@@ -33,8 +37,8 @@ export const adminSection: BackofficeSection[] = [
     icon: '/icons/sidebar-2.svg',
   },
   {
-    name: 'Usuarios',
-    icon: '/icons/sidebar_usuarios.svg',
+    name: 'Estadisticas',
+    icon: '/icons/bars-graphic.svg',
   },
   {
     name: 'Reportes',
@@ -45,9 +49,14 @@ export const adminSection: BackofficeSection[] = [
     icon: '/icons/sidebar_chats.svg',
   },
   {
+    name: 'Usuarios',
+    icon: '/icons/sidebar_usuarios.svg',
+  },
+  {
     name: 'Configuración',
     icon: '/icons/sidebar_configuracion.svg',
   },
+
   {
     name: 'Suscripciones',
     icon: '/icons/subscription.svg',
@@ -64,5 +73,3 @@ export const adminSectionRestricted: BackofficeSection[] = [
     icon: '/icons/subscription.svg',
   },
 ];
-
-export const fullVersionSections: BackofficeSection[] = [];

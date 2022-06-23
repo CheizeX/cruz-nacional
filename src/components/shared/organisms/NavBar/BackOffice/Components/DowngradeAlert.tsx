@@ -10,20 +10,17 @@ import {
 
 export const DowngradeAlert: FC<IUsersToSelectProps> = ({
   setModal,
-  nextPlan,
   validateIfAllAgentsAreSelected,
 }) => {
   return (
     <StyledDowngradeUsersSelectContainer>
       <StyledDowngradeUsersSelect
         validateIfAllAgentsAreSelected={validateIfAllAgentsAreSelected}
-        setModal={setModal}
-        nextPlan={nextPlan}>
+        setModal={setModal}>
         {!validateIfAllAgentsAreSelected ? (
           <Text size="12px" weight="600">
             <SVGIcon iconFile="/icons/warning.svg" />
-            Acción requerida para el traspaso al plan{' '}
-            {nextPlan.plan.toUpperCase()}
+            Acción requerida para su suscripción actual
           </Text>
         ) : (
           <Text size="12px" weight="600">

@@ -1,13 +1,7 @@
-import React, {
-  FC,
-  useState,
-  useMemo,
-  useContext,
-  useEffect,
-  useCallback,
-} from 'react';
+/* eslint-disable sonarjs/no-identical-functions */
+import React, { FC, useState, useContext, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useAppDispatch } from '../../../../redux/hook/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook/hooks';
 import { ContainerInput } from '../../molecules/Input/ContainerInput';
 import { Text } from '../../atoms/Text/Text';
 import { SVGIcon } from '../../atoms/SVGIcon/SVGIcon';
@@ -41,8 +35,13 @@ import { RootState } from '../../../../redux';
 import { IPropsTags } from './AddedUserSection.interface';
 import { setDataTag } from '../../../../redux/slices/tags/tag-management';
 import { readTags } from '../../../../api/tags';
+import { NotificationUsers } from '../../atoms/NotificationUsers/NotificationUsers';
+import { getSubscriptionsData } from '../../../../redux/slices/subscriptions/subscriptions-info';
 
 export const AddedUsersSection: FC = () => {
+  const { subscriptionsData } = useAppSelector(
+    (state) => state.subscriptionsInfo,
+  );
   const [sectionModal, setSectionModal] = useState(false);
   //  abrir y cerrar modal
   const [openNewSection, setOpenNewSection] = useState('');
@@ -65,7 +64,7 @@ export const AddedUsersSection: FC = () => {
   const socket: any = useContext(websocketContext);
   // crear hook para toast
   const showAlert = useToastContext();
-
+  const createUser = 'Crear Usuario';
   const handleLetterLimitName = (name: string) => {
     if (name.length > 21) {
       return `${name.slice(0, 21)}...`;
@@ -92,9 +91,23 @@ export const AddedUsersSection: FC = () => {
   };
 
   const handleBadgesClick = (arg: string) => {
-    setSectionModal(true);
-    setOpenNewSection(arg);
-    setUsersCreate(arg);
+    if (arg === createUser) {
+      if (subscriptionsData.generalPlan.invitaciones_disponibles > 0) {
+        setSectionModal(true);
+        setOpenNewSection(arg);
+        setUsersCreate(arg);
+      } else {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'SIN INVITACIONES DISPONIBLES',
+          message: `Puedes contratar más usuarios en la sección de suscripciones`,
+        });
+      }
+    } else {
+      setSectionModal(true);
+      setOpenNewSection(arg);
+      setUsersCreate(arg);
+    }
   };
   const dispatch = useAppDispatch();
   const { usersData } = useSelector(
@@ -167,6 +180,9 @@ export const AddedUsersSection: FC = () => {
     }
   };
 
+  const invitationsAvailable =
+    subscriptionsData?.generalPlan?.invitaciones_disponibles;
+
   useEffect(() => {
     dataApi();
     getFilterTag();
@@ -185,21 +201,12 @@ export const AddedUsersSection: FC = () => {
       //   // se emit un event deleteUser ---- que viene del servidor
       dispatch(setDataUser(data));
     });
+    dispatch(getSubscriptionsData());
   }, [dispatch, socket, usersData]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextInput(event.target.value);
   };
-  const dataUsers = useMemo(() => {
-    if (!textInput) return usersData;
-    return usersData?.filter(
-      (user: User) =>
-        user.name.toLowerCase().includes(textInput.toLocaleLowerCase()) ||
-        user.tags?.find((item) =>
-          item.name.toLowerCase().includes(textInput.toLocaleLowerCase()),
-        ),
-    );
-  }, [usersData, textInput]);
 
   return (
     <StyledAddedUsersSection>
@@ -239,7 +246,7 @@ export const AddedUsersSection: FC = () => {
                 </BadgeMolecule>
               </button>
               <ModalMolecule isModal={sectionModal} setModal={setSectionModal}>
-                {openNewSection === 'Crear Usuario' ? (
+                {openNewSection === createUser ? (
                   <UserCreate
                     setUserActive={setUserActive}
                     userActive={userActive}
@@ -250,13 +257,13 @@ export const AddedUsersSection: FC = () => {
                     setUsers={setUsersCreate}
                     users={usersCreate}
                     editButton="Crear"
-                    titleHeader="Crear Usuario"
-                    // NotificationUsers={() => (
-                    //   <NotificationUsers
-                    //     text="Te quedan 4 usuarios por crear."
-                    //     message="Contáctate con nuestro equipo comercial para ampliar el límite de usuarios"
-                    //   />
-                    // )}
+                    titleHeader={createUser}
+                    NotificationUsers={() => (
+                      <NotificationUsers
+                        text={`Te quedan ${invitationsAvailable} usuarios por crear.`}
+                        message="Contáctate con nuestro equipo comercial para ampliar el límite de usuarios"
+                      />
+                    )}
                     setContainerTags={setContainerTags}
                     containerTags={containerTags}
                   />
@@ -344,7 +351,7 @@ export const AddedUsersSection: FC = () => {
             <>
               <button
                 type="button"
-                onClick={() => handleBadgesClick('Crear Usuario')}>
+                onClick={() => handleBadgesClick(createUser)}>
                 <BadgeMolecule
                   bgColor="gray"
                   leftIcon={() => <SVGIcon iconFile="/icons/user_plus.svg" />}>
@@ -357,8 +364,22 @@ export const AddedUsersSection: FC = () => {
       </StyledHeaderUsersSection>
       <StyledDisplayedUsers>
         <div>
-          {dataUsers?.map((user: User) => (
+          {(textInput === ''
+            ? usersData
+            : usersData?.filter(
+                (user: User) =>
+                  user.name
+                    .toLowerCase()
+                    .includes(textInput.toLocaleLowerCase()) ||
+                  user.tags?.find((item) =>
+                    item.name
+                      .toLowerCase()
+                      .includes(textInput.toLocaleLowerCase()),
+                  ),
+              )
+          )?.map((user: User) => (
             <UserCardMolecule
+              key={user._id}
               byNameUser={user.name}
               userID={user._id}
               setOpenNewSection={setOpenNewSection}
@@ -369,7 +390,7 @@ export const AddedUsersSection: FC = () => {
               infoUserEmail={user.email}
               infoUserRole={user.role}
               avatar={user.urlAvatar}
-              key={user._id}>
+              invitation={user.invitationAccepted ?? false}>
               <StyledUsernameEmail>
                 <Text>{handleLetterLimitName(user.name)}</Text>
                 <Text>{handleLetterLimitEmail(user.email)}</Text>

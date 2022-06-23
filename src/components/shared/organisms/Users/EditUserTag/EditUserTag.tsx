@@ -46,10 +46,10 @@ export const EditUserTag: FC<IEditTagProps> = ({
         ) : (
           updateContainerTags.map(({ _id, name, color }) => (
             <ContainerChecked key={_id} color={color}>
-              <span>{name}</span>
+              <span key={_id}>{name}</span>
               <button
                 type="button"
-                onClick={() => dispatch(setDeleteTagContainer(_id as any))}>
+                onClick={() => dispatch(setDeleteTagContainer(_id || ''))}>
                 <SVGIcon iconFile="/icons/times.svg" />
               </button>
             </ContainerChecked>

@@ -51,10 +51,7 @@ export const WrapperWebChat = styled.div<IPropsCustom>`
       position: relative;
       bottom: 0;
       left: 0;
-      //width: 100%;
-      // margin-bottom: -7px;
-      /* height: 1.8rem;
-      max-height: 150px; */
+
       .parallax > use {
         animation: ${({ isAnimation }) =>
           isAnimation === true
@@ -169,94 +166,108 @@ export const StyledBodyWebChat = styled.div<IPropsCustom>`
   border-end-start-radius: 2%;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   box-shadow: 0px 0px 7px 0px #0000004a;
-  & > :nth-child(1) {
-    display: flex;
-    justify-content: flex-start;
-    padding: 14px 0;
+  & > :first-child {
+    max-height: 200px;
+    height: 100%;
     & > :nth-child(1) {
-      margin-left: 7px;
-      & > div {
-        & * {
-          & > svg {
-            width: 1.8rem;
-            height: 1.8rem;
-            border-radius: 50%;
-            box-shadow: ${({ primaryColor }) =>
-              `0 0.0625rem 0.125rem 0.0625rem ${primaryColor}`};
+      display: flex;
+      justify-content: flex-start;
+      padding: 14px 0;
+      & > :nth-child(1) {
+        margin-left: 7px;
+        & > div {
+          & * {
+            & > svg {
+              width: 1.8rem;
+              height: 1.8rem;
+              border-radius: 50%;
+              box-shadow: ${({ primaryColor }) =>
+                `0 0.0625rem 0.125rem 0.0625rem ${primaryColor}`};
+            }
+          }
+        }
+      }
+      & > img {
+        max-width: 1.6rem;
+        max-height: 1.6rem;
+        min-width: 1.6rem;
+        min-height: 1.6rem;
+        border-radius: 50%;
+        width: fit-content;
+        object-fit: cover;
+        margin-right: -25px;
+        box-shadow: ${({ primaryColor }) =>
+          `0 0.0625rem 0.125rem 0.0625rem ${primaryColor}`};
+      }
+      & > :nth-child(2) {
+        width: 100%;
+        min-width: 200px;
+        min-height: 40px;
+        max-height: 100px;
+        max-width: 204px;
+        background-color: ${({ primaryColor }) => primaryColor};
+        ${({ primaryColor, secondaryColor }) =>
+          css<IPropsCustom>`
+            background: linear-gradient(
+              135deg,
+              ${primaryColor} 0%,
+              ${secondaryColor} 100%
+            );
+          `}
+        border-start-end-radius: 10px;
+        border-end-end-radius: 10px;
+        border-end-start-radius: 10px;
+        margin-left: 34px;
+        word-wrap: break-word;
+        padding: 0 8px;
+        & > span {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: justify;
+          color: ${({ theme }) => theme.Colors.grays[10]};
+          font-weight: ${({ theme }) => theme.fontWeight[500]};
+          font-size: ${({ theme }) => theme.fontSize[10]};
+          line-height: 12px;
+          word-break: break-word;
+          overflow: scroll;
+          padding: 8px 0;
+          max-height: 100px;
+          &::-webkit-scrollbar {
+            display: none;
           }
         }
       }
     }
-    & > img {
-      max-width: 1.6rem;
-      max-height: 1.6rem;
-      min-width: 1.6rem;
-      min-height: 1.6rem;
-      border-radius: 50%;
-      width: fit-content;
-      object-fit: cover;
-      margin-right: -25px;
-      box-shadow: ${({ primaryColor }) =>
-        `0 0.0625rem 0.125rem 0.0625rem ${primaryColor}`};
-    }
     & > :nth-child(2) {
-      width: 180px;
-      background-color: ${({ primaryColor }) => primaryColor};
-      ${({ primaryColor, secondaryColor }) =>
-        css<IPropsCustom>`
-          background: linear-gradient(
-            135deg,
-            ${primaryColor} 0%,
-            ${secondaryColor} 100%
-          );
-        `}
-      border-start-end-radius: 10px;
-      border-end-end-radius: 10px;
-      border-end-start-radius: 10px;
-      margin-left: 34px;
-      padding: 8px;
-      & > span {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: justify;
-        color: ${({ theme }) => theme.Colors.grays[10]};
-        font-weight: ${({ theme }) => theme.fontWeight[500]};
-        font-size: ${({ theme }) => theme.fontSize[10]};
-        line-height: 12px;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 10px;
+      & > div {
+        background-color: ${({ theme }) => theme.Colors.grays[9]};
+        width: 180px;
+        border-start-end-radius: 4px;
+        border-end-end-radius: 10px;
+        border-start-start-radius: 10px;
+        border-end-start-radius: 10px;
+        padding: 8px;
+        & > span {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: justify;
+          color: ${({ theme }) => theme.Colors.grays[3]};
+          font-weight: ${({ theme }) => theme.fontWeight[500]};
+          font-size: ${({ theme }) => theme.fontSize[10]};
+          line-height: 12px;
+        }
       }
     }
   }
   & > :nth-child(2) {
-    width: 100%;
     display: flex;
-    justify-content: flex-end;
-    padding-right: 10px;
-    & > div {
-      background-color: ${({ theme }) => theme.Colors.grays[9]};
-      width: 180px;
-      border-start-end-radius: 4px;
-      border-end-end-radius: 10px;
-      border-start-start-radius: 10px;
-      border-end-start-radius: 10px;
-      padding: 8px;
-      & > span {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: justify;
-        color: ${({ theme }) => theme.Colors.grays[3]};
-        font-weight: ${({ theme }) => theme.fontWeight[500]};
-        font-size: ${({ theme }) => theme.fontSize[10]};
-        line-height: 12px;
-      }
-    }
-  }
-  & > :nth-child(3) {
-    height: 122px;
-    //padding-left: 4px;
-    display: flex;
-    align-items: end;
+    height: 40px;
     & > div {
       display: flex;
       width: 100%;
@@ -282,21 +293,21 @@ export const StyledBodyWebChat = styled.div<IPropsCustom>`
           line-height: 12px;
         }
       }
-      & > :nth-child(1){
+      & > :nth-child(1) {
         border-radius: 5px;
         transition: 0.5s ease all;
         transform: rotate3d(0, 0, 1, -90deg);
       }
       & > span {
         background-color: ${({ primaryColor }) => primaryColor};
-      ${({ primaryColor, secondaryColor }) =>
-        css<IPropsCustom>`
-          background: linear-gradient(
-            115deg,
-            ${primaryColor} 0%,
-            ${secondaryColor} 100%
-          );
-        `}
+        ${({ primaryColor, secondaryColor }) =>
+          css<IPropsCustom>`
+            background: linear-gradient(
+              115deg,
+              ${primaryColor} 0%,
+              ${secondaryColor} 100%
+            );
+          `}
         height: 30px;
         min-width: 30px;
         margin: 0 10px;
@@ -309,24 +320,5 @@ export const StyledBodyWebChat = styled.div<IPropsCustom>`
         // background-color: ${({ primaryColor }) => primaryColor};
       }
     }
-    /* & > :nth-child(2) {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 0 0 10px;
-      & > div {
-        top: 6px;
-        left: 1px;
-        & * {
-          & > svg {
-            width: 18px;
-            height: 18px;
-          }
-        }
-      }
-    }
-  } */
+  }
 `;

@@ -26,6 +26,9 @@ export const StyledCardChannel = styled.div<IChannelInactive>`
         font-weight: ${({ theme }) => theme.fontWeight[600]};
         line-height: 1rem;
         width: 100%;
+        & > button {
+          cursor: pointer;
+        }
       }
       & > :nth-child(2) {
         color: ${({ theme, isNotAvailable }) =>
@@ -167,6 +170,30 @@ export const DropdownContainerCard = styled.div`
   border-radius: 6px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   padding: 6px 6px;
+  & > button {
+    cursor: pointer;
+    display: flex;
+    border-radius: 4px;
+    justify-content: flex-start;
+    width: 100%;
+    &:hover {
+      background-color: ${({ theme }) => theme.Colors.grays[9]};
+    }
+    &:active {
+      & * {
+        color: ${({ theme }) => theme.Colors.purples[2]};
+        fill: ${({ theme }) => theme.Colors.purples[2]};
+      }
+    }
+    & > div {
+      & * {
+        & > svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+  }
   & > div {
     display: flex;
     border-radius: 4px;

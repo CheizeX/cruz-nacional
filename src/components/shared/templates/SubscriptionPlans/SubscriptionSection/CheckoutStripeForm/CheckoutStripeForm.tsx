@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-nested-ternary */
 import { FC, useState } from 'react';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
@@ -26,6 +27,8 @@ export const StripeForm: FC<SubscriptionSectionItemsProps> = ({
   onClose,
   title,
   buttonTitle,
+  numberOfAgentsToAdd,
+  setNumberOfAgentsToAdd,
 }) => {
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
@@ -34,7 +37,7 @@ export const StripeForm: FC<SubscriptionSectionItemsProps> = ({
   const stripe = useStripe();
   const elements = useElements();
 
-  const { plan } = useAppSelector(
+  const { paymentMethods } = useAppSelector(
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
 
@@ -62,23 +65,23 @@ export const StripeForm: FC<SubscriptionSectionItemsProps> = ({
       setLoading(true);
 
       try {
-        if (
-          plan === PlanName.ENTERPRISE_TRIAL ||
-          plan === PlanName.BUSINESS_TRIAL ||
-          plan === PlanName.CORPORATE_TRIAL ||
-          plan === PlanName.GROWTH_TRIAL ||
-          plan === PlanName.START_TRIAL
-        ) {
+        if (paymentMethods?.length === 0) {
           await baseRestApi.post(
             `${process.env.NEXT_PUBLIC_REST_API_URL}/stripe/payFirstSubscription`,
-            {
-              planName: planNameSelected?.replace('_TRIAL', ''),
-              paymentMethodData: stripeDataToBack,
-            },
+            planNameSelected === PlanName.AGENT
+              ? {
+                  planName: planNameSelected,
+                  paymentMethodData: stripeDataToBack,
+                  quantity: numberOfAgentsToAdd,
+                }
+              : {
+                  planName: planNameSelected?.replace('_TRIAL', ''),
+                  paymentMethodData: stripeDataToBack,
+                },
           );
         } else {
           await baseRestApi.post(
-            `${process.env.NEXT_PUBLIC_REST_API_URL}/general/paymentMethod`,
+            `${process.env.NEXT_PUBLIC_REST_API_URL}/stripe/addPaymentMethod`,
             stripeDataToBack,
           );
         }
@@ -107,7 +110,9 @@ export const StripeForm: FC<SubscriptionSectionItemsProps> = ({
       setLoading(false);
       dispatch(getSubscriptionsData());
       setShowCard(false);
-      onClose && onClose();
+      if (onClose) {
+        onClose();
+      }
     } else {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -120,6 +125,9 @@ export const StripeForm: FC<SubscriptionSectionItemsProps> = ({
   const handleCloseClick = () => {
     setShowCard(false);
     setPlanNameSelected('');
+    if (numberOfAgentsToAdd !== '') {
+      setNumberOfAgentsToAdd('');
+    }
   };
 
   return (
@@ -131,13 +139,7 @@ export const StripeForm: FC<SubscriptionSectionItemsProps> = ({
       <CardElement id="payment-element" />
       <ButtonMolecule
         type="submit"
-        text={
-          buttonTitle ||
-          `Aceptar y suscribirme al plan ${planNameSelected?.replace(
-            '_TRIAL',
-            '',
-          )}`
-        }
+        text={buttonTitle || `Aceptar`}
         state={
           !stripe || !elements
             ? ButtonState.DISABLED

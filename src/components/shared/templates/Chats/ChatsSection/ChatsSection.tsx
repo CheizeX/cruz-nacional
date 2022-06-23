@@ -8,7 +8,7 @@ import { StyledChatsSection } from './ChatsSection.styles';
 import { ModalMolecule } from '../../../molecules/Modal/Modal';
 import { TransferConfirmation } from '../Components/TransferConfirmation/TransferConfirmation';
 import { UploadableFile } from '../Components/UploadFiles/UploadFiles.interface';
-import { readChat } from '../../../../../api/chat';
+import { readChat, readSetting } from '../../../../../api/chat';
 import { Chat, ChatStatus } from '../../../../../models/chat/chat';
 import {
   ChatInputDialogueProps,
@@ -64,11 +64,11 @@ export const ChatsSection: FC<
   const socket: any = useContext(websocketContext);
 
   const showAlert = useToastContext();
+  const dispatch = useAppDispatch();
 
   const [accessToken] = useLocalStorage('AccessToken', '');
   const { decodedToken } = useJwt(accessToken);
 
-  const dispatch = useAppDispatch();
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
@@ -84,7 +84,6 @@ export const ChatsSection: FC<
   const [chatInputDialogue, setChatInputDialogue] = useState<string>('');
   const [dropZoneDisplayed, setDropZoneDisplayed] = useState<boolean>(false);
   const [emojisDisplayed, setEmojisDisplayed] = React.useState<boolean>(false);
-
   // state para guardar el string para realizar la busqueda(email, name o telefono).
   const [searchByName, setSearchByName] = useState<string>('');
   // -------------------------------------------------------------------------
@@ -109,6 +108,40 @@ export const ChatsSection: FC<
   const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchByName(event.target.value);
   };
+  // -------------------------------------------------------
+  let activeSound: boolean;
+  let audioPending: HTMLAudioElement | null;
+  let audioConversation: HTMLAudioElement | null;
+  // trae todas las configuraciones
+  const getSettingSound = useCallback(async () => {
+    try {
+      const response = await readSetting();
+      if (response.success === false) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `Ocurrio un error al cargar los sonidos`,
+        });
+      } else {
+        audioConversation =
+          response.notificationSounds.conversationSound !== ''
+            ? new Audio(response.notificationSounds.conversationSound)
+            : null;
+        activeSound = response.notificationSounds.isActive;
+        audioPending =
+          response.notificationSounds.pendingSound !== ''
+            ? new Audio(response.notificationSounds.pendingSound)
+            : null;
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `No se puede establecer la conexión con el servidor`,
+      });
+    }
+  }, [showAlert]);
+
   // ---------------------------------
 
   // trae todos los chats que se encuentran ON_CONVERSATION
@@ -172,6 +205,16 @@ export const ChatsSection: FC<
   const getNewMessageFromNewUserOrAgent = useCallback(async (event: string) => {
     socket?.on(event, async (data: Chat[]) => {
       dispatch(setChatsOnConversation(data));
+      if (event === 'newUserMessage' && activeSound && audioConversation) {
+        await audioConversation.play();
+      }
+    });
+  }, []);
+
+  // Escucha los nuevpos chats de conversació y ejecuta el new audio
+  const getNewMessageOnConversationTrafficLight = useCallback(async () => {
+    socket?.on('trafficLight', async (data: Chat[]) => {
+      dispatch(setChatsOnConversation(data));
     });
   }, []);
 
@@ -184,8 +227,11 @@ export const ChatsSection: FC<
 
   // escucha los chats de nuevos usuarios
   const wsNewChat = useCallback(async () => {
-    socket?.on('newChat', (data: Chat[]) => {
+    socket?.on('newChat', async (data: Chat[]) => {
       dispatch(setChatsPendings(data));
+      if (activeSound && audioPending) {
+        await audioPending.play();
+      }
     });
   }, []);
 
@@ -208,7 +254,7 @@ export const ChatsSection: FC<
 
   // escucha los chats que pasan a on_conversation
   const wsNewChatAssigned = useCallback(async () => {
-    socket?.on('newChatAssigned', (data: Chat[]) => {
+    socket?.on('newChatAssigned', async (data: Chat[]) => {
       dispatch(setChatsOnConversation(data));
     });
   }, []);
@@ -254,6 +300,10 @@ export const ChatsSection: FC<
   }, [getOnConversationChats, getPendingChats]);
 
   useEffect(() => {
+    getSettingSound();
+  }, [getSettingSound]);
+
+  useEffect(() => {
     getNewMessageFromNewUserOrAgent('newAgentMessage');
     getNewMessageFromNewUserOrAgent('newUserMessage');
     wsNewChat();
@@ -264,6 +314,7 @@ export const ChatsSection: FC<
     newPausedConversation();
     wsClosePreviousSession();
     wsCloseByInactivity();
+    getNewMessageOnConversationTrafficLight();
   }, [
     getNewMessageFromNewUserOrAgent,
     getNewPendingChat,
@@ -275,6 +326,7 @@ export const ChatsSection: FC<
     wsGetTransferedChats,
     wsNewChat,
     wsNewChatAssigned,
+    getNewMessageOnConversationTrafficLight,
   ]);
   // useEffect(() => {
   // }, [socket]);
@@ -397,3 +449,6 @@ export const ChatsSection: FC<
     </StyledChatsSection>
   );
 };
+
+// TODO = AGREGAR UN SWITCH  PARA QUE EL AGENTE DECIDA SI QUIERE QUE EL LIVE CHAT TENGA SONIDO
+// TODO = crear un loanding para los agentes a transferir y el historial

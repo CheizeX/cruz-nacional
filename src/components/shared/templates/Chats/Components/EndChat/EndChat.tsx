@@ -69,6 +69,7 @@ export const EndChat: FC<IEndChatProps & SelectedUserProps> = ({
         title: '¡Perfecto!',
         message: 'Gracias por dejar su comentario',
       });
+
       dispatch(
         setChatsOnConversation(
           chatsOnConversation.filter(

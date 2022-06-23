@@ -20,16 +20,13 @@ import {
 } from './UsersToSelect.styled';
 import { useToastContext } from '../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../molecules/Toast/Toast.interface';
+import { useAppSelector } from '../../../../../../redux/hook/hooks';
 
 interface IUsersToSelectProps {
   setModal: Dispatch<SetStateAction<boolean>>;
   setSelectedUsersBuffer: Dispatch<SetStateAction<string[]>>;
   selectedUsersBuffer: string[];
   usersData: User[];
-  nextPlan: {
-    plan: string;
-    invitationsAvailable: number;
-  };
   validateIfAllAgentsAreSelectedBuffer: boolean;
 }
 
@@ -38,11 +35,13 @@ export const UsersToSelect: FC<IUsersToSelectProps> = ({
   setSelectedUsersBuffer,
   selectedUsersBuffer,
   usersData,
-  nextPlan,
   validateIfAllAgentsAreSelectedBuffer,
 }) => {
   const showAlert = useToastContext();
 
+  const { persistentAgentsCount } = useAppSelector(
+    (state) => state.subscriptionsInfo.subscriptionsData,
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSaveChanges = async () => {
@@ -68,7 +67,7 @@ export const UsersToSelect: FC<IUsersToSelectProps> = ({
           message: `Seleccionaste ${
             selectedUsersBuffer.length
           } agentes. Necesitas seleccionar ${
-            nextPlan.invitationsAvailable - selectedUsersBuffer.length
+            persistentAgentsCount - selectedUsersBuffer.length
           } agentes mas`,
         });
       }
@@ -91,10 +90,12 @@ export const UsersToSelect: FC<IUsersToSelectProps> = ({
         </button>
       </StyledUsersToSelectHeader>
       <StyledWarning>
-        Debes seleccionar {nextPlan.invitationsAvailable} agentes que podrán
-        continuar teniendo acceso. En caso de no haber seleccionado ninguno
-        durante el tiempo restante del plan actual, los mismos serán elegidos al
-        azar por el sistema.
+        Debido al cambio efectuado en tu suscripción, sólo{' '}
+        {persistentAgentsCount}{' '}
+        {persistentAgentsCount > 1 ? 'agentes' : 'agente'} podrán continuar
+        teniendo acceso. Selecciona los que quieres conservar antes de que
+        finalice el período, de lo contrario, los mismos serán elegidos al azar
+        por el sistema.
       </StyledWarning>
       <StyledUsersToSelectBody>
         <div>
@@ -119,8 +120,7 @@ export const UsersToSelect: FC<IUsersToSelectProps> = ({
                           selectedUsersBuffer &&
                             selectedUsersBuffer?.includes(_id)
                             ? selectedUsersBuffer.filter((id) => id !== _id)
-                            : selectedUsersBuffer.length <
-                              nextPlan.invitationsAvailable
+                            : selectedUsersBuffer.length < persistentAgentsCount
                             ? [...selectedUsersBuffer, _id]
                             : [...selectedUsersBuffer],
                         )

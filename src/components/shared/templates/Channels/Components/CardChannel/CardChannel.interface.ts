@@ -1,3 +1,5 @@
+import { ITypeUnOfficialWhatsapp } from '../WhatsappSection/ChatApi/ChatApiSection/ChatApiSection.interface';
+
 export interface IPropsCardChannel {
   _idChannel?: string;
   name: string;
@@ -6,6 +8,8 @@ export interface IPropsCardChannel {
   isActive: boolean;
   image: string;
   providerName?: string;
+  handleToggle: (arg: string) => void;
+  handleStatusUnOfficial: () => ITypeUnOfficialWhatsapp;
   setIsSectionWebChat: React.Dispatch<React.SetStateAction<boolean>>;
   setSeletedComponent: React.Dispatch<React.SetStateAction<string>>;
 }

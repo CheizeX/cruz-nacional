@@ -11,12 +11,14 @@ export const StyledUserCardMolecule = styled.div<IUserCardContainerProps>`
   padding: 15px;
   margin: 13px 0 0px 13px;
   width: 230px;
+  opacity: ${({ invitation }) => (invitation ? 'none' : 0.8)};
 `;
 
-export const StyledCardHeader = styled.div`
+export const StyledCardHeader = styled.div<IUserCardContainerProps>`
   align-items: center;
   display: flex;
   height: 60px;
+  min-height: 20px;
   justify-content: flex-end;
   margin-bottom: 31px;
   position: relative;
@@ -29,8 +31,21 @@ export const StyledCardHeader = styled.div`
     left: 0;
     position: absolute;
     top: 0;
-    :hover {
+    /* :hover {
       background-color: ${({ theme }) => theme.Colors.grays[9]};
+    } */
+    & > div {
+      width: 100%;
+      height: 24px;
+      & * {
+        color: ${({ theme }) => theme.Colors.grays[10]};
+        & > svg {
+          & > path {
+            fill: ${({ theme, isAdmin }) => !isAdmin && theme.Colors.orange[2]};
+            opacity: 0.9;
+          }
+        }
+      }
     }
   }
 
@@ -60,6 +75,7 @@ export const TriggerElement = styled.div`
   cursor: pointer;
   height: 20px;
   margin-left: 10px;
+  pointer-events: none;
   width: 18px;
   svg {
     height: 18px;

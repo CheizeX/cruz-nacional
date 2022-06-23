@@ -4,7 +4,7 @@ export const StyledSelectedPlanHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 30px;
+  /* padding: 0 30px; */
   height: 100%;
   width: 100%;
   & > button {

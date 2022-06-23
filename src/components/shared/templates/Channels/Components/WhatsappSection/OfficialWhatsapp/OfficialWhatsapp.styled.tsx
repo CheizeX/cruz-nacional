@@ -130,7 +130,7 @@ export const StyledBodyOfficialWhatsapp = styled.div<IPropsOfficialContainer>`
           margin: 0 0.625rem;
         }
       }
-        & > :nth-child(3) {
+        & > :nth-child(4) {
           & > :nth-child(2) {
             display: none;
           }

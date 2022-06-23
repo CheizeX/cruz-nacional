@@ -50,6 +50,7 @@ export const PredefinedAgentMessages: FC = () => {
           {
             welcomeMessage: welcome,
             goodbyeMessage: goodbye,
+            isActive,
           },
         );
         dispatch(getGeneralConfigurationData());

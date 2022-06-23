@@ -15,13 +15,13 @@ export const StyledTrialFormLayout = styled.div<SubscriptionSectionInterface>`
   & > img {
     align-self: center;
     position: relative;
-    top: 10px;
+    top: -10px;
   }
   & > div {
     overflow: hidden;
     position: fixed;
     width: 100%;
-    top: 0;
+    top: -10;
     right: 0;
     min-height: 100vh;
     display: flex;
@@ -38,7 +38,7 @@ export const StyledTrialFormLayout = styled.div<SubscriptionSectionInterface>`
 
 export const StyledTrialFormContainer = styled.main`
   position: relative;
-  top: 30px;
+  bottom: 0px;
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -47,17 +47,16 @@ export const StyledTrialFormContainer = styled.main`
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.452);
   border-radius: 1.5rem;
   min-width: 320px;
-  max-width: 600px;
+  max-width: 500px;
   width: fit-content;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
-  margin: 0 20px 50px 20px;
 
   & h1 {
-    font-size: 1.4rem;
-    line-height: 2rem;
-    color: ${({ theme }) => theme.Colors.grays[3]};
+    font-size: 1.2rem;
+    line-height: 1.7rem;
+    color: ${({ theme }) => theme.Colors.grays[1]};
     font-weight: 500;
-    padding: 1rem;
+    padding: 1rem 0;
     text-align: center;
     width: 90%;
     border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[9]};
@@ -71,7 +70,7 @@ export const StyledTrialFormContainer = styled.main`
     min-width: 320px;
     width: 100%;
     height: 100%;
-    padding: 2rem;
+    padding: 2rem 0.2rem;
     background-color: ${({ theme }) => theme.Colors.grays[10]};
     transition: all 0.3s ease-in-out;
     border-radius: 1.5rem;
@@ -110,7 +109,7 @@ export const StyledTrialFormContainer = styled.main`
       width: 80%;
       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
       margin-top: 1rem;
-      min-height: 50px;
+      min-height: 40px;
     }
     & > :nth-child(7) {
       width: 80%;
@@ -271,5 +270,31 @@ export const StyledInfoCard = styled.article`
         }
       }
     }
+  }
+`;
+
+export const StyledSuccessRegister = styled.article`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 400px;
+  height: 260px;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.Colors.grays[10]};
+  transition: all 0.3s ease-in-out;
+  & > svg {
+    margin-top: 10px;
+  }
+  & p {
+    font-size: 0.9rem;
+    color: ${({ theme }) => theme.Colors.grays[3]};
+    width: 80%;
+    line-height: 1.5;
+    text-align: center;
+    margin: 10px 0;
+  }
+  & > * {
+    fill: ${({ theme }) => theme.Colors.purples[1]};
   }
 `;

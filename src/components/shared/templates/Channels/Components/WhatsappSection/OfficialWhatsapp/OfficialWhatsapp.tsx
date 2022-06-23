@@ -20,6 +20,7 @@ import { OfficialWhatsAppSuccess } from '../Components/OfficialWhatsappSuccess/O
 import { OfficialWhatsappRejected } from '../Components/OfficialWhatsappRejected/OfficialWhatsappRejected';
 import { useToastContext } from '../../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../../molecules/Toast/Toast.interface';
+import { HasApiKey } from '../Components/HasApiKey/HasApiKey';
 
 const dataOfficialWhatsapp = [
   {
@@ -28,10 +29,14 @@ const dataOfficialWhatsapp = [
   },
   {
     num: 2,
-    message: 'Ingresa los siguientes campos',
+    message: 'Selecciona si ya tienes un apikey',
   },
   {
     num: 3,
+    message: 'Ingresa los siguientes campos',
+  },
+  {
+    num: 4,
     message: '¡Listo!',
   },
 ];
@@ -47,6 +52,16 @@ export const OfficialWhatsappComponent: FC<IPropsOfficialWhatsapp> = ({
   const [isValid, setIsValid] = useState<boolean>(true);
   const showAlert = useToastContext();
 
+  const [radioChecked, setRadioChecked] = useState('');
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value: targetValue } = e.target;
+    setRadioChecked(targetValue);
+  };
+
+  const handleNextComponent = () => {
+    setSelectedComponent(3);
+  };
+
   const handleComponentPrevious = () => {
     if (selectedComponent === 3) {
       setSelectedComponent(selectedComponent - 1);
@@ -57,7 +72,7 @@ export const OfficialWhatsappComponent: FC<IPropsOfficialWhatsapp> = ({
   // FUNCION PARA INCREMENTAR  LA SECCIÓN DE COMPONENTES
   // const handleComponentNext = () => {
   //   setSelectedComponent(selectedComponent + 1);
-  // };
+  // }; https://hub.360dialog.com/lp/whatsapp/SvAiK8PA
   const handleOnChange = (value: string) => {
     if (value.length <= 4 || value === '') {
       setIsValidPhone(false);
@@ -142,6 +157,13 @@ export const OfficialWhatsappComponent: FC<IPropsOfficialWhatsapp> = ({
         </div>
         <div>
           {selectedComponent === 2 ? (
+            <HasApiKey
+              radioChecked={radioChecked}
+              setRadioChecked={setRadioChecked}
+              handleRadioChange={handleRadioChange}
+            />
+          ) : null}
+          {selectedComponent === 3 ? (
             <OfficialWhatsappForm
               setIsPhone={setIsPhone}
               handleOnChange={handleOnChange}
@@ -151,8 +173,8 @@ export const OfficialWhatsappComponent: FC<IPropsOfficialWhatsapp> = ({
               isValid={isValid}
             />
           ) : null}
-          {selectedComponent === 3 ? <OfficialWhatsAppSuccess /> : null}
-          {selectedComponent === 4 ? <OfficialWhatsappRejected /> : null}
+          {selectedComponent === 4 ? <OfficialWhatsAppSuccess /> : null}
+          {selectedComponent === 5 ? <OfficialWhatsappRejected /> : null}
         </div>
       </StyledBodyOfficialWhatsapp>
       <StyledFooterOfficialWhatsapp>
@@ -165,7 +187,7 @@ export const OfficialWhatsappComponent: FC<IPropsOfficialWhatsapp> = ({
           }
           onClick={handleComponentPrevious}
         />
-        {selectedComponent >= 3 ? (
+        {selectedComponent >= 4 ? (
           <ButtonMolecule
             text="Finalizar"
             size={Size.MEDIUM}
@@ -175,7 +197,14 @@ export const OfficialWhatsappComponent: FC<IPropsOfficialWhatsapp> = ({
           <ButtonMolecule
             text="Siguiente"
             size={Size.MEDIUM}
-            onClick={handleToggle}
+            state={
+              radioChecked !== 'APIKEY' && selectedComponent === 2
+                ? ButtonState.DISABLED
+                : ButtonState.NORMAL
+            }
+            onClick={
+              selectedComponent === 2 ? handleNextComponent : handleToggle
+            }
           />
         )}
       </StyledFooterOfficialWhatsapp>

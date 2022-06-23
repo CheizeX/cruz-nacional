@@ -23,7 +23,7 @@ export const Channels = [
   },
   {
     id: 44,
-    name: 'Chat web',
+    name: 'WebChat',
     icon: 'webchat',
   },
 ];
@@ -47,3 +47,5 @@ export const FilterChannels: FC<FilterChannelsProps & FilterChannel> = ({
     </>
   );
 };
+
+// TODO = filtro que diferencia whatsapp oficial de whatsapp no oficial

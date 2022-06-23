@@ -8,6 +8,7 @@ import { SelectedUserProps } from '../../ChatsSection/ChatsSection.interface';
 import {
   Channels,
   ChatStatus,
+  ContentType,
   Message,
 } from '../../../../../../models/chat/chat';
 import {
@@ -21,6 +22,12 @@ import {
   PendingDeletedMessagesStyle,
   WrapperOnConversation,
   StyledBoxBotAvatar,
+  StyledInteractiveButton,
+  StyledInteractiveButtonHeader,
+  StyledInteractiveButtonBody,
+  StyledInteractiveButtonFooter,
+  StyledInteractiveButtonActions,
+  StyledInteractiveActionTitle,
 } from './DialoguesBox.styles';
 import { useAppSelector } from '../../../../../../redux/hook/hooks';
 import { ModalBackgroundProps } from '../../../../molecules/Modal/Modal';
@@ -383,6 +390,7 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                         </Text>
                       </>
                     )}
+
                     {message.contentType !== 'ATTACHMENT' && (
                       <>
                         {message.isDeleted === true ? (
@@ -391,9 +399,43 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             <SVGIcon iconFile="/icons/band.svg" />
                           </StyledDeletedMessage>
                         ) : (
-                          <WrapperOnConversation>
-                            {readUrl(message.content)}
-                          </WrapperOnConversation>
+                          <>
+                            {message.contentType === ContentType.TEXT && (
+                              <WrapperOnConversation>
+                                {readUrl(message.content)}
+                              </WrapperOnConversation>
+                            )}
+
+                            {message.contentType ===
+                              (ContentType.INTERACTIVE_BUTTON ||
+                                ContentType.INTERACTIVE_LIST) && (
+                              <StyledInteractiveButton>
+                                <StyledInteractiveButtonHeader>
+                                  {message.content.header.type === 'text' ? (
+                                    message.content.header.body
+                                  ) : (
+                                    <img
+                                      src={message.content.header.body}
+                                      width="100px"
+                                      height="100px"
+                                      alt="message.content"
+                                    />
+                                  )}
+                                </StyledInteractiveButtonHeader>
+                                <StyledInteractiveButtonBody>
+                                  {message.content.body}
+                                </StyledInteractiveButtonBody>
+                                <StyledInteractiveButtonFooter>
+                                  {message.content.footer}
+                                </StyledInteractiveButtonFooter>
+                                <StyledInteractiveButtonActions>
+                                  {message.content.action.map((act: string) => (
+                                    <div key={act}>{act}</div>
+                                  ))}
+                                </StyledInteractiveButtonActions>
+                              </StyledInteractiveButton>
+                            )}
+                          </>
                         )}
                         <Text>
                           {new Date(message.createdAt).toLocaleTimeString(
@@ -412,7 +454,8 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
               ) : (
                 <StyledAgentOrSUpervisorDialogue
                   key={index.toString()}
-                  chatFrom={message.from}>
+                  chatFrom={message.from}
+                  contentTypeProps={message.contentType}>
                   <div>
                     {message.contentType === 'ATTACHMENT' && (
                       <>
@@ -674,9 +717,46 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             <SVGIcon iconFile="/icons/band.svg" />
                           </StyledDeletedMessage>
                         ) : (
-                          <WrapperOnConversation>
-                            {readUrl(message.content)}
-                          </WrapperOnConversation>
+                          <>
+                            {message.contentType === ContentType.TEXT && (
+                              <WrapperOnConversation>
+                                {readUrl(message.content)}
+                              </WrapperOnConversation>
+                            )}
+
+                            {message.contentType ===
+                              (ContentType.INTERACTIVE_BUTTON ||
+                                ContentType.INTERACTIVE_LIST) && (
+                              <StyledInteractiveButton>
+                                <StyledInteractiveButtonHeader>
+                                  {message.content.header.type === 'text' ? (
+                                    message.content.header.body
+                                  ) : (
+                                    <img
+                                      src={message.content.header.body}
+                                      width="100px"
+                                      height="100px"
+                                      alt="message.content"
+                                    />
+                                  )}
+                                </StyledInteractiveButtonHeader>
+                                <StyledInteractiveButtonBody>
+                                  {message.content.body}
+                                </StyledInteractiveButtonBody>
+                                <StyledInteractiveButtonFooter>
+                                  {message.content.footer}
+                                </StyledInteractiveButtonFooter>
+                                <StyledInteractiveActionTitle>
+                                  {message.content.actionTitle || ''}
+                                </StyledInteractiveActionTitle>
+                                <StyledInteractiveButtonActions>
+                                  {message.content.action.map((act: string) => (
+                                    <div key={act}>{act}</div>
+                                  ))}
+                                </StyledInteractiveButtonActions>
+                              </StyledInteractiveButton>
+                            )}
+                          </>
                         )}
                       </>
                     )}
@@ -691,22 +771,17 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                   <StyledAgentAvatar>
                     {userDataInState &&
                     userDataInState.urlAvatar !== '' &&
-                    message.from !== 'Bot' ? (
+                    message.from !== 'Bot' &&
+                    message.from !== 'BOT' ? (
                       <StyledBoxAvatar
                         src={profilePicture}
                         alt={userDataInState.name}
                       />
                     ) : (
-                      <>
-                        {message.from === 'Bot' ? (
-                          <StyledBoxBotAvatar
-                            src="/avatars/Robot_1.svg"
-                            alt="Bot"
-                          />
-                        ) : (
-                          <SVGIcon iconFile="/icons/user.svg" />
-                        )}
-                      </>
+                      <StyledBoxBotAvatar
+                        src="/avatars/Robot_1.svg"
+                        alt="Bot"
+                      />
                     )}
                   </StyledAgentAvatar>
                 </StyledAgentOrSUpervisorDialogue>
@@ -725,7 +800,8 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
               message.from === chat.client.clientId ? (
                 <StyledUserPendingDialogue
                   key={message._id}
-                  chatFrom={message.from}>
+                  chatFrom={message.from}
+                  contentTypeProps={message.contentType}>
                   <div>
                     <Text>
                       {message.contentType === 'ATTACHMENT' &&
@@ -772,9 +848,44 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                               Se eliminó este mensage
                             </PendingDeletedMessagesStyle>
                           ) : (
-                            <WrapperOnConversation>
-                              {readUrl(message.content)}
-                            </WrapperOnConversation>
+                            <>
+                              {message.contentType === ContentType.TEXT && (
+                                <WrapperOnConversation>
+                                  {readUrl(message.content)}
+                                </WrapperOnConversation>
+                              )}
+                              {message.contentType ===
+                                (ContentType.INTERACTIVE_BUTTON ||
+                                  ContentType.INTERACTIVE_LIST) && (
+                                <StyledInteractiveButton>
+                                  <StyledInteractiveButtonHeader>
+                                    {message.content.header.type === 'text' ? (
+                                      message.content.header.body
+                                    ) : (
+                                      <img
+                                        src={message.content.header.body}
+                                        width="100px"
+                                        height="100px"
+                                        alt="message.content"
+                                      />
+                                    )}
+                                  </StyledInteractiveButtonHeader>
+                                  <StyledInteractiveButtonBody>
+                                    {message.content.body}
+                                  </StyledInteractiveButtonBody>
+                                  <StyledInteractiveButtonFooter>
+                                    {message.content.footer}
+                                  </StyledInteractiveButtonFooter>
+                                  <StyledInteractiveButtonActions>
+                                    {message.content.action.map(
+                                      (act: string) => (
+                                        <div key={act}>{act}</div>
+                                      ),
+                                    )}
+                                  </StyledInteractiveButtonActions>
+                                </StyledInteractiveButton>
+                              )}
+                            </>
                           )}
                         </>
                       )}
@@ -791,7 +902,8 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
               ) : (
                 <StyledAgentOrSUpervisorDialogue
                   chatFrom={message.from}
-                  key={message._id}>
+                  key={message._id}
+                  contentTypeProps={message.contentType}>
                   <div>
                     {message.contentType !== 'ATTACHMENT' && (
                       <>
@@ -801,9 +913,42 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             <SVGIcon iconFile="/icons/band.svg" />
                           </StyledDeletedMessage>
                         ) : (
-                          <WrapperOnConversation>
-                            {readUrl(message.content)}
-                          </WrapperOnConversation>
+                          <>
+                            {message.contentType === ContentType.TEXT && (
+                              <WrapperOnConversation>
+                                {readUrl(message.content)}
+                              </WrapperOnConversation>
+                            )}
+                            {message.contentType ===
+                              (ContentType.INTERACTIVE_BUTTON ||
+                                ContentType.INTERACTIVE_LIST) && (
+                              <StyledInteractiveButton>
+                                <StyledInteractiveButtonHeader>
+                                  {message.content.header.type === 'text' ? (
+                                    message.content.header.body
+                                  ) : (
+                                    <img
+                                      src={message.content.header.body}
+                                      width="100px"
+                                      height="100px"
+                                      alt="message.content"
+                                    />
+                                  )}
+                                </StyledInteractiveButtonHeader>
+                                <StyledInteractiveButtonBody>
+                                  {message.content.body}
+                                </StyledInteractiveButtonBody>
+                                <StyledInteractiveButtonFooter>
+                                  {message.content.footer}
+                                </StyledInteractiveButtonFooter>
+                                <StyledInteractiveButtonActions>
+                                  {message.content.action.map((act: string) => (
+                                    <div key={act}>{act}</div>
+                                  ))}
+                                </StyledInteractiveButtonActions>
+                              </StyledInteractiveButton>
+                            )}
+                          </>
                         )}
                       </>
                     )}
@@ -818,14 +963,15 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                   <StyledAgentAvatar>
                     {userDataInState &&
                     userDataInState.urlAvatar !== '' &&
-                    message.from !== 'Bot' ? (
+                    message.from !== 'Bot' &&
+                    message.from !== 'BOT' ? (
                       <StyledBoxAvatar
                         src={profilePicture}
                         alt={userDataInState.name}
                       />
                     ) : (
                       <>
-                        {message.from === 'Bot' ? (
+                        {message.from === 'Bot' || message.from === 'BOT' ? (
                           <StyledBoxBotAvatar
                             src="/avatars/Robot_1.svg"
                             alt="Bot"

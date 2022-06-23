@@ -20,7 +20,11 @@ import {
 import { IConvertsationHistory } from './ConversationView.interface';
 import { UserRole } from '../../../../../../models/users/role';
 import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
-import { Chat, ChatStatus } from '../../../../../../models/chat/chat';
+import {
+  Chat,
+  ChatStatus,
+  ContentType,
+} from '../../../../../../models/chat/chat';
 
 export const ConversationView: FC<IConvertsationHistory> = ({
   setIsOpenModal,
@@ -253,7 +257,7 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                     <SectionContainerConversationView key={chat._id}>
                       {chat.messages.map((item, index) => (
                         <div key={item._id}>
-                          {item.contentType !== 'ATTACHAMENT'
+                          {item.contentType !== ContentType.ATTACHMENT
                             ? handleWord(item.content)
                             : null}
                           {item.from !== UserRole.AGENT ? (

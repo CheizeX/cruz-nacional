@@ -44,8 +44,6 @@ export const EditUsers: FC<IEditUsersProps> = ({
   users,
 }) => {
   const showAlert = useToastContext();
-  // const socket: any = useContext(websocketContext);
-
   // Redux
   const { usersData } = useSelector(
     (state: RootState) => state.users.useQueryState,
@@ -175,23 +173,31 @@ export const EditUsers: FC<IEditUsersProps> = ({
                     <SVGIcon iconFile="/icons/unknown_user.svg" />
                     <SVGIcon iconFile="/icons/IconButtonSmall.svg" />
                   </StyledAvatar>
-                  <StyledVisualContainerEditUser>
-                    <StyledWrapperRadio
-                      onClick={() => handleClickRol('SUPERVISOR')}>
-                      <StyledButton focusedCheck={activoCheck === 'SUPERVISOR'}>
-                        <StyledRadio
-                          focusedCheck={activoCheck === 'SUPERVISOR'}
-                        />
-                      </StyledButton>
-                      <span>Supervisor</span>
-                    </StyledWrapperRadio>
-                    <StyledWrapperRadio onClick={() => handleClickRol('AGENT')}>
-                      <StyledButton focusedCheck={activoCheck === 'AGENT'}>
-                        <StyledRadio focusedCheck={activoCheck === 'AGENT'} />
-                      </StyledButton>
-                      <span>Agente</span>
-                    </StyledWrapperRadio>
-                  </StyledVisualContainerEditUser>
+                  {item.role === 'SUPERVISOR' && (
+                    <>
+                      <StyledVisualContainerEditUser>
+                        <StyledWrapperRadio
+                          onClick={() => handleClickRol('SUPERVISOR')}>
+                          <StyledButton
+                            focusedCheck={activoCheck === 'SUPERVISOR'}>
+                            <StyledRadio
+                              focusedCheck={activoCheck === 'SUPERVISOR'}
+                            />
+                          </StyledButton>
+                          <span>Supervisor</span>
+                        </StyledWrapperRadio>
+                        <StyledWrapperRadio
+                          onClick={() => handleClickRol('AGENT')}>
+                          <StyledButton focusedCheck={activoCheck === 'AGENT'}>
+                            <StyledRadio
+                              focusedCheck={activoCheck === 'AGENT'}
+                            />
+                          </StyledButton>
+                          <span>Agente</span>
+                        </StyledWrapperRadio>
+                      </StyledVisualContainerEditUser>
+                    </>
+                  )}
                   <StyledInputContainer>
                     <Text>Nombre</Text>
                     <ContainerInput

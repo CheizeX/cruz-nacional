@@ -32,8 +32,12 @@ import {
 import { IUserCreateProps } from './UserCreate.interface';
 import { UserRole } from '../../../../../models/users/role';
 import { Tag } from '../../../../../models/tags/tag';
-// import { websocketContext } from '../../../../../chat/index';
 import { createUser } from '../../../../../api/users/index';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../redux/hook/hooks';
+import { setDataUser } from '../../../../../redux/slices/users/user-management';
 
 interface Values {
   email: string;
@@ -62,15 +66,20 @@ export const UserCreate: FC<IUserCreateProps> = ({
   setUsers,
   users,
 }) => {
-  const [roleSelected, setRoleSelected] = useState<string>('AGENT');
+  const dispatch = useAppDispatch();
+  const { supervisores } = useAppSelector(
+    (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
+  );
+  const [roleSelected, setRoleSelected] = useState<string>(
+    supervisores > 0 ? 'AGENT' : '',
+  );
   const showAlert = useToastContext();
-  // const socket: any = useContext(websocketContext);
   const clearTagsUser = () => setContainerTags([]);
 
   const initialValues = {
     name: '',
     email: '',
-    role: 'AGENT',
+    role: roleSelected,
     tags: containerTags?.filter(
       (v, i, a) =>
         a.findIndex((t) => JSON.stringify(t) === JSON.stringify(v)) === i,
@@ -84,49 +93,57 @@ export const UserCreate: FC<IUserCreateProps> = ({
       resetForm: () => void;
     },
   ) => {
-    try {
-      if (values?.email && values?.name && values?.role) {
-        const response = await createUser({
-          role: values?.role.toUpperCase() as UserRole,
-          name: values?.name,
-          email: values?.email,
-          tags: values?.tags,
-          companyId: values?.companyId || '',
+    if (roleSelected !== '') {
+      try {
+        if (values?.email && values?.name) {
+          const response = await createUser({
+            role: roleSelected as UserRole,
+            name: values?.name,
+            email: values?.email,
+            tags: values?.tags,
+            companyId: values?.companyId || '',
+          });
+          if (response.errorMessage === 'Limit reached') {
+            showAlert?.addToast({
+              alert: Toast.ERROR,
+              title: '¡Ups!',
+              message: 'Has alcanzado el número máximo de usuarios permitidos',
+            });
+          }
+          if (response.errorMessage === 'User exists') {
+            showAlert?.addToast({
+              alert: Toast.ERROR,
+              title: '¡Ups!',
+              message: 'Este usuario ya existe.',
+            });
+          } else {
+            dispatch(setDataUser(response));
+            showAlert?.addToast({
+              alert: Toast.SUCCESS,
+              title: '¡Perfecto!',
+              message: 'Se ha creado un usuario con exito',
+            });
+          }
+          submitProps?.setSubmitting(false);
+          submitProps?.resetForm();
+        }
+        clearTagsUser();
+        // socket.emit('newUser');
+        setTimeout(() => {
+          setUserModal(false);
+        }, 1000);
+      } catch (error) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `${error}`,
         });
-        if (response.errorMessage === 'Limit reached') {
-          showAlert?.addToast({
-            alert: Toast.ERROR,
-            title: '¡Ups!',
-            message: 'Has alcanzado el número máximo de usuarios permitidos',
-          });
-        }
-        if (response.errorMessage === 'User exists') {
-          showAlert?.addToast({
-            alert: Toast.ERROR,
-            title: '¡Ups!',
-            message: 'Este usuario ya existe.',
-          });
-        }
-        if (response.success === true) {
-          showAlert?.addToast({
-            alert: Toast.SUCCESS,
-            title: '¡Perfecto!',
-            message: 'Se ha creado un usuario con exito',
-          });
-        }
-        submitProps?.setSubmitting(false);
-        submitProps?.resetForm();
       }
-      clearTagsUser();
-      // socket.emit('newUser');
-      setTimeout(() => {
-        setUserModal(false);
-      }, 1000);
-    } catch (error) {
+    } else {
       showAlert?.addToast({
         alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `${error}`,
+        title: 'ROL NO SELECCIONADO',
+        message: 'Debe seleccionar un rol para el usuario',
       });
     }
   };
@@ -164,54 +181,58 @@ export const UserCreate: FC<IUserCreateProps> = ({
                       <SVGIcon iconFile="/icons/unknown_user.svg" />
                       <SVGIcon iconFile="/icons/IconButtonSmall.svg" />
                     </StyledAvatar>
-                    <StyledRealFunctionalRadiosContainer
-                      role="group"
-                      aria-labelledby="my-radio-group">
-                      <Field
-                        type="radio"
-                        id="role"
-                        name="role"
-                        value="SUPERVISOR"
-                        onClick={() => setRoleSelected('SUPERVISOR')}
-                      />
-                      <Field
-                        type="radio"
-                        id="role"
-                        name="role"
-                        value="AGENT"
-                        onClick={() => setRoleSelected('AGENT')}
-                      />
-                    </StyledRealFunctionalRadiosContainer>
-                    <StyledVisualRadiosContainer>
-                      {roleSelected === 'SUPERVISOR' ? (
-                        <StyledRadioPurple>
-                          <div />
-                        </StyledRadioPurple>
-                      ) : (
-                        <StyledRadioGray>
-                          <div />
-                        </StyledRadioGray>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => setRoleSelected('SUPERVISOR')}>
-                        Supervisor
-                      </button>
-                      {roleSelected === 'AGENT' ? (
-                        <StyledRadioPurple>
-                          <div />
-                        </StyledRadioPurple>
-                      ) : (
-                        <StyledRadioGray>
-                          <div />
-                        </StyledRadioGray>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => setRoleSelected('AGENT')}>
-                        Agente
-                      </button>
-                    </StyledVisualRadiosContainer>
+                    {supervisores < 1 && (
+                      <>
+                        <StyledRealFunctionalRadiosContainer
+                          role="group"
+                          aria-labelledby="my-radio-group">
+                          <Field
+                            type="button"
+                            id="role"
+                            name="role"
+                            value="SUPERVISOR"
+                            onClick={() => setRoleSelected('SUPERVISOR')}
+                          />
+                          <Field
+                            type="button"
+                            id="role"
+                            name="role"
+                            value="AGENT"
+                            onClick={() => setRoleSelected('AGENT')}
+                          />
+                        </StyledRealFunctionalRadiosContainer>
+                        <StyledVisualRadiosContainer>
+                          {roleSelected === 'SUPERVISOR' ? (
+                            <StyledRadioPurple>
+                              <div />
+                            </StyledRadioPurple>
+                          ) : (
+                            <StyledRadioGray>
+                              <div />
+                            </StyledRadioGray>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setRoleSelected('SUPERVISOR')}>
+                            Supervisor
+                          </button>
+                          {roleSelected === 'AGENT' ? (
+                            <StyledRadioPurple>
+                              <div />
+                            </StyledRadioPurple>
+                          ) : (
+                            <StyledRadioGray>
+                              <div />
+                            </StyledRadioGray>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setRoleSelected('AGENT')}>
+                            Agente
+                          </button>
+                        </StyledVisualRadiosContainer>
+                      </>
+                    )}
                     <StyledInputContainer>
                       <Text>Nombre</Text>
                       <Field
@@ -253,7 +274,9 @@ export const UserCreate: FC<IUserCreateProps> = ({
                   text="Cancelar"
                   size={Size.MEDIUM}
                   variant={ButtonVariant.OUTLINED}
-                  onClick={() => setUserModal(false)}
+                  onClick={() => {
+                    setUserModal(false);
+                  }}
                 />
                 <ButtonMolecule
                   onClick={submitForm}

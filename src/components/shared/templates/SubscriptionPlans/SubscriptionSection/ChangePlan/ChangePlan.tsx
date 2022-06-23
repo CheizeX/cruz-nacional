@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 import { Text } from '../../../../atoms/Text/Text';
 import {
@@ -39,12 +40,7 @@ export const ChangePlan: FC<ChangePlanProps> = ({
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
 
-  const scalePlan = [
-    PlanName.START,
-    PlanName.GROWTH,
-    PlanName.BUSINESS,
-    PlanName.CORPORATE,
-  ];
+  const scalePlan = [PlanName.FREE, PlanName.START];
   const actualPlanPosition = scalePlan.findIndex(
     (planName) => planName === plan,
   );
@@ -85,24 +81,39 @@ export const ChangePlan: FC<ChangePlanProps> = ({
   return (
     <StyledChangePlan>
       <StyledChangePlanHeader>
-        <Text>Completar suscripción</Text>
+        <Text>
+          {plan === PlanName.FREE || plan === PlanName.START_TRIAL
+            ? 'Iniciar suscripción'
+            : 'Comenzar período de prueba'}
+        </Text>
         <button type="button" onClick={handleCloseClick}>
           <SVGIcon iconFile="/icons/close.svg" />
         </button>
       </StyledChangePlanHeader>
       <StyledChangePlanBody>
         <SVGIcon iconFile="/icons/warning.svg" />
-        <Text>
-          Actualmente estás suscripto al plan <span>{plan}</span> y escogiste la
-          opción de cambiar por <span>{planNameSelected}</span> .
-        </Text>
+        {plan === PlanName.FREE ? (
+          <Text>
+            Actualmente estás utilizando nuestro plan <span>FREE</span> y
+            escogiste la opción de comenzar a utilizar el período de prueba de
+            nuestro plan <span>START</span> durante 14 días.
+          </Text>
+        ) : (
+          <Text>
+            Actualmente estás dentro del período de prueba del plan{' '}
+            <span>START</span> y has seleccionado la opción de adquirir la
+            suscripción del mismo.
+          </Text>
+        )}
         {selectedPlanPosition < actualPlanPosition ? (
           <Text>
             ¿Estás seguro de que deseas cambiar a un plan inferior y renunciar a
             las funcionalidades del plan actual?
           </Text>
+        ) : plan === PlanName.FREE ? (
+          <Text>Haz click en Aceptar para comenzar a probarlo</Text>
         ) : (
-          <Text>Haz click en Aceptar y comienza a utilizarlo</Text>
+          <Text>Haz click en Aceptar para iniciar la suscripción</Text>
         )}
       </StyledChangePlanBody>
       <StyledChangePlanFooter>

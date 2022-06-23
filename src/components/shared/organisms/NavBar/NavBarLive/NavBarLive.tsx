@@ -67,13 +67,13 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
 
   // Manejo de semaforo
 
-  const chatNeutro = chatsOnConversation.filter(
+  const chatNeutro = chatsOnConversation?.filter(
     (item) => item.trafficLight === ITrafficLight.NEUTRO,
   ).length;
-  const chatYellow = chatsOnConversation.filter(
+  const chatYellow = chatsOnConversation?.filter(
     (item) => item.trafficLight === ITrafficLight.YELLOW,
   ).length;
-  const chatRed = chatsOnConversation.filter(
+  const chatRed = chatsOnConversation?.filter(
     (item) => item.trafficLight === ITrafficLight.RED,
   ).length;
   // Manejo del dropdown de disponibilidad
@@ -98,6 +98,19 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
       });
     }
   };
+
+  // const getSettingSound = useCallback(async () => {
+  //   try {
+  //     const response = await readSetting();
+  //     dispatch(setInfoSounds(response));
+  //   } catch (err) {
+  //     showAlert?.addToast({
+  //       alert: Toast.ERROR,
+  //       title: 'ERROR',
+  //       message: `No se puede establecer la conexión con el servidor`,
+  //     });
+  //   }
+  // }, [dispatch, showAlert]);
 
   const profilePicture =
     userDataInState?.urlAvatar && userDataInState?.urlAvatar !== undefined
@@ -154,6 +167,9 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
       handleCloseSession();
     }
   }, [accessToken]);
+  // useEffect(() => {
+  //   getSettingSound();
+  // }, [getSettingSound]);
 
   return (
     <>

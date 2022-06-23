@@ -4,7 +4,7 @@ import { IAvatarProps } from './AvatarContainer.interface';
 export const StyledAvatarContainer = styled.div`
   display: flex;
   background-color: ${({ theme }) => theme.Colors.grays[9]};
-  width: 19rem;
+  width: 100%;
   margin-top: 0.6rem;
   & > div {
     background-color: ${({ theme }) => theme.Colors.grays[10]};

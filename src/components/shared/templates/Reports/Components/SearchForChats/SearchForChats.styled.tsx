@@ -40,7 +40,7 @@ export const StyledTitle = styled.div`
     justify-content: center;
   }
 `;
-export const WrapperReports = styled.div<IContainerReports>`
+export const WrapperReports = styled.button<IContainerReports>`
   width: 679px;
   height: 56px;
   border-radius: 10px;
@@ -51,6 +51,7 @@ export const WrapperReports = styled.div<IContainerReports>`
   align-items: center;
   display: grid;
   grid-template-columns: 1fr 1fr 1.3fr 1.3fr 1fr 1fr;
+  cursor: pointer;
   & > div:first-child {
     height: 33px;
     display: flex;

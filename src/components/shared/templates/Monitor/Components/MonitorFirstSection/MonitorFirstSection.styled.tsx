@@ -176,7 +176,7 @@ export const WrapperCard = styled.div`
   }
 `;
 
-export const StyledAgentSection = styled.div<IContainerProps>`
+export const StyledAgentSection = styled.button<IContainerProps>`
   width: 607px;
   height: 56px;
   border-radius: 10px;
@@ -185,6 +185,7 @@ export const StyledAgentSection = styled.div<IContainerProps>`
     index && index % 2 !== 0 ? theme.Colors.grays[10] : theme.Colors.grays[9]};
   display: grid;
   grid-template-columns: 0.8fr 1.5fr 1.2fr 1.5fr 1.5fr 0.8fr;
+  cursor: pointer;
   & > :nth-child(1) {
     display: flex;
     align-items: center;
@@ -299,8 +300,8 @@ export const StyledAgentSection = styled.div<IContainerProps>`
   & > :nth-child(6) {
     display: flex;
     justify-content: center;
-    & > button {
-      cursor: pointer;
+    & > div {
+      // cursor: pointer;
       width: 16px;
       height: 16px;
     }
@@ -320,22 +321,14 @@ export const WrapperAgents = styled.div`
   height: 456px;
   width: 607px;
   margin: auto;
-  overflow: scroll;
-  & ::-webkit-scrollbar {
-    display: none;
-  }
-  /* & > :first-child {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    & > button {
-      width: 42px;
-      height: 20px;
-      display: flex;
-      cursor: pointer;
+  & > :nth-child(2) {
+    overflow: scroll;
+    max-height: 456px;
+    & ::-webkit-scrollbar {
+      display: none;
     }
-  } */
+  }
+
   & > :first-child {
     width: 100%;
     z-index: 1;
@@ -352,15 +345,6 @@ export const WrapperAgents = styled.div`
       font-weight: ${({ theme }) => theme.fontWeight[600]};
       font-size: ${({ theme }) => theme.fontSize[12]};
       line-height: 14px;
-    }
-  }
-  & > section {
-    & ::-webkit-scrollbar {
-      display: none;
-    }
-    & > :nth-child(2n) {
-      border-radius: 10px;
-      background: ${({ theme }) => theme.Colors.grays[10]};
     }
   }
 `;

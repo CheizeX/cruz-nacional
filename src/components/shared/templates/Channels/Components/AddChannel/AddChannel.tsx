@@ -12,8 +12,7 @@ import {
 
 export const AddChannel: FC<IPropsAddChannel> = ({
   setIsOpenModal,
-  setIsSectionWebChat,
-  setSeletedComponent,
+  handleToggle,
   listChannel,
   showDivice,
 }) => {
@@ -40,11 +39,7 @@ export const AddChannel: FC<IPropsAddChannel> = ({
     }
     return svg.toLocaleLowerCase();
   };
-  const handleToggle = (arg: string) => {
-    setIsSectionWebChat(true);
-    setIsOpenModal(false);
-    setSeletedComponent(arg);
-  };
+
   return (
     <StyledWrapperAddChannel>
       <StyledHeaderAddChannel>

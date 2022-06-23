@@ -80,6 +80,12 @@ export const StyledBodyWebChat = styled.div<IContainerWebChat>`
       }
       & > :nth-child(4) {
         opacity: ${({ isSection }) => (isSection < 4 ? 0.6 : 'none')};
+        & > :nth-child(2) {
+          opacity: ${({ isSection }) => (isSection < 5 ? 0.6 : 'none')};
+        }
+      }
+      & > :nth-child(5) {
+        opacity: ${({ isSection }) => (isSection < 5 ? 0.6 : 'none')};
       }
       & > div {
         & > :nth-child(1) {
@@ -112,7 +118,7 @@ export const StyledBodyWebChat = styled.div<IContainerWebChat>`
           margin: 0 9px;
         }
       }
-      & > :nth-child(4) {
+      & > :nth-child(5) {
         & > :nth-child(2) {
           display: none;
         }
@@ -133,7 +139,7 @@ export const StyledBodyWebChat = styled.div<IContainerWebChat>`
     & > span {
       color: ${({ theme }) => theme.Colors.grays[1]};
       display: flex;
-      max-width: 150px;
+      max-width: 100%;
       text-align: center;
       justify-content: center;
       margin: 0 auto;

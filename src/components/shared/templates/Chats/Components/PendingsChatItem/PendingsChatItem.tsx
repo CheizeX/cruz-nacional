@@ -24,7 +24,11 @@ import {
   setSortedByFirstDate,
   setSortedByLastDate,
 } from '../../../../../../redux/slices/live-chat/pending-chats';
-import { Channels, Chat } from '../../../../../../models/chat/chat';
+import {
+  Channels,
+  Chat,
+  ContentType,
+} from '../../../../../../models/chat/chat';
 import { getTimeAgo } from '../../ChatsSection/ChatsSection.shared';
 import {
   setChatsIdChannel,
@@ -135,10 +139,16 @@ export const PendingsChatItem: FC<
                   </Text>
                   <Text>
                     {chat.messages &&
+                      chat.messages[chat.messages.length - 1].contentType ===
+                        ContentType.TEXT &&
                       chat.messages[chat.messages.length - 1].content.substring(
                         0,
                         14,
                       )}
+                    {chat.messages &&
+                      chat.messages[chat.messages.length - 1].contentType ===
+                        ContentType.INTERACTIVE_BUTTON &&
+                      chat.messages[chat.messages.length - 1].content.body}
                     ...
                   </Text>
                 </StyledNameAndDialog>

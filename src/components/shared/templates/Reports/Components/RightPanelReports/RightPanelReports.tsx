@@ -19,6 +19,8 @@ import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
 export const RightPanelReports: FC<IPropsRightReport> = ({
   handleDownload,
   onChangeReports,
+  setIsModalConversationInReports,
+  setClientIdInReports,
   datsReports,
 }) => {
   // const { datsReports } = useAppSelector(
@@ -79,7 +81,11 @@ export const RightPanelReports: FC<IPropsRightReport> = ({
         </div>
       </StyledHeaderRightPanel>
       {datsReports.length > 0 ? (
-        <SearchForChats datsReports={datsReports} />
+        <SearchForChats
+          datsReports={datsReports}
+          setClientIdInReports={setClientIdInReports}
+          setIsModalConversationInReports={setIsModalConversationInReports}
+        />
       ) : (
         <NoChatSearch />
       )}

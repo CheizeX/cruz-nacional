@@ -172,6 +172,11 @@ export const ChannelsSection: FC = () => {
     }
   }, [dispatch, getChannelList, idChannel, showAlert]);
 
+  const handleToggle = (arg: string) => {
+    setIsSectionWebChat(true);
+    setIsOpenModal(false);
+    setSeletedComponent(arg);
+  };
   // socket.on("webchatScriptDone", { scriptJS, scriptCSS, div })
   useEffect(() => {
     getChannelList();
@@ -203,10 +208,9 @@ export const ChannelsSection: FC = () => {
       <ModalMolecule isModal={isOpenModal}>
         <AddChannel
           setIsOpenModal={setIsOpenModal}
-          setIsSectionWebChat={setIsSectionWebChat}
-          setSeletedComponent={setSeletedComponent}
           listChannel={listChannel}
           showDivice={diviceStatus === IDivice.CREATING}
+          handleToggle={handleToggle}
         />
       </ModalMolecule>
       <ModalMolecule isModal={isSectionWebChat}>
@@ -289,8 +293,10 @@ export const ChannelsSection: FC = () => {
       ) : (
         <ChannelList
           listChannel={listChannel}
+          handleToggle={handleToggle}
           setSeletedComponent={setSeletedComponent}
           setIsSectionWebChat={setIsSectionWebChat}
+          handleStatusUnOfficial={handleStatusUnOfficial}
         />
       )}
     </StyledChannelSection>

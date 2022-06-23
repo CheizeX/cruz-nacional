@@ -59,9 +59,8 @@ export const ChangePasswordRequest: FC<ChangePasswordRequestProps> = ({
   ) => {
     try {
       if (_values?.email && onSubmitExternal)
-        await baseRestApi.post(
+        await baseRestApi.get(
           `${process.env.NEXT_PUBLIC_AUTH_API_URL}/sendRecoverMail/${_values.email}`,
-          {},
         );
       submitProps?.setSubmitting(false);
       submitProps?.resetForm();

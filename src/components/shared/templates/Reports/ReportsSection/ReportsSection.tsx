@@ -18,6 +18,8 @@ import { baseRestApi } from '../../../../../api/base';
 import { setDataReports } from '../../../../../redux/slices/reports/reports-management';
 import { UserRole } from '../../../../../models/users/role';
 import { User } from '../../../../../models/users/user';
+import { ModalMolecule } from '../../../molecules/Modal/Modal';
+import { SectionConversationInReports } from '../Components/SectionConversationInReports/SectionConversationInReports';
 
 export const ReportsSection: FC = () => {
   const showAlert = useToastContext();
@@ -29,6 +31,10 @@ export const ReportsSection: FC = () => {
   const [filterChannel, setFilterChannel] = useState<Array<number>>([]);
   const [filterAsignation, setFilterAsignation] = useState<Array<string>>([]);
   const [searchReports, setSearchReports] = useState<string>('');
+  const [isModalConversationInReports, setIsModalConversationInReports] =
+    useState<boolean>(false);
+
+  const [clientIdInReports, setClientIdInReports] = useState<string>('');
 
   const onChangeStart = (newDate: Date | null) => {
     setDateStart(newDate);
@@ -44,6 +50,9 @@ export const ReportsSection: FC = () => {
   const { datsReports } = useAppSelector(
     (state) => state.reports.reportsQueryState,
   );
+
+  const chatConversationInReports =
+    datsReports && datsReports.filter((chat) => chat._id === clientIdInReports);
 
   const handleFilterState = (id: number) => {
     const currentState = filterState?.indexOf(id);
@@ -147,7 +156,7 @@ export const ReportsSection: FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'reports.csv';
+      a.download = `reports.${extension}`;
       document.body.appendChild(a);
       a.click();
     } catch (err) {
@@ -201,8 +210,17 @@ export const ReportsSection: FC = () => {
       <RightPanelReports
         handleDownload={handleDownload}
         onChangeReports={onChangeReports}
+        setIsModalConversationInReports={setIsModalConversationInReports}
         datsReports={dataFilterReports}
+        setClientIdInReports={setClientIdInReports}
       />
+      <ModalMolecule isModal={isModalConversationInReports}>
+        <SectionConversationInReports
+          dataFilterReports={chatConversationInReports}
+          setIsModalConversationInReports={setIsModalConversationInReports}
+        />
+      </ModalMolecule>
     </StyledWrapperReports>
   );
 };
+// TODO = Limpiar la lista de reportes al cambiar de vista

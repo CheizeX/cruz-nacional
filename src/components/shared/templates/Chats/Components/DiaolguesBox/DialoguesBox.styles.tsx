@@ -1,4 +1,6 @@
-import styled from 'styled-components';
+/* eslint-disable no-nested-ternary */
+import styled, { css } from 'styled-components';
+import { ContentType } from '../../../../../../models/chat/chat';
 import {
   IWrapperColorDialogues,
   StyledOnConversationWrapperProps,
@@ -227,49 +229,62 @@ export const StyledAgentOrSUpervisorDialogue = styled.div<IWrapperColorDialogues
     & > :nth-child(1) {
       word-wrap: break-word;
       border-radius: 10px 0px 10px 10px;
-      background-color: ${({ theme, chatFrom }) =>
-        chatFrom && chatFrom === 'Bot' ? '#4D5ECA' : theme.Colors.purples[1]};
       color: ${({ theme }) => theme.Colors.grays[10]};
       padding: 14px 15px;
       font-weight: 400;
       max-width: 100%;
       display: flex;
       overflow: hidden;
-      & > div {
-        height: 35px;
-        margin-right: 5px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-        border-right: 2px dashed ${({ theme }) => theme.Colors.grays[8]};
-        margin-right: 10px;
-        & img {
-          position: absolute;
-          top: 0px;
-          width: 90%;
-          object-fit: contain;
-          height: 100%;
-        }
-        & button {
-          height: 20px;
-          padding-right: 10px;
-          &:hover {
-            cursor: pointer;
+      background-color: ${({ theme, chatFrom, contentTypeProps }) =>
+        chatFrom &&
+        (chatFrom === 'Bot' || chatFrom === 'BOT') &&
+        contentTypeProps === ContentType.TEXT
+          ? theme.Colors.blue[2]
+          : contentTypeProps ===
+            (ContentType.INTERACTIVE_BUTTON ||
+              contentTypeProps === ContentType.INTERACTIVE_LIST)
+          ? theme.Colors.grays[1]
+          : theme.Colors.purples[1]};
+      ${({ contentTypeProps }) =>
+        contentTypeProps === ContentType.TEXT &&
+        css`
+          & > div {
+            height: 35px;
+            margin-right: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            border-right: 2px dashed ${({ theme }) => theme.Colors.grays[8]};
+            margin-right: 10px;
+            & img {
+              position: absolute;
+              top: 0px;
+              width: 90%;
+              object-fit: contain;
+              height: 100%;
+            }
+            & button {
+              height: 20px;
+              padding-right: 10px;
+              &:hover {
+                cursor: pointer;
+                & * {
+                  fill: ${({ theme }) => theme.Colors.grays[5]};
+                  color: ${({ theme }) => theme.Colors.grays[5]};
+                }
+              }
+              & svg {
+                height: 20px;
+                width: 20px;
+              }
+            }
             & * {
-              fill: ${({ theme }) => theme.Colors.grays[5]};
-              color: ${({ theme }) => theme.Colors.grays[5]};
+              fill: white;
             }
           }
-          & svg {
-            height: 20px;
-            width: 20px;
-          }
-        }
-        & * {
-          fill: white;
-        }
-      }
+        `}
+
       & > img {
         max-width: 100px;
         object-fit: contain;
@@ -379,7 +394,9 @@ export const StyledUserPendingDialogue = styled.div<IWrapperColorDialogues>`
     & > :first-child {
       border-radius: 0px 10px 10px 10px;
       background-color: ${({ theme, chatFrom }) =>
-        chatFrom && chatFrom === 'Bot' ? '#4D5ECA' : theme.Colors.grays[10]};
+        chatFrom && (chatFrom === 'Bot' || chatFrom === 'BOT')
+          ? theme.Colors.blue[2]
+          : theme.Colors.grays[10]};
       color: ${({ theme }) => theme.Colors.grays[1]};
       padding: 14px 15px;
       font-weight: 400;
@@ -388,7 +405,6 @@ export const StyledUserPendingDialogue = styled.div<IWrapperColorDialogues>`
       flex-direction: row-reverse;
       transition: all 1s ease-in-out;
       overflow: hidden;
-
       & button {
         transition: all 1s ease-in-out;
         display: flex;
@@ -496,4 +512,63 @@ export const StyledNameAndContactSeparator = styled.div`
   margin: 0px 5px;
   position: relative;
   top: 5.5px;
+`;
+
+export const StyledInteractiveButton = styled.main`
+  display: flex;
+  height: fit-content;
+  min-height: 65px;
+  flex-direction: column;
+  min-width: 250px;
+  width: 300px;
+  padding: 0px;
+`;
+export const StyledInteractiveButtonHeader = styled.div`
+  display: flex;
+  height: fit-content;
+  width: 100%;
+  padding-bottom: 10px;
+  & > img {
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    border-radius: 5px;
+    object-fit: cover;
+  }
+`;
+export const StyledInteractiveButtonBody = styled.div`
+  display: flex;
+  height: fit-content;
+  width: 100%;
+`;
+export const StyledInteractiveButtonFooter = styled.div`
+  display: flex;
+  height: fit-content;
+  padding-top: 10px;
+`;
+export const StyledInteractiveActionTitle = styled.div`
+  display: flex;
+  height: fit-content;
+  padding-top: 10px;
+`;
+export const StyledInteractiveButtonActions = styled.div`
+  display: flex;
+  min-height: 30px;
+  margin-top: 10px;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 5px;
+  & > div {
+    color: ${({ theme }) => theme.Colors.grays[10]};
+    font-weight: 500;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 49%;
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0px 1px 3px 0px rgba(255, 251, 251, 0.548);
+  }
 `;

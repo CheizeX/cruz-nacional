@@ -27,6 +27,7 @@ import { ChannelsSection } from '../../templates/Channels/ChannelsSection/Channe
 import { SubscriptionSection } from '../../templates/SubscriptionPlans/SubscriptionSection/SubscriptionSection';
 import { ConfigurationSection } from '../../templates/Configuration/ConfigurationSection/ConfigurationSection';
 import { PlanStatus } from '../../templates/SubscriptionPlans/SubscriptionSection/SubscriptionSection.interface';
+import { StatisticsSection } from '../../templates/Statistics/StatisticsSection/StatisticsSection';
 
 const StyledContainer = styled.main`
   display: flex;
@@ -121,6 +122,7 @@ export const BackofficeLayout: FC<
             {selectedSection === 'Canales' && <ChannelsSection />}
             {selectedSection === 'Suscripciones' && <SubscriptionSection />}
             {selectedSection === 'Configuración' && <ConfigurationSection />}
+            {selectedSection === 'Estadisticas' && <StatisticsSection />}
           </BackofficeSection>
         </StyledContainer>
       ) : (

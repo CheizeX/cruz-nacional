@@ -54,7 +54,7 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const { configurationData, loadingConfigData } = useAppSelector(
     (state) => state.configurationInfo,
   );
-  const { nextPlan } = useAppSelector(
+  const { generalPlan, ...rest } = useAppSelector(
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
 
@@ -102,9 +102,9 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   }, [dispatch, showAlert]);
 
   const validateIfAllAgentsAreSelected =
-    selectedUsers.length === nextPlan?.invitationsAvailable;
+    selectedUsers.length === rest.persistentAgentsCount;
   const validateIfAllAgentsAreSelectedBuffer =
-    selectedUsersBuffer.length === nextPlan?.invitationsAvailable;
+    selectedUsersBuffer.length === rest.persistentAgentsCount;
 
   const handleNavUserDropdown = () => {
     setIsComponentVisible(!isComponentVisible);
@@ -179,23 +179,13 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
         <Text color="#2A2A2A" size="18px" weight="600">
           {text}
         </Text>
-
-        {nextPlan && (
+        {rest.persistentAgentsCount > 0 && (
           <DowngradeAlert
             setModal={setModal}
-            nextPlan={nextPlan}
             validateIfAllAgentsAreSelected={validateIfAllAgentsAreSelected}
           />
         )}
-
         <Wraper>
-          {/* <MessageIcon onClick={onClick ?? (() => {})}>
-          {messageIcon && messageIcon()}
-        </MessageIcon> */}
-          {/* <BellIcon onClick={onClick ?? (() => {})}>
-          {bellIcon && bellIcon()}
-        </BellIcon>
-        <StyledNotificationBackOffice /> */}
           <TriggerElement>
             <StyledAvatar>
               {profilePicture !== '' ? (
@@ -248,12 +238,6 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
           setSelectedUsersBuffer={setSelectedUsersBuffer}
           selectedUsersBuffer={selectedUsersBuffer}
           usersData={users}
-          nextPlan={
-            nextPlan || {
-              plan: '',
-              invitationsAvailable: 0,
-            }
-          }
         />
       </ModalMolecule>
     </>

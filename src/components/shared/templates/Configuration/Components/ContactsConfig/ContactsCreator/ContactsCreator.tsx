@@ -190,7 +190,11 @@ export const ContactsCreator: FC = () => {
               onChange={(e) => setSearching(e.target.value)}
               placeHolder="Buscar estado..."
             />
-            <StyledAddStatusButton onClick={() => setCreatingStatus(true)}>
+            <StyledAddStatusButton
+              onClick={() => {
+                setCreatingStatus(true);
+                setSearching('');
+              }}>
               <SVGIcon iconFile="/icons/create-tag-button.svg" />
             </StyledAddStatusButton>
           </div>

@@ -14,8 +14,10 @@ export interface IUserCardMoleculeProps {
   infoUserRole: string;
   containerTags?: Tag[];
   avatar?: string;
+  invitation: boolean;
 }
 
 export interface IUserCardContainerProps {
   isAdmin?: boolean;
+  invitation: boolean;
 }

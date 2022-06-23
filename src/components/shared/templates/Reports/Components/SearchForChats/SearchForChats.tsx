@@ -11,7 +11,11 @@ import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
 import { Channels } from '../../../../../../models/chat/chat';
 
 // const getDateString = (date: Date) => `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
-export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
+export const SearchForChats: FC<ISearchForChats> = ({
+  datsReports,
+  setIsModalConversationInReports,
+  setClientIdInReports,
+}) => {
   const months = [
     'Enero',
     'Febrero',
@@ -26,6 +30,10 @@ export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
     'Noviembre',
     'Diciembre',
   ];
+  const handleInfoChat = (idChat: string) => {
+    setClientIdInReports(idChat);
+    setIsModalConversationInReports(true);
+  };
   return (
     <StyledSearchForChats>
       <StyledTitle>
@@ -43,11 +51,17 @@ export const SearchForChats: FC<ISearchForChats> = ({ datsReports }) => {
               { _id, channel, status, assignedAgent, createdAt, client },
               index,
             ) => (
-              <WrapperReports key={_id} index={index} position={status}>
+              <WrapperReports
+                key={_id}
+                index={index}
+                position={status}
+                onClick={() => handleInfoChat(_id)}>
                 <div>
                   <SVGIcon
                     iconFile={`/icons/${
-                      channel === Channels.CHAT_API ? 'Whatsapp' : channel
+                      channel === Channels.CHAT_API || channel === 'WhatsApp'
+                        ? 'whatsapp'
+                        : channel.toLocaleLowerCase()
                     }.svg`}
                   />
                 </div>

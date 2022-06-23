@@ -34,6 +34,7 @@ export const LiveChatsPage: FC<
   const { push } = useRouter();
 
   const [accessToken] = useLocalStorage('AccessToken', '');
+
   const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
   const [userSelected, setUserSelected] = useState<string>('');
   const { decodedToken }: any = useJwt(accessToken);
@@ -58,6 +59,7 @@ export const LiveChatsPage: FC<
       push('/backoffice');
     }
   }, [accessToken, decodedToken, push, userDataInState]);
+
   return (
     <>
       {decodedToken && decodedToken.role === UserRole.AGENT ? (

@@ -43,6 +43,7 @@ import componentsSectionState from './slices/section/live-chat-section';
 import contactsState from './slices/contacts/contacts-form';
 import contactsInfoState from './slices/contacts/contacts-info';
 import invoices from './slices/subscriptions/invoices';
+import userStatisticsState from './slices/statistics/statistics-user';
 
 const liveChat = combineReducers({
   chatsPendings,
@@ -118,6 +119,7 @@ export const store = configureStore({
     chatSelectedToTransferById,
     userSelectedToTransferById,
     dashboardFilterChatsByDate,
+    userStatisticsState,
     review,
     activeTab,
     optionsToFilterChats,

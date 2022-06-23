@@ -34,7 +34,11 @@ import {
 } from './ChatsViewSelectedToConfirm.styles';
 import { UploadFiles } from '../UploadFiles/UploadFiles';
 import { UploadableFile } from '../UploadFiles/UploadFiles.interface';
-import { Channels, Message } from '../../../../../../models/chat/chat';
+import {
+  Channels,
+  ContentType,
+  Message,
+} from '../../../../../../models/chat/chat';
 import { baseRestApi } from '../../../../../../api/base';
 import { useToastContext } from '../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../molecules/Toast/Toast.interface';
@@ -138,15 +142,22 @@ export const ChatsViewSelectedToConfirm: FC<
     // if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
 
     try {
-      await baseRestApi.patch(
+      const result = await baseRestApi.patch(
         `/chats/initConversation/${chatToSetInConversationId}`,
         {
           accessToken,
         },
       );
-
-      setUserSelected(`${userSelected}` as string);
-      setActiveByDefaultTab(1);
+      if (result.success === false && result.errorMessage === 'Limit reached') {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `Has alcanzado el número maximo de chats en conversación`,
+        });
+      } else {
+        setUserSelected(`${userSelected}` as string);
+        setActiveByDefaultTab(1);
+      }
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -173,7 +184,7 @@ export const ChatsViewSelectedToConfirm: FC<
       const bodyObject: Message = {
         from: userDataInState.role,
         content: chatInputDialogue || '',
-        contentType: 'TEXT',
+        contentType: ContentType.TEXT,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -230,19 +241,13 @@ export const ChatsViewSelectedToConfirm: FC<
     const bodyObject: Message = {
       from: userDataInState.role,
       content: chatInputDialogue || '',
-      contentType: 'TEXT',
+      contentType: ContentType.TEXT,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     try {
       setSendingMessage(true);
       if (chatToTalkWithUser?.channel === 'WhatsApp') {
-        await baseRestApi.patch(
-          `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === 'Whatsapp') {
         await baseRestApi.patch(
           `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
           bodyObject,
@@ -292,37 +297,37 @@ export const ChatsViewSelectedToConfirm: FC<
     const bodyObject: Message = {
       from: userDataInState.role,
       content: message || '',
-      contentType: 'TEXT',
+      contentType: ContentType.TEXT,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     try {
       setShowPredefinedTexts(false);
-      if (chatToTalkWithUser?.channel === 'WhatsApp') {
+      if (chatToTalkWithUser?.channel === Channels.WHATSAPP) {
         await baseRestApi.patch(
           `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
           bodyObject,
         );
       }
-      if (chatToTalkWithUser?.channel === 'Messenger') {
+      if (chatToTalkWithUser?.channel === Channels.MESSENGER) {
         await baseRestApi.patch(
           `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
           bodyObject,
         );
       }
-      if (chatToTalkWithUser?.channel === 'Instagram') {
+      if (chatToTalkWithUser?.channel === Channels.INSTAGRAM) {
         await baseRestApi.patch(
           `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
           bodyObject,
         );
       }
-      if (chatToTalkWithUser?.channel === 'Webchat') {
+      if (chatToTalkWithUser?.channel === Channels.WEBCHAT) {
         await baseRestApi.patch(
           `/webchat/sendMessageToUser/${chatToTalkWithUserId}`,
           bodyObject,
         );
       }
-      if (chatToTalkWithUser?.channel === 'Wassenger') {
+      if (chatToTalkWithUser?.channel === Channels.WASSENGER) {
         await baseRestApi.patch(
           `/wassenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
           bodyObject,
@@ -386,7 +391,7 @@ export const ChatsViewSelectedToConfirm: FC<
       showAlert?.addToast({
         alert: Toast.ERROR,
         title: 'ERROR',
-        message: `Opps error de historial ${error}`,
+        message: `Ops error al cargar el historial`,
       });
     }
   };
@@ -510,13 +515,13 @@ export const ChatsViewSelectedToConfirm: FC<
             (user) => user.client.clientId === userSelected,
           )?.hasHistory &&
             liveChatModal === false && (
-              <Tooltip text="Historial" position={TooltipPosition.right}>
-                <button
-                  type="button"
-                  onClick={() => handleClickHistoryChat(true, 'HistoryChat')}>
-                  <SVGIcon iconFile="/icons/list_icons.svg" />
-                </button>
-              </Tooltip>
+              // <Tooltip text="Historial" position={TooltipPosition.right}>
+              <button
+                type="button"
+                onClick={() => handleClickHistoryChat(true, 'HistoryChat')}>
+                <SVGIcon iconFile="/icons/list_icons.svg" />
+              </button>
+              // </Tooltip>
             )}
         </div>
         {chatsOnConversation?.find(

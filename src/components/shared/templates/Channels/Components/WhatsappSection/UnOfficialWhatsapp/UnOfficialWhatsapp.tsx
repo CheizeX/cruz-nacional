@@ -210,8 +210,7 @@ export const UnOfficialWhatsAppComponent: FC<IPropsChannelAdd> = ({
           {!whatsappUnOfficial &&
           selectedByComponentUnOfficialWhatsapp === 1 ? (
             <ConfirmationQR isChecked={isChecked} setIsChecked={setIsChecked} />
-          ) : // <UnofficialWhatsAppRequest />
-          null}
+          ) : null}
           {whatsappUnOfficial && selectedByComponentUnOfficialWhatsapp === 1 ? (
             <WhatsappExists setUnLink={setUnLink} unLink={unLink} />
           ) : null}

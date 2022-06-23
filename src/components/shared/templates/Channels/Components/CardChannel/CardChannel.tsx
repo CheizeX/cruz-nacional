@@ -28,6 +28,8 @@ import {
   useAppSelector,
 } from '../../../../../../redux/hook/hooks';
 import { Scripts } from '../Scripts/Scripts';
+import { Channels } from '../../../../../../models/chat/chat';
+import { ITypeUnOfficialWhatsapp } from '../WhatsappSection/ChatApi/ChatApiSection/ChatApiSection.interface';
 
 export const CardChannel: FC<IPropsCardChannel> = ({
   name,
@@ -37,8 +39,10 @@ export const CardChannel: FC<IPropsCardChannel> = ({
   image,
   _idChannel,
   providerName,
+  handleToggle,
   setIsSectionWebChat,
   setSeletedComponent,
+  handleStatusUnOfficial,
 }) => {
   const dispatch = useAppDispatch();
   const { webchat } = useAppSelector(
@@ -51,6 +55,26 @@ export const CardChannel: FC<IPropsCardChannel> = ({
 
   const handleClick = () => {
     setIsComponentVisible(!isComponentVisible);
+  };
+
+  const statusunofficialWhatsApp = handleStatusUnOfficial();
+
+  const handleStatusChannel = () => {
+    if (providerName === Channels.CHAT_API) {
+      if (statusunofficialWhatsApp === ITypeUnOfficialWhatsapp.IN_REVIEW) {
+        return 'En proceso...';
+      }
+      if (statusunofficialWhatsApp === ITypeUnOfficialWhatsapp.APPROVED) {
+        return (
+          <button
+            type="button"
+            onClick={() => handleToggle('unofficialWhatsApp')}>
+            Escanear código QR
+          </button>
+        );
+      }
+    }
+    return name;
   };
 
   const handleActiveSwitch = (id: string) => {
@@ -90,7 +114,7 @@ export const CardChannel: FC<IPropsCardChannel> = ({
             <SVGIcon iconFile={`/icons/${icon.toLocaleLowerCase()}.svg`} />
           </StyledPicture>
           <div>
-            <span>{name}</span>
+            <span>{handleStatusChannel()}</span>
             <Text>Servicio al Cliente</Text>
           </div>
           <div>
@@ -102,15 +126,19 @@ export const CardChannel: FC<IPropsCardChannel> = ({
                 </ToogleComponentForMappedRestrictions>
               ) : (
                 <ToogleComponentForMappedRestrictionsNoSel
-                  disabled={name === 'En proceso...'}
+                  disabled={
+                    (providerName === Channels.CHAT_API &&
+                      statusunofficialWhatsApp ===
+                        ITypeUnOfficialWhatsapp.APPROVED) ||
+                    (providerName === Channels.CHAT_API &&
+                      statusunofficialWhatsApp ===
+                        ITypeUnOfficialWhatsapp.IN_REVIEW)
+                  }
                   onClick={() => handleActiveSwitch(_idChannel || '')}>
                   <div />
                 </ToogleComponentForMappedRestrictionsNoSel>
               )}
-              <button
-                type="button"
-                disabled={name === 'En proceso...'}
-                onClick={handleClick}>
+              <button type="button" onClick={handleClick}>
                 {isComponentVisible ? (
                   <SVGIcon iconFile="/icons/user_options.svg" />
                 ) : (
@@ -129,15 +157,36 @@ export const CardChannel: FC<IPropsCardChannel> = ({
                         </button>
                       </BadgeMolecule>
                     )}
-                    <BadgeMolecule
-                      bgColor="transparent"
-                      leftIcon={() => <SVGIcon iconFile="/icons/delete.svg" />}>
+                    {(providerName === Channels.CHAT_API &&
+                      statusunofficialWhatsApp ===
+                        ITypeUnOfficialWhatsapp.IN_REVIEW) ||
+                    (providerName === Channels.CHAT_API &&
+                      statusunofficialWhatsApp ===
+                        ITypeUnOfficialWhatsapp.APPROVED) ? (
                       <button
                         type="button"
-                        onClick={() => handleClickCard(_idChannel || '')}>
-                        <Text>Eliminar </Text>
+                        onClick={() => handleToggle('unofficialWhatsApp')}>
+                        <BadgeMolecule
+                          bgColor="transparent"
+                          leftIcon={() => (
+                            <SVGIcon iconFile="/icons/sidebar_configuracion.svg" />
+                          )}>
+                          <Text>Estado</Text>
+                        </BadgeMolecule>
                       </button>
-                    </BadgeMolecule>
+                    ) : (
+                      <BadgeMolecule
+                        bgColor="transparent"
+                        leftIcon={() => (
+                          <SVGIcon iconFile="/icons/delete.svg" />
+                        )}>
+                        <button
+                          type="button"
+                          onClick={() => handleClickCard(_idChannel || '')}>
+                          <Text>Eliminar </Text>
+                        </button>
+                      </BadgeMolecule>
+                    )}
                   </DropdownContainerCard>
                 </div>
               ) : null}

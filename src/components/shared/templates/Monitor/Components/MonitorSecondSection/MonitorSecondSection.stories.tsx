@@ -6,7 +6,6 @@ storiesOf('Ailalia/Templates/Monitor/MonitorSecondSection', module).add(
   () => {
     return (
       <MonitorSecondSection
-        setFilterChat={() => null}
         onChange={() => null}
         countAgent={0}
         dateAgent={[]}

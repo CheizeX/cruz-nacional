@@ -220,23 +220,35 @@ export const StyledTag = styled.div`
 `;
 
 // -------------- RADIO INPUTS --------------
-export const StyledRealFunctionalRadiosContainer = styled.div`
-  width: 295px;
-  transform: translate(14px, -4px);
+export const StyledRealFunctionalRadiosContainer = styled.article`
+  width: 260px;
+  transform: translate(16px, 0px);
   position: absolute;
   opacity: 0; //oculta los inputs de los radios
+  border: 1px solid red;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px;
+  height: 35px;
   & input {
-    width: 24px;
+    min-width: 100px;
     height: 24px;
   }
   & > :first-child {
+    outline: 1px solid green;
+    width: 120px;
     cursor: pointer;
-    transform: translate(8px, 1px);
   }
   & > :last-child {
+    border: 1px solid red;
     cursor: pointer;
-    transform: translate(120px, 1px);
+    width: 110px;
   }
+`;
+
+export const StyledLabel = styled.label`
+  background-color: pink;
 `;
 
 export const StyledRadioGray = styled.div`
@@ -284,11 +296,8 @@ export const StyledVisualRadiosContainer = styled.div`
   font-weight: ${({ theme }) => theme.fontWeight[400]};
 
   & > button {
-    cursor: pointer;
+    //cursor: pointer;
     z-index: 2;
     transform: translateX(-20px);
-  }
-  & span {
-    /* transform: translateX(-20px); */
   }
 `;

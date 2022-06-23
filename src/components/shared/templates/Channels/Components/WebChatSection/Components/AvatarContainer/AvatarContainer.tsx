@@ -1,11 +1,11 @@
-import { FC, useState, useRef } from 'react';
+import { FC, useState } from 'react';
 import { SVGIcon } from '../../../../../../atoms/SVGIcon/SVGIcon';
-import { Text } from '../../../../../../atoms/Text/Text';
-import { Event, ICustomAvatar } from './AvatarContainer.interface';
+// import { Text } from '../../../../../../atoms/Text/Text';
+import { ICustomAvatar } from './AvatarContainer.interface';
 
 import {
   StyledAvatarContainer,
-  StyledSectionPhoto,
+  //  StyledSectionPhoto,
   WrapperAvatar,
 } from './AvatarContainer.styled';
 
@@ -41,7 +41,7 @@ export const AvatarContainer: FC<ICustomAvatar> = ({
   setCustomizeMyAvatar,
 }) => {
   const [active, setActive] = useState<string>('');
-  const hiddenFileInput = useRef(null);
+  // const hiddenFileInput = useRef(null);
 
   const handleToggle = (id: string, name: string) => {
     setCustomizeMyAvatar(false);
@@ -50,18 +50,18 @@ export const AvatarContainer: FC<ICustomAvatar> = ({
     setIsSection(4);
   };
 
-  const processImage = (event: Event) => {
-    setCustomizeMyAvatar(true);
-    const target = event.target as HTMLInputElement;
-    const { files } = target;
-    if (files && files.length > 0) {
-      const imageFile = files[0];
-      const imageUrl = URL.createObjectURL(imageFile);
-      setCustomAvatar(imageUrl);
-    } else {
-      setCustomizeMyAvatar(false);
-    }
-  };
+  // const processImage = (event: Event) => {
+  //   setCustomizeMyAvatar(true);
+  //   const target = event.target as HTMLInputElement;
+  //   const { files } = target;
+  //   if (files && files.length > 0) {
+  //     const imageFile = files[0];
+  //     const imageUrl = URL.createObjectURL(imageFile);
+  //     setCustomAvatar(imageUrl);
+  //   } else {
+  //     setCustomizeMyAvatar(false);
+  //   }
+  // };
   return (
     <>
       <StyledAvatarContainer>
@@ -83,7 +83,7 @@ export const AvatarContainer: FC<ICustomAvatar> = ({
           ))}
         </div>
       </StyledAvatarContainer>
-      <StyledSectionPhoto>
+      {/* <StyledSectionPhoto>
         <div>
           <input
             type="file"
@@ -97,7 +97,7 @@ export const AvatarContainer: FC<ICustomAvatar> = ({
           <SVGIcon iconFile="/icons/up-arrow-symbol.svg" />
           <Text>Personaliza tu avatar</Text>
         </div>
-      </StyledSectionPhoto>
+      </StyledSectionPhoto> */}
     </>
   );
 };

@@ -27,6 +27,7 @@ import { baseRestApi } from '../../../../../../../api/base';
 import { useToastContext } from '../../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../../molecules/Toast/Toast.interface';
 import { getSubscriptionsData } from '../../../../../../../redux/slices/subscriptions/subscriptions-info';
+import { PlanName } from '../../SubscriptionSection.interface';
 
 interface Props {
   setActiveSection: Dispatch<SetStateAction<string>>;
@@ -133,8 +134,8 @@ export const MethodsList: FC<Props> = ({ setActiveSection }) => {
       );
       showAlert?.addToast({
         alert: Toast.WARNING,
-        title: 'ATENCION',
-        message: `La suscripción se ha cancelado`,
+        title: 'NUEVO PLAN',
+        message: `Has cambiado tu plan`,
       });
       dispatch(getSubscriptionsData());
     } catch (err) {
@@ -146,6 +147,29 @@ export const MethodsList: FC<Props> = ({ setActiveSection }) => {
     }
     setLoading(false);
     setActiveSection('');
+  };
+
+  const handleRecoverPlan = async () => {
+    setLoading(true);
+    try {
+      await baseRestApi.post(
+        `${process.env.NEXT_PUBLIC_REST_API_URL}/stripe/recoverPlan`,
+        {},
+      );
+      showAlert?.addToast({
+        alert: Toast.SUCCESS,
+        title: 'ATENCION',
+        message: `Has recuperado tu plan START nuevamente!!`,
+      });
+      dispatch(getSubscriptionsData());
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ATENCION',
+        message: `Ha ocurrido un error al recuperar el plan`,
+      });
+    }
+    setLoading(false);
   };
 
   return (
@@ -207,14 +231,29 @@ export const MethodsList: FC<Props> = ({ setActiveSection }) => {
       {subscriptionsData.mainPaymentMethod === checked && (
         <StyledMethodFooterCancelSubscription>
           <ButtonMolecule
-            text="Añadir un nuevo método de pago"
+            text="Añadir método de pago"
             onClick={handleAddNewPaymentMethod}
           />
-          <ButtonMolecule
-            variant={ButtonVariant.OUTLINED}
-            text="Cancelar Suscripción"
-            onClick={handleCancelSubscriptionModal}
-          />
+          {subscriptionsData.plan === PlanName.START &&
+            !subscriptionsData.generalPlan.downgrade && (
+              <span>
+                <ButtonMolecule
+                  variant={ButtonVariant.OUTLINED}
+                  text="Cancelar mi plan START"
+                  onClick={handleCancelSubscriptionModal}
+                />
+              </span>
+            )}
+          {subscriptionsData.plan === PlanName.START &&
+            subscriptionsData.generalPlan.downgrade && (
+              <div>
+                <ButtonMolecule
+                  variant={ButtonVariant.OUTLINED}
+                  text="Quiero recuperar mi plan START !"
+                  onClick={handleRecoverPlan}
+                />
+              </div>
+            )}
         </StyledMethodFooterCancelSubscription>
       )}
       {activeOverModal === 'addNewPaymentMethod' && (
@@ -225,6 +264,7 @@ export const MethodsList: FC<Props> = ({ setActiveSection }) => {
             title="Crear método de pago"
             buttonTitle="Aceptar y añadir el nuevo método"
             onClose={() => setActiveOverModal('')}
+            setNumberOfAgentsToAdd={() => {}}
           />
         </StyledCardContainer>
       )}
@@ -262,36 +302,27 @@ export const MethodsList: FC<Props> = ({ setActiveSection }) => {
         <StyledCardContainer>
           <StyledCancelSubscritionInfo>
             <div>
-              <Text>Cancelación definitiva del Servicio</Text>
+              <Text>Regrasar al plan FREE</Text>
               <button type="button" onClick={() => setActiveOverModal('')}>
                 <SVGIcon iconFile="/icons/close.svg" />
               </button>
             </div>
             <div>
-              <span>CONSIDERACIONES SOBRE LA BAJA DE LA SUSCRIPCION</span>
+              <span>ATENCION</span>
               <p>
-                Al cancelar la suscripción el sistema continuará funcionando
-                normalmente hasta que finalicen los días alcanzados por el
-                período pactado al momento de suscribirse.
+                Al cancelar la suscripción a START, el sistema continuará
+                funcionando normalmente hasta que finalicen los días alcanzados
+                por el período pactado al momento de suscribirse.
               </p>
               <p>
-                Transcurrido dicho período la vista de Agentes pasará a estado
-                inactivo por lo cual ningún usuario podrá acceder a esa sección
-                de la plataforma y los mensajes entrantes no podrán responderse
-                a través de la misma.
-              </p>
-              <p>
-                Así mismo, luego de pasar a la inactividad, sólo el usuario
-                ADMINISTRADOR tendrá acceso restringido a la plataforma. Este
-                dispondrá de 30 días corridos para ingresar a las secciones de
-                Suscripción y Reportes, con la finalidad de que pueda ver y
-                resguardar sus datos guardados, o bien restituir el servicio en
-                caso de cambiar de opinión.
+                El sistema solicitará realizar algunas intervenciones para
+                elegir lo que se quiere conservar al momento de llegar la fecha
+                de finalización.
               </p>
             </div>
             <StyledMethodFooterCancelSubscription>
               <ButtonMolecule
-                text="No! no quiero cancelar la suscripción"
+                text="No! no quiero cancelar la suscripción a START"
                 onClick={() => setActiveOverModal('')}
               />
               <ButtonMolecule

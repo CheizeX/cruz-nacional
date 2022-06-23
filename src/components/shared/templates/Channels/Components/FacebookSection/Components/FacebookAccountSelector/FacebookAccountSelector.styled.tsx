@@ -43,6 +43,27 @@ export const StyledBody = styled.div`
       display: none;
     }
   }
+  & > :last-child {
+    & > div {
+      & span:first-child {
+        color: ${({ theme }) => theme.Colors.grays[1]};
+        width: 100%;
+        font-size: ${({ theme }) => theme.fontSize[14]};
+        font-weight: ${({ theme }) => theme.fontWeight[600]};
+        line-height: 17px;
+      }
+      & span:last-child {
+        color: ${({ theme }) => theme.Colors.grays[3]};
+        font-size: ${({ theme }) => theme.fontSize[12]};
+        font-weight: ${({ theme }) => theme.fontWeight[600]};
+        line-height: 16px;
+        width: 100%;
+        display: flex;
+        text-align: justify;
+        padding-top: 20px;
+      }
+    }
+  }
 `;
 
 export const StyledButtonAuth = styled.div<IPropsSelector>`

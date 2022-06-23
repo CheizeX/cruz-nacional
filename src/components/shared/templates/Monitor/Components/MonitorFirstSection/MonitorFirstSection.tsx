@@ -142,7 +142,7 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
             name="Finalizadas"
             number={countFinished}
             position="FINISHED"
-            icon="/icons/user_question.svg"
+            icon="/icons/like.svg"
             setFilterChat={setFilterChat}
           />
         </WrapperCard>
@@ -155,7 +155,7 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
             <Text color="black">Últ. Interacción</Text>
             <Text color="black">Opciones</Text>
           </div>
-          <section>
+          <div>
             {chats?.map(
               (
                 {
@@ -173,7 +173,8 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
                   key={_id}
                   index={index}
                   position={status}
-                  isColorPaused={isPaused}>
+                  isColorPaused={isPaused}
+                  onClick={() => handleOption(_id)}>
                   <div>
                     <SVGIcon
                       iconFile={`/icons/${
@@ -268,14 +269,14 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
                       : ' '}
                   </div>
                   <div>
-                    <button type="button" onClick={() => handleOption(_id)}>
+                    <div>
                       <SVGIcon iconFile="/icons/list_icons.svg" />
-                    </button>
+                    </div>
                   </div>
                 </StyledAgentSection>
               ),
             ) ?? []}
-          </section>
+          </div>
         </WrapperAgents>
       </div>
     </StyledMonitorFirstSection>

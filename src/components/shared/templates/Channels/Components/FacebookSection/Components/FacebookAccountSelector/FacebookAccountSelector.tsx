@@ -25,6 +25,7 @@ export const FacebookAccountSelector: FC<IPropsSelector & IPropsAuthFacebook> =
     const { dataInfoFacebook } = useAppSelector(
       (state) => state.channel.chatContainerAuthFacebookState,
     );
+
     // const [isActive, setIsActive] = useState<number>(-1);
 
     const handleClick = (
@@ -48,21 +49,41 @@ export const FacebookAccountSelector: FC<IPropsSelector & IPropsAuthFacebook> =
         </StyledHeaderAcount>
         <StyledBody>
           <div>
-            {dataInfoFacebook?.map((item, index) => (
-              <div key={item.id}>
-                <StyledBodyWrapperSelector>
-                  <StyledButtonAuth
-                    onClick={() =>
-                      handleClick(item.id, item.access_token, item.name, index)
-                    }>
-                    <StyledWrapperButton isFocused={isActiveCheckbox === index}>
-                      <Styledbutton isFocused={isActiveCheckbox === index} />
-                    </StyledWrapperButton>
-                  </StyledButtonAuth>
-                  <Text>{item.name}</Text>
-                </StyledBodyWrapperSelector>
+            {dataInfoFacebook.length >= 1 ? (
+              dataInfoFacebook?.map((item, index) => (
+                <div key={item.id}>
+                  <StyledBodyWrapperSelector>
+                    <StyledButtonAuth
+                      onClick={() =>
+                        handleClick(
+                          item.id,
+                          item.access_token,
+                          item.name,
+                          index,
+                        )
+                      }>
+                      <StyledWrapperButton
+                        isFocused={isActiveCheckbox === index}>
+                        <Styledbutton isFocused={isActiveCheckbox === index} />
+                      </StyledWrapperButton>
+                    </StyledButtonAuth>
+                    <Text>{item.name}</Text>
+                  </StyledBodyWrapperSelector>
+                </div>
+              ))
+            ) : (
+              <div>
+                <Text>
+                  Aun no tienes un página vinculada a tu cuenta de Facebook
+                </Text>
+
+                <Text>
+                  Recuerda que debes tener al menos una página de Facebook
+                  vinculada a tu cuenta, en caso de querer añadir Instagram será
+                  necesario vincular ambas páginas.
+                </Text>
               </div>
-            ))}
+            )}
           </div>
         </StyledBody>
       </StyledFacebookAccountSelector>

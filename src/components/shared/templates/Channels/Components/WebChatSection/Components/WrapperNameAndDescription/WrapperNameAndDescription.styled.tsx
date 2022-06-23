@@ -3,37 +3,110 @@ import { IPropsAnimation } from './WrapperNameAndDescription.interface';
 
 export const StyledWrapperModal = styled.div`
   width: 16.2rem;
-  height: 16.7rem;
+  height: 19.4rem;
   margin: auto;
-  padding: 1.12rem 0.75rem 0 0.75rem;
+  padding: 0.75rem 0.75rem 0 0.75rem;
   margin-top: 0.6rem;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   border-radius: 10px;
-  & > span {
+  & > div:first-child {
+    height: 4.5rem;
     display: flex;
-    text-align: start;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 14px;
-    color: ${({ theme }) => theme.Colors.grays[3]};
-    font-size: ${({ theme }) => theme.fontSize[12]};
-    font-weight: ${({ theme }) => theme.fontWeight[500]};
-    line-height: 14px;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    & > span {
+      display: flex;
+      text-align: start;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 14px;
+      color: ${({ theme }) => theme.Colors.grays[3]};
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      font-weight: ${({ theme }) => theme.fontWeight[500]};
+      line-height: 15px;
+    }
   }
-  & > div {
-    margin-top: 0.75rem;
-    margin-bottom: 1rem;
+  & > :nth-child(2) {
+    height: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    & span {
+      display: flex;
+      text-align: start;
+      padding-left: 14px;
+      justify-content: flex-start;
+      color: ${({ theme }) => theme.Colors.grays[3]};
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      font-weight: ${({ theme }) => theme.fontWeight[500]};
+      line-height: 15px;
+    }
   }
-  & > :nth-child(7) {
+  & > :nth-child(3) {
+    height: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    & > span {
+      display: flex;
+      text-align: start;
+      align-items: center;
+      padding-left: 14px;
+      justify-content: flex-start;
+      color: ${({ theme }) => theme.Colors.grays[3]};
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      font-weight: ${({ theme }) => theme.fontWeight[500]};
+      line-height: 14px;
+    }
+    & > textarea {
+      border: none;
+      min-width: 232px;
+      max-width: 232px;
+      height: 4rem;
+      max-height: 4rem;
+      min-height: 4rem;
+      outline: none;
+      font-family: inherit;
+      padding: 10px;
+      color: ${({ theme }) => theme.Colors.grays[1]};
+      border-radius: 15px;
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      font-weight: ${({ theme }) => theme.fontWeight[500]};
+      background-color: ${({ theme }) => theme.Colors.grays[9]};
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  & > :nth-child(4) {
     width: 100%;
     display: flex;
-    justify-content: start;
-    padding-left: 1rem;
+    height: 2.5rem;
+    align-items: center;
+    max-width: 146px;
+    justify-content: space-between;
+    max-width: 154px;
+    padding: 0 14px;
+    & > span {
+      display: flex;
+      text-align: start;
+      align-items: center;
+      justify-content: flex-start;
+      color: ${({ theme }) => theme.Colors.grays[3]};
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      font-weight: ${({ theme }) => theme.fontWeight[500]};
+      line-height: 14px;
+    }
   }
 `;
 
 export const StyledBoxWrapperAnimation = styled.label`
   position: relative;
+  height: 18px;
+  width: 34px;
 `;
 export const ChackboxLabelAnimation = styled.span<IPropsAnimation>`
   position: absolute;
@@ -52,7 +125,7 @@ export const ChackboxLabelAnimation = styled.span<IPropsAnimation>`
     width: 12px;
     height: 12px;
     margin: 1px;
-    margin-left: ${({ isChecked }) => (isChecked === true ? '18px' : '2px')};
+    //margin-left: ${({ isChecked }) => (isChecked === true ? '18px' : '2px')};
     background: ${({ theme, isChecked }) =>
       isChecked === true ? theme.Colors.green[4] : theme.Colors.grays[5]};
     box-shadow: 1px 3px 3px 1px rgba(0, 0, 0, 0.2);

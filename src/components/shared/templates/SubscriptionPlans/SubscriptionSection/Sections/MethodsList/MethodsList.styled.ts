@@ -188,22 +188,68 @@ export const StyledMethodFooterCancelSubscription = styled.div`
   margin: 15px 0;
   padding-top: 15px;
   border-top: 1px solid ${({ theme }) => theme.Colors.grays[9]};
-  & > button {
+  & button {
+    min-width: 240px;
     transition: all 0.3s ease;
+    width: 270px;
     height: 50px;
   }
 
-  & > :last-child {
-    padding: 0;
-    border: 1px solid transparent;
-    & :hover {
+  & > span {
+    & > button {
+      padding: 0;
+      border: 1px solid transparent;
+      & :hover {
+        border: 1px solid transparent;
+        & > span {
+          color: ${({ theme }) => theme.Colors.orange[1]};
+        }
+      }
       & > span {
-        color: ${({ theme }) => theme.Colors.orange[1]};
+        transition: all 0.3s ease;
+        color: ${({ theme }) => theme.Colors.grays[8]};
       }
     }
-    & > span {
-      transition: all 0.3s ease;
-      color: ${({ theme }) => theme.Colors.grays[8]};
+  }
+  & > div {
+    & > button {
+      padding: 0;
+      animation: border 1s infinite;
+      & :hover {
+        border: 2px solid ${({ theme }) => theme.Colors.green[3]};
+        animation: none;
+        & > span {
+          animation: none;
+          color: ${({ theme }) => theme.Colors.green[3]};
+        }
+      }
+      & > span {
+        transition: all 0.3s ease;
+        animation: text 1s infinite;
+      }
+
+      @keyframes border {
+        0% {
+          border: 1px solid transparent;
+        }
+        50% {
+          border: 2px solid ${({ theme }) => theme.Colors.green[4]};
+        }
+        100% {
+          border: 1px solid transparent;
+        }
+      }
+      @keyframes text {
+        0% {
+          color: transparent;
+        }
+        50% {
+          color: ${({ theme }) => theme.Colors.green[4]};
+        }
+        100% {
+          color: transparent;
+        }
+      }
     }
   }
 `;
@@ -235,9 +281,9 @@ export const StyledCardContainer = styled.div`
 `;
 
 export const StyledCancelSubscritionInfo = styled.div`
-  min-width: 520px;
-  width: 600px;
-  height: 500px;
+  min-width: 600px;
+  width: 450px;
+  height: 360px;
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   border-radius: 10px;
   padding: 0 20px;
@@ -249,7 +295,7 @@ export const StyledCancelSubscritionInfo = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    height: 60px;
+    height: 80px;
     border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[9]};
     & > :first-child {
       font-size: 16px;

@@ -39,7 +39,6 @@ import {
   setSortedByLastDate,
   setSortedByFirstDate,
 } from '../../../../../../redux/slices/live-chat/on-conversation-chats';
-// import { Tag } from '../../../../../../models/tags/tag';
 import {
   setChatsIdChannel,
   setChatsIdClient,
@@ -101,14 +100,8 @@ export const InConversationChatItem: FC<
     async (clientId: string, channel: string, chatId: string) => {
       setUserSelected(clientId);
       handleResetNoViewedChats(chatId);
-
-      if (channel === 'Webchat') {
-        dispatch(setChatsIdChannel(channel));
-        dispatch(setChatsIdClient(''));
-      } else {
-        dispatch(setChatsIdChannel(channel));
-        dispatch(setChatsIdClient(clientId));
-      }
+      dispatch(setChatsIdChannel(channel));
+      dispatch(setChatsIdClient(clientId));
     },
     [setUserSelected, handleResetNoViewedChats, dispatch],
   );

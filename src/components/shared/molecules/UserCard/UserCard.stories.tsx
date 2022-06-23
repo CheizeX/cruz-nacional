@@ -13,6 +13,7 @@ storiesOf('Ailalia/Molecules/UserCard', module)
         setSectionModal={() => null}
         infoUserEmail=""
         infoUserRole=""
+        invitation={false}
         setOpenNewSection={() => null}>
         <StyledUsernameEmail>
           <Text>Ezequiel Rivas</Text>
@@ -30,6 +31,7 @@ storiesOf('Ailalia/Molecules/UserCard', module)
         setOpenNewSection={() => null}
         infoUserEmail=""
         infoUserRole=""
+        invitation={false}
         isAdmin>
         <StyledUsernameEmail>
           <Text>Ezequiel Rivas</Text>

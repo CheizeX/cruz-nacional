@@ -70,12 +70,6 @@ export const StyledConfirmationQR = styled.div<IPropsConfirmationQR>`
         & > div {
           display: flex;
           align-items: center;
-          & > div {
-            background: ${({ checkedConfirmation, theme }) =>
-              checkedConfirmation
-                ? theme.Colors.purples[1]
-                : theme.Colors.grays[8]};
-          }
           & > span {
             min-width: 186px;
             color: ${({ theme }) => theme.Colors.grays[1]};

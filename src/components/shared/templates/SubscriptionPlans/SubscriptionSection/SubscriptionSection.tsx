@@ -1,5 +1,5 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-nested-ternary */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { FC, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -7,64 +7,74 @@ import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
 import {
   planes,
   SubscriptionSectionItems,
-  SubscriptionSectionPersonalizedItems,
+  SubscriptionStartPlanItems,
 } from './SubscriptionSection.shared';
 import {
-  StyledSubscriptionSectionEnterpriseCardBody,
-  StyledSubscriptionSectionEnterpriseCardHeader,
   StyledSubscriptionSectionCardHeader,
   StyledSubscriptionSectionCard,
   StyledSubscriptionSectionHeaderInfo,
   StyledSubscriptionSection,
   StyledSubscriptionSectionHeader,
   StyledSubscriptionSectionBody,
-  StyledSubscriptionSectionEnterpriseCard,
+  StyledInformationButtonContainer,
 } from './SubscriptionSection.styled';
 import { StripeForm } from './CheckoutStripeForm/CheckoutStripeForm';
 import { ButtonMolecule } from '../../../atoms/Button/Button';
-import {
-  PlanName,
-  SubscriptionDataProps,
-  SubscriptionSectionProps,
-} from './SubscriptionSection.interface';
+import { PlanName } from './SubscriptionSection.interface';
 import { ModalMolecule } from '../../../molecules/Modal/Modal';
 import { useAppSelector } from '../../../../../redux/hook/hooks';
 import { Text } from '../../../atoms/Text/Text';
 import { PaymentsInfoSection } from './Sections/InvoicesSection';
 import { ChangePlan } from './ChangePlan/ChangePlan';
+import { AddAgents } from './AddAgents/AddAgents';
+import { AddAgentsConfirm } from './AddAgents/AddAgentsConfirmation/AddAgentsConfirm';
+import { SubscriptionInformation } from './Information/Information';
 
 const stripe = loadStripe(
-  String(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!),
+  String(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
 );
 
-export const SubscriptionSection: FC<
-  SubscriptionSectionProps & SubscriptionDataProps
-> = () => {
-  const { plan, endDate } = useAppSelector(
+export const SubscriptionSection: FC = () => {
+  const { plan, trialEndDate, generalPlan, paymentMethods } = useAppSelector(
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
 
   const [showCard, setShowCard] = useState(false);
   const [changePlan, setChangePlan] = useState(false);
+  const [showAddAgents, setShowAddAgents] = useState(false);
   const [planNameSelected, setPlanNameSelected] = useState('');
+  const [numberOfAgentsToAdd, setNumberOfAgentsToAdd] = useState('0');
+  const [showInfo, setShowInfo] = useState(false);
 
   const handlePlanClick = (planName: string) => {
     setPlanNameSelected(planName);
-    if (
-      plan === PlanName.ENTERPRISE_TRIAL ||
-      plan === PlanName.BUSINESS_TRIAL ||
-      plan === PlanName.CORPORATE_TRIAL ||
-      plan === PlanName.GROWTH_TRIAL ||
-      plan === PlanName.START_TRIAL
-    ) {
-      setShowCard(true);
+
+    if (paymentMethods?.length === 0) {
+      if (planName === PlanName.START && plan === PlanName.START_TRIAL) {
+        setShowCard(true);
+      }
+      if (planName === PlanName.AGENT) {
+        setShowCard(true);
+      }
+      if (plan === PlanName.FREE && planName === PlanName.START) {
+        setChangePlan(true);
+      }
     } else {
-      setChangePlan(true);
+      if (
+        (plan === PlanName.START_TRIAL || plan === PlanName.FREE) &&
+        planName === PlanName.START
+      ) {
+        setChangePlan(true);
+      }
+      if (planName === PlanName.AGENT) {
+        setNumberOfAgentsToAdd(numberOfAgentsToAdd);
+        setShowAddAgents(true);
+      }
     }
   };
 
   // Fecha de fin de expiración dinámica
-  const date = new Date(endDate || '');
+  const date = new Date(trialEndDate || '');
   const dateNow = new Date();
   const diff = date.getTime() - dateNow.getTime();
   const days = Math.round(diff / (1000 * 60 * 60 * 24));
@@ -79,55 +89,58 @@ export const SubscriptionSection: FC<
 
   return (
     <StyledSubscriptionSection>
-      <StyledSubscriptionSectionHeader>
-        {plan === PlanName.ENTERPRISE_TRIAL ||
-        plan === PlanName.BUSINESS_TRIAL ||
-        plan === PlanName.CORPORATE_TRIAL ||
-        plan === PlanName.GROWTH_TRIAL ||
-        plan === PlanName.START_TRIAL ? (
-          <StyledSubscriptionSectionHeaderInfo>
-            {days >= 0 ? (
-              <div>
-                <Text>El período de evaluación del producto finalizará</Text>
-                {days > 2 ? (
-                  <p>{daysLeft}</p>
-                ) : (
-                  <p
-                    style={{
-                      backgroundColor: '#fba833f7',
-                    }}>
-                    {daysLeft}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <div>
-                <Text
-                  style={{
-                    border: '3px solid white',
-                  }}>
-                  Período de evaluación del producto
-                </Text>
+      {plan === PlanName.START_TRIAL && (
+        <StyledSubscriptionSectionHeaderInfo>
+          {days >= 0 ? (
+            <div>
+              <Text>El período de prueba del plan START finalizará</Text>
+              {days > 2 ? (
+                <p>{daysLeft}</p>
+              ) : (
                 <p
                   style={{
-                    backgroundColor: '#fb333df7',
+                    backgroundColor: '#fba833f7',
                   }}>
-                  FINALIZADO
+                  {daysLeft}
                 </p>
-              </div>
-            )}
-          </StyledSubscriptionSectionHeaderInfo>
-        ) : (
-          <Elements stripe={stripe}>
-            <PaymentsInfoSection />
-          </Elements>
+              )}
+            </div>
+          ) : (
+            <div>
+              <Text
+                style={{
+                  border: '3px solid white',
+                }}>
+                Período de evaluación del producto
+              </Text>
+              <p
+                style={{
+                  backgroundColor: '#fb333df7',
+                }}>
+                FINALIZADO
+              </p>
+            </div>
+          )}
+        </StyledSubscriptionSectionHeaderInfo>
+      )}
+      <StyledSubscriptionSectionHeader>
+        <Elements stripe={stripe}>
+          <PaymentsInfoSection />
+        </Elements>
+        {paymentMethods?.length !== 0 && (
+          <StyledInformationButtonContainer>
+            <ButtonMolecule
+              text="INFORMACION"
+              onClick={() => setShowInfo(true)}
+            />
+          </StyledInformationButtonContainer>
         )}
       </StyledSubscriptionSectionHeader>
       <StyledSubscriptionSectionBody>
         <div>
-          {planes.map((planItem, index) => (
+          {planes.map((planItem) => (
             <StyledSubscriptionSectionCard
-              key={index.toString()}
+              key={planItem.name}
               active={plan?.replace('_TRIAL', '') === planItem.name}>
               <StyledSubscriptionSectionCardHeader
                 active={plan?.replace('_TRIAL', '') === planItem.name}>
@@ -137,85 +150,58 @@ export const SubscriptionSection: FC<
                 {planItem.name !== plan?.replace('_TRIAL', '') &&
                   planItem.price && <h3>${planItem.price},00</h3>}
               </StyledSubscriptionSectionCardHeader>
-              {planItem.name !== PlanName.ENTERPRISE &&
-                SubscriptionSectionItems?.map(({ id, item }) => (
-                  <div key={id}>
+              {SubscriptionSectionItems?.map(({ id, item }) => (
+                <div key={item}>
+                  <SVGIcon iconFile="/icons/success.svg" />
+                  <span>
+                    {id === 0 && planItem.name === PlanName.START && '3 '}
+                    {item}
+                  </span>
+                </div>
+              ))}
+              {planItem.name === PlanName.START &&
+                SubscriptionStartPlanItems.map(({ item }) => (
+                  <div key={item}>
                     <SVGIcon iconFile="/icons/success.svg" />
-                    <span>
-                      {id === 0 && planItem.name === PlanName.START && '2 '}
-                      {id === 0 && planItem.name === PlanName.GROWTH && '2 '}
-                      {id === 0 && planItem.name === PlanName.BUSINESS && '5 '}
-                      {id === 0 &&
-                        planItem.name === PlanName.CORPORATE &&
-                        '10 '}
+                    <span
+                      style={{
+                        fontSize: '14px',
+                      }}>
+                      {' '}
                       {item}
                     </span>
                   </div>
                 ))}
-              {planItem.name !== PlanName.ENTERPRISE &&
-                planItem.name !== PlanName.START && (
-                  <>
-                    <div key="7">
-                      <SVGIcon iconFile="/icons/success.svg" />
-                      <span
-                        style={{
-                          fontSize: '14px',
-                        }}>
-                        {' '}
-                        WhatsApp QR
-                      </span>
-                    </div>
-                    {planItem.name === PlanName.CORPORATE && (
-                      <div key="8">
-                        <SVGIcon iconFile="/icons/success.svg" />
-                        <span
-                          style={{
-                            fontSize: '14px',
-                          }}>
-                          {' '}
-                          WhatsApp Business API
-                        </span>
-                      </div>
-                    )}
-                  </>
-                )}
-              {planItem.name === plan ? null : (
+
+              {planItem.name === plan ? null : plan?.includes(
+                  `${planItem}_TRIAL`,
+                ) ? (
                 <ButtonMolecule
                   text={`Contratar${'  '} ${planItem.name}`}
+                  onClick={() => handlePlanClick(planItem.name)}
+                />
+              ) : plan === PlanName.START_TRIAL ? (
+                <ButtonMolecule
+                  text={`Contratar${'  '} ${planItem.name}`}
+                  onClick={() => handlePlanClick(planItem.name)}
+                />
+              ) : (
+                <ButtonMolecule
+                  text="Probar gratis por 14 días"
                   onClick={() => handlePlanClick(planItem.name)}
                 />
               )}
             </StyledSubscriptionSectionCard>
           ))}
-
-          <div>
-            <StyledSubscriptionSectionEnterpriseCard
-              active={plan === PlanName.ENTERPRISE}>
-              <StyledSubscriptionSectionEnterpriseCardHeader
-                active={plan === PlanName.ENTERPRISE}>
-                <h1> Enterprise </h1>
-              </StyledSubscriptionSectionEnterpriseCardHeader>
-              <StyledSubscriptionSectionEnterpriseCardBody
-                active={plan === PlanName.ENTERPRISE}>
-                <div>
-                  {SubscriptionSectionPersonalizedItems.map(({ id, item }) => (
-                    <div key={id}>
-                      <SVGIcon iconFile="/icons/success.svg" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </StyledSubscriptionSectionEnterpriseCardBody>
-              {plan === PlanName.ENTERPRISE ? null : (
-                <a
-                  href="https://app.elipse.ai/conversemos-elipse-chat-personalizado"
-                  target="_blank"
-                  rel="noreferrer">
-                  Contactar a un asesor para personalizar el plan
-                </a>
-              )}
-            </StyledSubscriptionSectionEnterpriseCard>
-          </div>
+          <AddAgents
+            handlePlanClick={handlePlanClick}
+            setShowCard={setShowCard}
+            setNumberOfAgentsToAdd={setNumberOfAgentsToAdd}
+            numberOfAgentsToAdd={numberOfAgentsToAdd}
+            setShowAddAgents={setShowAddAgents}
+            generalPlan={generalPlan}
+            setPlanNameSelected={setPlanNameSelected}
+          />
         </div>
       </StyledSubscriptionSectionBody>
       {showCard && (
@@ -225,6 +211,8 @@ export const SubscriptionSection: FC<
               setShowCard={setShowCard}
               setPlanNameSelected={setPlanNameSelected}
               planNameSelected={planNameSelected}
+              numberOfAgentsToAdd={numberOfAgentsToAdd}
+              setNumberOfAgentsToAdd={setNumberOfAgentsToAdd}
             />
           </ModalMolecule>
         </Elements>
@@ -235,6 +223,22 @@ export const SubscriptionSection: FC<
             planNameSelected={planNameSelected}
             setChangePlan={setChangePlan}
           />
+        </ModalMolecule>
+      )}
+      {showAddAgents && (
+        <ModalMolecule isModal={showAddAgents} setModal={setShowAddAgents}>
+          <AddAgentsConfirm
+            setShowAddAgents={setShowAddAgents}
+            numberOfAgentsToAdd={numberOfAgentsToAdd}
+            setNumberOfAgentsToAdd={setNumberOfAgentsToAdd}
+            generalPlan={generalPlan}
+            setPlanNameSelected={setPlanNameSelected}
+          />
+        </ModalMolecule>
+      )}
+      {showInfo && (
+        <ModalMolecule isModal={showInfo} setModal={setShowInfo}>
+          <SubscriptionInformation setShowInfo={setShowInfo} />
         </ModalMolecule>
       )}
     </StyledSubscriptionSection>

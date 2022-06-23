@@ -34,3 +34,5 @@ To edit environment variables, create a file with name `.env` and copy the conte
 | NODE_ENV                | string | `development`                     | API runtime environment. eg: `staging` |
 | PORT                    | number | `3000`                            | Port to run the application on         |
 | NEXT_PUBLIC_BACKEND_URL | string | `mongodb://localhost:27017/books` | Url Backend                            |
+
+Prueba

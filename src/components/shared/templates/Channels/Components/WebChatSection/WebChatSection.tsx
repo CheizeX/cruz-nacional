@@ -24,6 +24,8 @@ import { Toast } from '../../../../molecules/Toast/Toast.interface';
 import { setScript } from '../../../../../../redux/slices/channels/list-channel';
 import { useAppDispatch } from '../../../../../../redux/hook/hooks';
 import { IPropsScripts } from '../../../../../../models/channels/channel';
+import { CustomSound } from './Components/CustomSound/CustomSound';
+import { IListSounds } from '../../../Configuration/Components/UsersConfig/PredefinedSounds/PredefinedSounds.interface';
 
 const data = [
   {
@@ -40,6 +42,10 @@ const data = [
   },
   {
     num: 4,
+    message: 'Selecciona un sonido',
+  },
+  {
+    num: 5,
     message: '¡Listo!',
   },
 ];
@@ -57,11 +63,16 @@ export const WebChatSection: FC<IPropsWebChat> = ({
   const [customTitle, setCustomTitle] = useState<string>('Elipse Chat');
   const [customDescription, setCustomDescription] =
     useState<string>('Asistente Virtual');
+  const [greetingMessage, setGreetingMessage] = useState<string>(
+    'Hola soy tu asistente virtual mi función es responder tus preguntas. ¿En qué pudo ayudarte?',
+  );
   const [customAvatar, setCustomAvatar] = useState<string>('Robot_1');
   const [customizeMyAvatar, setCustomizeMyAvatar] = useState<boolean>(false);
   const [customIsColor, setCustomIsColor] = useState<boolean>(false);
   const [customizeByColor, setCustomizeByColor] = useState<string>('');
   const [isAnimation, setIsAnimation] = useState(false);
+  const [activeSound, setIsActiveSound] = useState<boolean>(false);
+  const [notificationSound, setNotificationSound] = useState('');
 
   // animation: 'yes'
 
@@ -80,6 +91,36 @@ export const WebChatSection: FC<IPropsWebChat> = ({
   const handleAnimation = () => {
     setIsAnimation(!isAnimation);
   };
+
+  const [soundList] = useState<IListSounds>({
+    notification_sound_1: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=1',
+    ),
+    notification_sound_2: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=2',
+    ),
+    notification_sound_3: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=3',
+    ),
+    notification_sound_4: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=4',
+    ),
+    notification_sound_5: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=5',
+    ),
+    notification_sound_6: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=6',
+    ),
+    notification_sound_7: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=7',
+    ),
+    notification_sound_8: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=8',
+    ),
+    notification_sound_9: new Audio(
+      'https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=9',
+    ),
+  });
   // funcion que envia los datos para crear el webChat
   const handleSubmit = async () => {
     // dispatch(setScript({}));
@@ -89,9 +130,12 @@ export const WebChatSection: FC<IPropsWebChat> = ({
           name: customTitle,
           description: customDescription,
           animation: isAnimation,
+          greetingMessage,
           avatar: customAvatar,
           primaryColor,
           secondaryColor,
+          activeSound,
+          notificationSound,
         });
 
         if (response === 'Creating webchat') {
@@ -148,6 +192,7 @@ export const WebChatSection: FC<IPropsWebChat> = ({
                 setCustomDescription={setCustomDescription}
                 setCustomTitle={setCustomTitle}
                 handleAnimation={handleAnimation}
+                setGreetingMessage={setGreetingMessage}
                 isAnimation={isAnimation}
               />
             </>
@@ -165,7 +210,7 @@ export const WebChatSection: FC<IPropsWebChat> = ({
               customizeByColor={customizeByColor}
             />
           ) : null}
-          {isSection === 3 || isSection === 4 ? (
+          {isSection === 3 ? (
             <>
               <Text>Selecciona un avatar</Text>
               <AvatarContainer
@@ -176,6 +221,15 @@ export const WebChatSection: FC<IPropsWebChat> = ({
                 customizeMyAvatar={customizeMyAvatar}
               />
             </>
+          ) : null}
+          {isSection === 4 || isSection === 5 ? (
+            <CustomSound
+              soundList={soundList}
+              notificationSound={notificationSound}
+              setNotificationSound={setNotificationSound}
+              setIsActiveSound={setIsActiveSound}
+              activeSound={activeSound}
+            />
           ) : null}
         </div>
         <div>
@@ -188,6 +242,7 @@ export const WebChatSection: FC<IPropsWebChat> = ({
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
               customIsColor={customIsColor}
+              greetingMessage={greetingMessage}
               isAnimation={isAnimation}
             />
           </div>
@@ -202,11 +257,15 @@ export const WebChatSection: FC<IPropsWebChat> = ({
           state={isSection <= 1 ? ButtonState.DISABLED : ButtonState.NORMAL}
         />
         <ButtonMolecule
-          text={isSection === 4 ? 'Confirmar' : 'Siguiente'}
-          onClick={isSection === 4 ? handleSubmit : handleToggle}
+          text={isSection === 5 ? 'Confirmar' : 'Siguiente'}
+          onClick={isSection === 5 ? handleSubmit : handleToggle}
           size={Size.MEDIUM}
         />
       </StyledFooterWebChat>
     </StyledWebChat>
   );
 };
+
+// TODO = VERIFICAR INPUT DE MENSAJE DE BIENVENIDA
+// TODO = FUNCIONALIDAD DE IMAGEN PERSONALIZADA
+// TODO = ERROR DE WEB CHAT
