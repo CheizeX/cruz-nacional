@@ -80,7 +80,7 @@ export const CloseChatsByInactivity: FC = () => {
         <Tooltip
           text={`La cancelación puede activarse para finalizar las conversaciones que están mucho tiempo inactivas.
           Debe definirse el tiempo máximo de inactividad, para que una vez transcurrido el mismo, se efectúe automáticamente la finalización del o los chats alcanzados por el rango.`}
-          position={TooltipPosition.bottom}>
+          position={TooltipPosition.left}>
           <TooltipTarget>
             <FaInfoCircle />
           </TooltipTarget>

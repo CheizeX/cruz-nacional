@@ -1,15 +1,13 @@
 import React, { FC, useCallback, useEffect } from 'react';
 import { IoPeople } from 'react-icons/io5';
-// import { TiArrowSync, TiArrowRepeat } from 'react-icons/ti';
-// import { TiArrowSyncs } from 'react-icons/ai';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import { Channels, Chat } from '../../../../../../models/chat/chat';
 import {
-  // StyledLabel,
   StyledClientAndAgentAvatars,
+  StyledLabel,
+  StyledLabelsContainer,
   StyledNameAndDialog,
-  // StyledLabelsContainer,
 } from '../PendingsChatItem/PendingsChatItem.styles';
 import {
   TabProps,
@@ -48,6 +46,7 @@ import { getTimeAgo } from '../../ChatsSection/ChatsSection.shared';
 import { useToastContext } from '../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../molecules/Toast/Toast.interface';
 import { UserRole } from '../../../../../../models/users/role';
+import { Tag } from '../../../../../../models/tags/tag';
 
 export const InConversationChatItem: FC<
   StyledLabelProps &
@@ -62,7 +61,6 @@ export const InConversationChatItem: FC<
 > = ({
   setUserSelected,
   userSelected,
-  // setActiveByDefaultTab,
   sortedChats,
   showOnlyPausedChats,
   searchByName,
@@ -218,23 +216,20 @@ export const InConversationChatItem: FC<
                         <IoPeople />
                       </StyledProactiveIcon>
                     ) : null}
-                    {/* <TiArrowRepeat /> */}
                   </div>
                 </StyledTimeAndState>
               </StyledInConversationChatItem>
-              {/* {chat.tags && (
+              {chat.tags && (
                 <StyledLabelsContainer>
-                {chat.tags.map((tag: Tag, index: number) => (
-                  <StyledLabel color={tag.color} key={index.toString()}>
-                  <Text>{tag.name}</Text>
+                  {chat.tags.map((tag: Tag, index: number) => (
+                    <StyledLabel color={tag.color} key={index.toString()}>
+                      <Text>{tag.name}</Text>
                     </StyledLabel>
-                    ))}
+                  ))}
                 </StyledLabelsContainer>
-              )} */}
+              )}
             </StyledInConversationWrapper>
           ))}
     </StyledInConversationContainer>
   );
 };
-
-// MdAutorenew

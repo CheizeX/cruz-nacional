@@ -7,6 +7,7 @@ export default function useDisplayElementOrNot(initialIsVisible: boolean) {
 
   const handleClickOutside = (event: any) => {
     if (ref.current && !ref.current.contains(event.target)) {
+      event.stopPropagation();
       setIsComponentVisible(false);
     }
   };

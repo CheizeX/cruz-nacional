@@ -61,11 +61,11 @@ export const AddAgents: FC<AddAgentsProps> = ({
           </Text>
           <Text>
             Invitaciones por enviar{' '}
-            <Text>{generalPlan.invitaciones_disponibles}</Text>
+            <Text>{generalPlan.invitaciones_disponibles_agente}</Text>
           </Text>
           <Text>
             Invitaciones enviadas{' '}
-            <Text>{generalPlan.invitaciones_enviadas}</Text>
+            <Text>{generalPlan.invitaciones_enviadas_agente}</Text>
           </Text>
         </StyledTotalAgents>
         <StyledTotalPriceContainer>

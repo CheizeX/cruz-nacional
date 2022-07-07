@@ -7,12 +7,14 @@ import {
   StyledRightSideTimeRestrictions,
   StyledTimeTableSection,
 } from './TimeTable.styled';
+import { TimeZone } from './TimeZone/TimeZone';
 
 export const TimeTable: FC = () => {
   return (
     <StyledTimeTableSection title="Horarios">
       <ListedRestrictionsLeft />
       <StyledRightSideTimeRestrictions>
+        <TimeZone />
         <BusinessHours />
         <OutOfHourMessage />
       </StyledRightSideTimeRestrictions>

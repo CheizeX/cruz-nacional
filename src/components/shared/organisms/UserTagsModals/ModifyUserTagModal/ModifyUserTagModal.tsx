@@ -27,7 +27,11 @@ import { Tag } from '../../../../../models/tags/tag';
 import { readTags } from '../../../../../api/tags';
 import { setDataTag } from '../../../../../redux/slices/tags/tag-management';
 import { setTagByIdDelete } from '../../../../../redux/slices/tags/tag-seleted-delete';
-import { setTagByIdEdit } from '../../../../../redux/slices/tags/tag-seleted-edit';
+import {
+  setTagByIdEdit,
+  setValueColor,
+  setValueTag,
+} from '../../../../../redux/slices/tags/tag-seleted-edit';
 import { websocketContext } from '../../../../../chat';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { useToastContext } from '../../../molecules/Toast/useToast';
@@ -53,6 +57,7 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
   const getDataTag = async () => {
     try {
       const response = await readTags();
+
       if (response.success === false) {
         dispatch(setDataTag([]));
       } else {
@@ -68,9 +73,6 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
   };
   // queda pendiente si getData se pasa como dependencia
 
-  useEffect(() => {
-    getDataTag();
-  }, []);
   useEffect(() => {
     socket?.on('newTag', (data: Tag[]) => {
       dispatch(setDataTag(data));
@@ -143,6 +145,8 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
     setTags(title);
     setOpenNewTag(open);
     dispatch(setTagByIdEdit(arg._id));
+    dispatch(setValueTag(arg.name));
+    dispatch(setValueColor(arg.color));
   };
 
   // manejo de eliminar etiqueta
@@ -202,18 +206,20 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
                   containerTags={containerTags}
                   color={tag.color}>
                   <div>
-                    <Checkbox
-                      isTransparent
-                      checked={checkedState[index]}
-                      onClick={() =>
-                        handleCheckboxChange(
-                          index,
-                          tag.name,
-                          tag.color,
-                          tag._id,
-                        )
-                      }
-                    />
+                    {text === 'Seleccionar Etiquetas' && (
+                      <Checkbox
+                        // isTransparent
+                        checked={checkedState[index]}
+                        onClick={() =>
+                          handleCheckboxChange(
+                            index,
+                            tag.name,
+                            tag.color,
+                            tag._id,
+                          )
+                        }
+                      />
+                    )}
                     <Text size="12px">{tag.name}</Text>
                   </div>
                   <Dropdown

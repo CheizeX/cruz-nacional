@@ -1,4 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+interface ITagsProps {
+  colorTag: string;
+  openAdminTag?: boolean;
+}
 
 export const StyledNavBarBackOffice = styled.nav`
   width: 1032px;
@@ -16,6 +21,127 @@ export const StyledNavBarBackOffice = styled.nav`
   }
 `;
 
+export const StyledAdminTagsFilterSelector = styled.div<ITagsProps>`
+  position: relative;
+  padding-left: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-evenly;
+  max-height: 60px;
+  height: 100%;
+  width: 180px;
+  & > :first-child {
+    padding: 0;
+    padding-left: 0px;
+    margin-left: -4px;
+    height: fit-content;
+  }
+  & > button {
+    transition: all 0.3s ease-in-out;
+    margin: 0;
+    margin-top: 5px;
+    min-width: 90px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    height: 35px;
+    background-color: ${({ colorTag }) => colorTag};
+    border-radius: 5px;
+    width: fit-content;
+    max-width: 180px;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    margin-left: -4px;
+    padding-left: 3px;
+    border-bottom: 5px solid ${({ theme }) => theme && theme.Colors.grays[9]};
+    ${({ openAdminTag }) =>
+      openAdminTag &&
+      css`
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border-bottom: 5px dashed
+          ${({ theme }) => theme && theme.Colors.grays[9]};
+      `}
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+    & > svg {
+      margin: 0;
+      margin-left: 7px;
+      color: ${({ theme }) => theme && theme.Colors.grays[10]};
+    }
+    & span {
+      color: ${({ theme }) => theme && theme.Colors.grays[10]};
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      text-align: left;
+      padding-left: 0px;
+      font-size: ${({ theme }) => theme && theme.fontSize[12]};
+      font-weight: 500;
+      text-transform: uppercase;
+      width: fit-content;
+      margin-right: 2px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding: 0 10px;
+    }
+  }
+`;
+
+export const StyledAdminTagsFilterSelectorDropdown = styled.div<ITagsProps>`
+  padding: 20px 0;
+  width: 100%;
+  min-height: 200px;
+  position: absolute;
+  top: 58px;
+  left: -4px;
+  background-color: ${({ colorTag }) => colorTag};
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  z-index: 1;
+  & > div {
+    border-radius: 10px;
+    background-color: ${({ colorTag }) => colorTag};
+    z-index: 2;
+    width: fit-content;
+    min-width: 180px;
+    height: fit-content;
+    max-height: 200px;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0 10px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
+
+export const StyledTagToFilter = styled.button<ITagsProps>`
+  background-color: ${({ colorTag }) => colorTag};
+  width: 100%;
+  min-height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.3);
+  font-size: ${({ theme }) => theme.fontSize[14]};
+  font-weight: ${({ theme }) => theme.fontWeight[500]};
+  color: ${({ theme }) => theme.Colors.grays[10]};
+  padding: 5px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+`;
 export const StyledNotificationBackOffice = styled.div`
   width: 12px;
   height: 12px;

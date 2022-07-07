@@ -19,3 +19,7 @@ export const updateTag = (
 export const deleteTag = (tagId: string) => {
   return baseRestApi.delete<boolean>(`/tags/${tagId}`);
 };
+
+export const readTagColor = () => {
+  return baseRestApi.get<boolean>('/tags/colors/all');
+};

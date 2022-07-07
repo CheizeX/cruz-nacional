@@ -73,7 +73,7 @@ export const StatisticsSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
 
   const handleCustomFilter = async () => {
     try {
@@ -177,7 +177,7 @@ export const StatisticsSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [dispatch, interactionFilterChannel, interactionFilterDay, showAlert]);
+  }, [dispatch, interactionFilterChannel, interactionFilterDay]);
 
   const dataApi = useCallback(async () => {
     try {
@@ -197,7 +197,7 @@ export const StatisticsSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
 
   const userDate = useMemo(() => {
     if (informationByAgent === 'today') return agentInteractionStatistics;

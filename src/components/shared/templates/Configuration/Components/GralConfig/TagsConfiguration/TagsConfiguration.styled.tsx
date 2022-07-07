@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import styled from 'styled-components';
 
-export const StyledMaxConversations = styled.div`
+export const StyledTagsConfiguration = styled.div`
   background-color: ${({ theme }) => theme.Colors.grays[10]};
   width: 340px;
   height: fit-content;
@@ -14,7 +14,7 @@ export const StyledMaxConversations = styled.div`
   margin: 0 5px 0 0;
 `;
 
-export const StyledMaxConversationsHeader = styled.div`
+export const StyledTagsConfigurationHeader = styled.div`
   position: relative;
   width: 100%;
   height: 50px;
@@ -27,7 +27,6 @@ export const StyledMaxConversationsHeader = styled.div`
     font-weight: 500;
     color: ${({ theme }) => theme.Colors.grays[1]};
   }
-
   & > div {
     transform: translateX(30%);
     & > div {
@@ -49,7 +48,7 @@ export const StyledMaxConversationsHeader = styled.div`
   }
 `;
 
-export const StyledMaxConversationsBody = styled.div`
+export const StyledTagsConfigurationBody = styled.div`
   min-width: 100%;
   height: 150px;
   display: flex;
@@ -63,6 +62,16 @@ export const StyledMaxConversationsBody = styled.div`
     & > span {
       font-weight: 400;
     }
+  }
+  & > :first-child {
+    width: 100%;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    padding-left: 5px;
+    flex-direction: column;
+    align-items: center;
+    height: 60%;
   }
 `;
 
@@ -78,5 +87,55 @@ export const StyledInputTypeNumber = styled.input`
   font-weight: ${({ theme }) => theme.fontWeight[500]};
   &:focus {
     outline: 2px solid ${({ theme }) => theme.Colors.purples[1]};
+  }
+`;
+
+export const ToogleComponentForMappedRestrictionsNoSel = styled.button`
+  min-width: 32px;
+  width: 32px;
+  min-height: 16px;
+  height: 16px;
+  border-radius: 27px;
+  background-color: ${({ theme }) => theme.Colors.grays[8]};
+  box-shadow: inset 0 0 2px ${({ theme }) => theme.Colors.grays[8]};
+  display: flex;
+  align-items: center;
+  padding: 0;
+  &:disabled {
+    cursor: not-allowed;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+  & > div {
+    transition: all 0.3s ease-in-out;
+    transform: translateX(2px);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.Colors.grays[5]};
+  }
+`;
+
+export const ToogleComponentForMappedRestrictions = styled.button`
+  min-width: 32px;
+  width: 32px;
+  height: 16px;
+  border-radius: 27px;
+  background-color: rgba(30, 193, 67, 0.22);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  &:hover {
+    cursor: pointer;
+    outline: 1px solid ${({ theme }) => theme.Colors.grays[9]};
+  }
+  & > div {
+    transition: all 0.3s ease-in-out;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.Colors.green[4]};
+    transform: translateX(16px);
   }
 `;

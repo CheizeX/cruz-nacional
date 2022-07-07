@@ -233,7 +233,7 @@ export const StyledFooterToChat = styled.div<
   PredefinidedTextsInterface & Emojis
 >`
   position: relative;
-  height: 44px;
+  min-height: 40px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -282,6 +282,22 @@ export const StyledFooterToChat = styled.div<
   }
   & > :nth-child(2) {
     margin-right: 8px;
+    border: none;
+    width: 100%;
+    min-height: 2.5rem;
+    border-radius: 24px;
+    justify-content: center;
+    // box-shadow: inset 0 0 0 2px #dcdcdc;
+    font-size: 12px;
+    line-height: 14px;
+    outline: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    ::placeholder {
+      color: ${({ theme }) => theme.Colors.grays[5]};
+      font-size: 14px;
+    }
     & button {
       display: none;
     }
@@ -292,6 +308,10 @@ export const StyledFooterToChat = styled.div<
         color: ${({ theme }) => theme.Colors.grays[5]};
       }
     }
+  }
+  & textarea {
+    padding: 12px 12px;
+    box-shadow: inset 0 0 0 2px #dcdcdc;
   }
   & > :nth-child(3) {
     & > div {
@@ -370,7 +390,6 @@ export const StyledFooterToChat = styled.div<
 export const StyledPredefinidedTexts = styled.div<PredefinidedTextsInterface>`
   visibility: ${({ showPredefinedTexts }) =>
     showPredefinedTexts ? 'visible' : 'hidden'};
-
   position: absolute;
   max-width: 899px;
   max-height: 500px;

@@ -21,3 +21,6 @@ export interface IUserCardContainerProps {
   isAdmin?: boolean;
   invitation: boolean;
 }
+export interface IContainerTag {
+  colorTag: string;
+}

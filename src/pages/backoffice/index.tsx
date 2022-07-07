@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NextPage } from 'next';
 import { CollapseSidebar } from '../../components/shared/organisms/BackofficeLayout/BackofficeLayout.interface';
 import { IBackOfficeProps } from '../../components/shared/organisms/NavBar/BackOffice/NavBarBackOffice.interface';
@@ -25,10 +25,16 @@ const BackofficePage: NextPage<
 }) => {
   const socket: any = React.useContext(websocketContext);
 
-  const { userDataInState } = useAppSelector(
-    (state) => state.userAuthCredentials,
+  const { _id: userId, companyId } = useAppSelector(
+    (state) => state?.userAuthCredentials.userDataInState,
   );
-  socket?.emit('joinSupervisorRooms', userDataInState?.companyId);
+
+  useEffect(() => {
+    socket?.emit('joinSupervisorRooms', {
+      companyId,
+      userId,
+    });
+  }, [companyId, userId]);
 
   return (
     <BackofficeLayout

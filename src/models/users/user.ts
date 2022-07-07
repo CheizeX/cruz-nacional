@@ -33,4 +33,5 @@ export type DecodedToken = {
   urlAvatar: string;
   _id: string;
   companyId: string;
+  soundEnabled: boolean;
 };

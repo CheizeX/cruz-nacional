@@ -78,6 +78,7 @@ interface ConfigurationDataSliceInterface {
   listOfRestrictions: any[];
   loadingConfigData: boolean;
   loadingGeneralConfigData: boolean;
+  constructingWebchat: boolean;
 }
 
 const initialState: ConfigurationDataSliceInterface = {
@@ -87,6 +88,7 @@ const initialState: ConfigurationDataSliceInterface = {
   listOfRestrictions: [],
   loadingConfigData: false,
   loadingGeneralConfigData: false,
+  constructingWebchat: false,
 };
 
 export const configurationDataToState = createSlice({
@@ -104,6 +106,9 @@ export const configurationDataToState = createSlice({
     },
     setListOfRestrictions: (state, action: PayloadAction<any[]>) => {
       state.listOfRestrictions = action.payload;
+    },
+    setConstructingWebchat: (state, action: PayloadAction<boolean>) => {
+      state.constructingWebchat = action.payload;
     },
   },
 
@@ -151,5 +156,6 @@ export const {
   setGeneralConfigurationData,
   setBusinessHoursData,
   setListOfRestrictions,
+  setConstructingWebchat,
 } = configurationDataToState.actions;
 export default configurationDataToState.reducer;

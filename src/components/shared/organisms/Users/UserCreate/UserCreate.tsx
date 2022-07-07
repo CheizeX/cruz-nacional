@@ -1,4 +1,6 @@
-import { FC, useState } from 'react';
+/* eslint-disable sonarjs/no-identical-functions */
+/* eslint-disable @typescript-eslint/naming-convention */
+import { FC } from 'react';
 import * as Yup from 'yup';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useToastContext } from '../../../molecules/Toast/useToast';
@@ -38,6 +40,12 @@ import {
   useAppSelector,
 } from '../../../../../redux/hook/hooks';
 import { setDataUser } from '../../../../../redux/slices/users/user-management';
+import {
+  StyledButton,
+  StyledRadio,
+  StyledVisualContainerEditUser,
+  StyledWrapperRadio,
+} from '../EditUsers/EditUser.styled';
 
 interface Values {
   email: string;
@@ -65,21 +73,25 @@ export const UserCreate: FC<IUserCreateProps> = ({
   setUserActive,
   setUsers,
   users,
+  createUserValues,
+  setCreateUserValues,
 }) => {
   const dispatch = useAppDispatch();
-  const { supervisores } = useAppSelector(
-    (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
-  );
-  const [roleSelected, setRoleSelected] = useState<string>(
-    supervisores > 0 ? 'AGENT' : '',
-  );
   const showAlert = useToastContext();
+
+  const { supervisores_registrados, invitaciones_disponibles_supervisor } =
+    useAppSelector(
+      (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
+    );
+
+  const { username, email, role } = createUserValues;
+
   const clearTagsUser = () => setContainerTags([]);
 
   const initialValues = {
-    name: '',
-    email: '',
-    role: roleSelected,
+    name: username,
+    email,
+    role,
     tags: containerTags?.filter(
       (v, i, a) =>
         a.findIndex((t) => JSON.stringify(t) === JSON.stringify(v)) === i,
@@ -93,13 +105,13 @@ export const UserCreate: FC<IUserCreateProps> = ({
       resetForm: () => void;
     },
   ) => {
-    if (roleSelected !== '') {
+    if (role !== '') {
       try {
-        if (values?.email && values?.name) {
+        if (values?.email && values?.name && values?.role && values?.tags) {
           const response = await createUser({
-            role: roleSelected as UserRole,
-            name: values?.name,
-            email: values?.email,
+            role: createUserValues.role as UserRole,
+            name: createUserValues.username,
+            email: createUserValues.email,
             tags: values?.tags,
             companyId: values?.companyId || '',
           });
@@ -127,8 +139,14 @@ export const UserCreate: FC<IUserCreateProps> = ({
           submitProps?.setSubmitting(false);
           submitProps?.resetForm();
         }
+        setCreateUserValues({
+          username: '',
+          email: '',
+          role: '',
+          tags: [],
+          companyId: '',
+        });
         clearTagsUser();
-        // socket.emit('newUser');
         setTimeout(() => {
           setUserModal(false);
         }, 1000);
@@ -181,7 +199,8 @@ export const UserCreate: FC<IUserCreateProps> = ({
                       <SVGIcon iconFile="/icons/unknown_user.svg" />
                       <SVGIcon iconFile="/icons/IconButtonSmall.svg" />
                     </StyledAvatar>
-                    {supervisores < 1 && (
+                    {supervisores_registrados < 1 ||
+                    invitaciones_disponibles_supervisor > 0 ? (
                       <>
                         <StyledRealFunctionalRadiosContainer
                           role="group"
@@ -191,18 +210,28 @@ export const UserCreate: FC<IUserCreateProps> = ({
                             id="role"
                             name="role"
                             value="SUPERVISOR"
-                            onClick={() => setRoleSelected('SUPERVISOR')}
+                            onClick={() =>
+                              setCreateUserValues({
+                                ...createUserValues,
+                                role: 'SUPERVISOR',
+                              })
+                            }
                           />
                           <Field
                             type="button"
                             id="role"
                             name="role"
                             value="AGENT"
-                            onClick={() => setRoleSelected('AGENT')}
+                            onClick={() =>
+                              setCreateUserValues({
+                                ...createUserValues,
+                                role: 'AGENT',
+                              })
+                            }
                           />
                         </StyledRealFunctionalRadiosContainer>
                         <StyledVisualRadiosContainer>
-                          {roleSelected === 'SUPERVISOR' ? (
+                          {role === 'SUPERVISOR' ? (
                             <StyledRadioPurple>
                               <div />
                             </StyledRadioPurple>
@@ -213,10 +242,15 @@ export const UserCreate: FC<IUserCreateProps> = ({
                           )}
                           <button
                             type="button"
-                            onClick={() => setRoleSelected('SUPERVISOR')}>
+                            onClick={() =>
+                              setCreateUserValues({
+                                ...createUserValues,
+                                role: 'SUPERVISOR',
+                              })
+                            }>
                             Supervisor
                           </button>
-                          {roleSelected === 'AGENT' ? (
+                          {role === 'AGENT' ? (
                             <StyledRadioPurple>
                               <div />
                             </StyledRadioPurple>
@@ -227,10 +261,26 @@ export const UserCreate: FC<IUserCreateProps> = ({
                           )}
                           <button
                             type="button"
-                            onClick={() => setRoleSelected('AGENT')}>
+                            onClick={() =>
+                              setCreateUserValues({
+                                ...createUserValues,
+                                role: 'AGENT',
+                              })
+                            }>
                             Agente
                           </button>
                         </StyledVisualRadiosContainer>
+                      </>
+                    ) : (
+                      <>
+                        <StyledVisualContainerEditUser>
+                          <StyledWrapperRadio>
+                            <StyledButton focusedCheck>
+                              <StyledRadio focusedCheck />
+                            </StyledButton>
+                            <span>Agente</span>
+                          </StyledWrapperRadio>
+                        </StyledVisualContainerEditUser>
                       </>
                     )}
                     <StyledInputContainer>
@@ -240,6 +290,14 @@ export const UserCreate: FC<IUserCreateProps> = ({
                         name="name"
                         setFocus={() => null}
                         type="text"
+                        placeholder="Nombre"
+                        value={username}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setCreateUserValues({
+                            ...createUserValues,
+                            username: e.target.value,
+                          })
+                        }
                       />
                     </StyledInputContainer>
                     <StyledInputContainer>
@@ -250,6 +308,13 @@ export const UserCreate: FC<IUserCreateProps> = ({
                         setFocus={() => null}
                         type="text"
                         valid={touched.email && !errors.email}
+                        value={createUserValues.email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setCreateUserValues({
+                            ...createUserValues,
+                            email: e.target.value,
+                          })
+                        }
                       />
                       <ErrorMessage name="email" component={StyleErrors} />
                     </StyledInputContainer>
@@ -279,11 +344,18 @@ export const UserCreate: FC<IUserCreateProps> = ({
                   }}
                 />
                 <ButtonMolecule
-                  onClick={submitForm}
+                  onClick={() => submitForm()}
                   type="submit"
                   text={`${editButton}`}
                   size={Size.MEDIUM}
-                  state={!isValid ? ButtonState.DISABLED : ButtonState.NORMAL}
+                  state={
+                    !isValid &&
+                    Object.values(createUserValues).some(
+                      (value) => value === '',
+                    )
+                      ? ButtonState.DISABLED
+                      : ButtonState.NORMAL
+                  }
                 />
               </StyledFooter>
             </Form>

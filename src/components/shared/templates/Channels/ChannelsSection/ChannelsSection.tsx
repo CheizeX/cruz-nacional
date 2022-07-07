@@ -178,9 +178,6 @@ export const ChannelsSection: FC = () => {
     setSeletedComponent(arg);
   };
   // socket.on("webchatScriptDone", { scriptJS, scriptCSS, div })
-  useEffect(() => {
-    getChannelList();
-  }, [getChannelList]);
 
   useEffect(() => {
     socket.on('webchatScriptDone', (script: IPropsScripts) => {

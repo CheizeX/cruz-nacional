@@ -98,7 +98,7 @@ export const PredefinedAgentMessages: FC = () => {
         <Text>Mensajes Predeterminados</Text>
         <Tooltip
           text="Cuando los Mensajes Predeterminados se activan, el agente va a contestar con un saludo de bienvenida y un saludo final. Estos mensajes pueden personalizarse editando los que se encuentran seteados por defecto. Si se quiere incluir el nombre del agente en el mensaje debe escribir la palabra agente dentro de llaves { } de la siguiente manera: {agente}"
-          position={TooltipPosition.bottom}>
+          position={TooltipPosition.left}>
           <TooltipTarget>
             <FaInfoCircle />
           </TooltipTarget>

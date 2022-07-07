@@ -20,7 +20,7 @@ export const StyledBusinessHours = styled.div`
 `;
 export const StyledBusinessHoursHeader = styled.div`
   width: 100%;
-  min-height: 60px;
+  min-height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;

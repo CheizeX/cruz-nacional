@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IUserCardContainerProps } from './UseCard.interface';
+import { IContainerTag, IUserCardContainerProps } from './UseCard.interface';
 
 export const StyledUserCardMolecule = styled.div<IUserCardContainerProps>`
   align-items: center;
@@ -12,15 +12,37 @@ export const StyledUserCardMolecule = styled.div<IUserCardContainerProps>`
   margin: 13px 0 0px 13px;
   width: 230px;
   opacity: ${({ invitation }) => (invitation ? 'none' : 0.8)};
+  & > span {
+    width: 100%;
+    margin-top: -8px;
+    z-index: 1;
+  }
+`;
+
+export const StyledTag = styled.div<IContainerTag>`
+  background-color: ${({ colorTag }) => colorTag};
+  min-width: 22px;
+  min-height: 22px;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  font-size: ${({ theme }) => theme.fontSize[12]};
+  font-weight: ${({ theme }) => theme.fontWeight[600]};
+  color: ${({ theme }) => theme.Colors.grays[10]};
 `;
 
 export const StyledCardHeader = styled.div<IUserCardContainerProps>`
   align-items: center;
   display: flex;
-  height: 60px;
+  //height: 60px;
   min-height: 20px;
+  max-height: 24px;
+  z-index: 1;
   justify-content: flex-end;
-  margin-bottom: 31px;
+  //margin-bottom: 31px;
   position: relative;
   width: 100%;
   & div {
@@ -132,13 +154,14 @@ export const StyledAvatar = styled.div`
     width: 54px;
     height: 54px;
     position: absolute;
-    top: -11px;
+    //top: -11px;
   }
   svg {
     align-self: baseline;
     position: relative;
-    top: -23px;
+    //top: -23px;
     width: 56px;
+    height: 54px;
   }
 `;
 
@@ -146,10 +169,12 @@ export const StyledUsernameEmail = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 100px;
+  //height: 100px;
+  // max-height: 40px;
   justify-content: center;
   position: relative;
-  top: -25px;
+  //top: -25px;
+  top: -5px;
   width: 100%;
   & > :first-child {
     color: ${({ theme }) => theme.Colors.grays[3]};

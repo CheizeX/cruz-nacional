@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useCallback, useEffect, useContext } from 'react';
-import { useJwt } from 'react-jwt';
+// import { useJwt } from 'react-jwt';
 import { ChatsList } from '../Components/ChatsList/ChatsList';
 import { ChatsViewNoSelected } from '../Components/ChatsViewNoSelected/ChatsViewNoSelected';
 import { ChatsViewSelectedToConfirm } from '../Components/ChatsViewSelectedToConfirm/ChatsViewSelectedToConfirm';
@@ -29,14 +29,10 @@ import {
 } from '../../../../../redux/hook/hooks';
 import { setChatsPendings } from '../../../../../redux/slices/live-chat/pending-chats';
 import { setChatsOnConversation } from '../../../../../redux/slices/live-chat/on-conversation-chats';
-import useLocalStorage from '../../../../../hooks/use-local-storage';
-import { DecodedToken } from '../../../../../models/users/user';
-import { setUserDataInState } from '../../../../../redux/slices/auth/user-credentials';
 import {
   FilterChannelsProps,
   FilterChannel,
 } from '../Components/ChatsFilter/ChatFilter/ChatFilter.interface';
-import { readUser } from '../../../../../api/users/index';
 import { ModalClosePreviousSession } from '../Components/ModalClosePreviousSession/ModalClosePreviousSession';
 import { SeccionChatHistory } from '../Components/SeccionChatHistory/SeccionChatHistory';
 
@@ -66,12 +62,12 @@ export const ChatsSection: FC<
   const showAlert = useToastContext();
   const dispatch = useAppDispatch();
 
-  const [accessToken] = useLocalStorage('AccessToken', '');
-  const { decodedToken } = useJwt(accessToken);
-
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
+  // const { userDataInState }: any = useAppSelector(
+  //   (state) => state.userAuthCredentials,
+  // );
 
   // const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
   // const [userSelected, setUserSelected] = useState<string>('');
@@ -84,6 +80,8 @@ export const ChatsSection: FC<
   const [chatInputDialogue, setChatInputDialogue] = useState<string>('');
   const [dropZoneDisplayed, setDropZoneDisplayed] = useState<boolean>(false);
   const [emojisDisplayed, setEmojisDisplayed] = React.useState<boolean>(false);
+  // const [accessToken] = useLocalStorage('AccessToken', '');
+  // const { decodedToken } = useJwt(accessToken);
   // state para guardar el string para realizar la busqueda(email, name o telefono).
   const [searchByName, setSearchByName] = useState<string>('');
   // -------------------------------------------------------------------------
@@ -108,11 +106,15 @@ export const ChatsSection: FC<
   const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchByName(event.target.value);
   };
+
   // -------------------------------------------------------
   let activeSound: boolean;
   let audioPending: HTMLAudioElement | null;
   let audioConversation: HTMLAudioElement | null;
+
+  // const [isSound, setIsSound] = useState<boolean>(false);
   // trae todas las configuraciones
+
   const getSettingSound = useCallback(async () => {
     try {
       const response = await readSetting();
@@ -148,7 +150,6 @@ export const ChatsSection: FC<
   const getOnConversationChats = useCallback(async () => {
     try {
       const response = await readChat(ChatStatus.ON_CONVERSATION);
-
       if (response.success === false) {
         dispatch(setChatsOnConversation([]));
       } else {
@@ -168,7 +169,6 @@ export const ChatsSection: FC<
   const getPendingChats = useCallback(async () => {
     try {
       const pendings = await readChat(ChatStatus.ASSIGNMENT_PENDING);
-
       if (pendings.success === false) {
         dispatch(setChatsPendings([]));
       } else {
@@ -184,30 +184,15 @@ export const ChatsSection: FC<
     }
   }, [dispatch]);
 
-  const readByAgent = useCallback(async () => {
-    try {
-      if (decodedToken) {
-        const dataUser = decodedToken as DecodedToken;
-        const response = await readUser(dataUser._id);
-        dispatch(setUserDataInState(response as DecodedToken));
-      }
-    } catch (error) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'Token Expirado',
-        message: `${error}`,
-      });
-    }
-  }, [decodedToken, dispatch]);
-
   // --------------- <<< WEB SOCKET EVENTS >>> -----------------
   // Escucha los chats de usuarios o agentes según el parámetro que se le pase
+
   const getNewMessageFromNewUserOrAgent = useCallback(async (event: string) => {
     socket?.on(event, async (data: Chat[]) => {
-      dispatch(setChatsOnConversation(data));
-      if (event === 'newUserMessage' && activeSound && audioConversation) {
-        await audioConversation.play();
+      if (event === 'newUserMessage' && activeSound) {
+        await audioConversation?.play();
       }
+      dispatch(setChatsOnConversation(data));
     });
   }, []);
 
@@ -229,8 +214,8 @@ export const ChatsSection: FC<
   const wsNewChat = useCallback(async () => {
     socket?.on('newChat', async (data: Chat[]) => {
       dispatch(setChatsPendings(data));
-      if (activeSound && audioPending) {
-        await audioPending.play();
+      if (activeSound) {
+        await audioPending?.play();
       }
     });
   }, []);
@@ -295,6 +280,11 @@ export const ChatsSection: FC<
   }, [chatsOnConversation]);
 
   useEffect(() => {
+    getNewMessageFromNewUserOrAgent('newUserMessage');
+    getNewMessageFromNewUserOrAgent('newAgentMessage');
+  }, []);
+
+  useEffect(() => {
     getPendingChats();
     getOnConversationChats();
   }, [getOnConversationChats, getPendingChats]);
@@ -304,8 +294,8 @@ export const ChatsSection: FC<
   }, [getSettingSound]);
 
   useEffect(() => {
-    getNewMessageFromNewUserOrAgent('newAgentMessage');
-    getNewMessageFromNewUserOrAgent('newUserMessage');
+    // getNewMessageFromNewUserOrAgent('newAgentMessage');
+    // getNewMessageFromNewUserOrAgent('newUserMessage');
     wsNewChat();
     wsNewChatAssigned();
     getNewPendingChat();
@@ -316,7 +306,7 @@ export const ChatsSection: FC<
     wsCloseByInactivity();
     getNewMessageOnConversationTrafficLight();
   }, [
-    getNewMessageFromNewUserOrAgent,
+    // getNewMessageFromNewUserOrAgent,
     getNewPendingChat,
     newPausedConversation,
     socket,
@@ -328,16 +318,6 @@ export const ChatsSection: FC<
     wsNewChatAssigned,
     getNewMessageOnConversationTrafficLight,
   ]);
-  // useEffect(() => {
-  // }, [socket]);
-
-  // useEffect(() => {
-  //   dispatch(setUserDataInState(decodedToken as DecodedToken));
-  // }, [decodedToken, dispatch]);
-
-  useEffect(() => {
-    readByAgent();
-  }, [decodedToken, dispatch, readByAgent]);
 
   return (
     <StyledChatsSection>

@@ -16,6 +16,8 @@ export interface IUserCreateProps {
   users?: string;
   setContainerTags: React.Dispatch<React.SetStateAction<IPropsTags[]>>;
   containerTags: IPropsTags[];
+  createUserValues?: any;
+  setCreateUserValues: React.Dispatch<React.SetStateAction<any>>;
 }
 export interface ICreateUserProps {
   onSubmit?: (userData: Omit<User, '_id'>) => void | Promise<void>;

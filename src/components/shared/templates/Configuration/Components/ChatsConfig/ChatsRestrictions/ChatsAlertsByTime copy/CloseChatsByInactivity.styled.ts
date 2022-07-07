@@ -62,7 +62,6 @@ export const StyledCloseChatsByInactivityBody = styled.div`
     padding: 0px 0;
     height: fit-content;
     width: 100%;
-    /* border: 1px solid red; */
     flex-direction: column;
     & > div {
       display: flex;
@@ -87,7 +86,7 @@ export const StyledCloseChatsByInactivityBody = styled.div`
       }
     }
     & > button {
-      margin-top: 15px;
+      margin-top: 26px;
       height: 40px;
       width: 100%;
       & > span {

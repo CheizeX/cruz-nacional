@@ -37,6 +37,38 @@ export const StyledNavBarLive = styled.nav<INavBarLiveProps>`
       & > :first-child {
         display: flex;
       }
+      & > :nth-child(2) {
+        & > button {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          height: 28px;
+          justify-content: flex-start;
+          position: relative;
+          & > div {
+            & * {
+              & > svg {
+                width: 28px;
+                height: 28px;
+                & > g {
+                  & > path {
+                    fill: ${({ theme }) => theme.Colors.grays[10]};
+                    opacity: 0.8;
+                  }
+                }
+              }
+            }
+          }
+          & > svg {
+            width: 32px;
+            height: 34px;
+            & > path {
+              fill: ${({ theme }) => theme.Colors.grays[10]};
+              opacity: 0.8;
+            }
+          }
+        }
+      }
     }
   }
   span {

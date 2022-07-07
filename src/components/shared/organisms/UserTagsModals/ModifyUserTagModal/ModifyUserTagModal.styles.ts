@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { StyledColorCheckboxProps } from './ModifyUserTagModal.interface';
-import { myTagsSelector } from './ModifyUserTagModal.shared';
 
 export const StyledButtonModifyUserTag = styled.button`
   border-radius: 50%;
@@ -187,17 +186,17 @@ export const ModifyTagsDropdownContainer = styled.div`
 export const StyledModifyTag = styled.div<StyledColorCheckboxProps>`
   width: 280px;
   height: 42px;
-  background-color: ${({ color, theme }) =>
-    myTagsSelector(color === '#3AA4FF', theme.Colors.blue[1], null) ||
-    myTagsSelector(color === '#8BDFD0', theme.Colors.green[2], null) ||
-    myTagsSelector(color === '#F78F28', theme.Colors.orange[3], null) ||
-    myTagsSelector(color === '#4D5ECA', theme.Colors.blue[2], null) ||
-    myTagsSelector(color === '#FA5F5F', theme.Colors.orange[4], null) ||
-    myTagsSelector(color === '#439152', theme.Colors.green[5], null) ||
-    myTagsSelector(color === '#C155F0', theme.Colors.purples[4], null) ||
-    myTagsSelector(color === '#D03AC9', theme.Colors.purples[5], null) ||
-    myTagsSelector(color === '#707070', theme.Colors.grays[4], null) ||
-    myTagsSelector(color === '#24C3A7', theme.Colors.green[1], null)};
+  background-color: ${({ color }) => color};
+  // myTagsSelector(color === '#3AA4FF', theme.Colors.blue[1], null) ||
+  // myTagsSelector(color === '#8BDFD0', theme.Colors.green[2], null) ||
+  // myTagsSelector(color === '#F78F28', theme.Colors.orange[3], null) ||
+  // myTagsSelector(color === '#4D5ECA', theme.Colors.blue[2], null) ||
+  // myTagsSelector(color === '#FA5F5F', theme.Colors.orange[4], null) ||
+  // myTagsSelector(color === '#439152', theme.Colors.green[5], null) ||
+  // myTagsSelector(color === '#C155F0', theme.Colors.purples[4], null) ||
+  // myTagsSelector(color === '#D03AC9', theme.Colors.purples[5], null) ||
+  // myTagsSelector(color === '#707070', theme.Colors.grays[4], null) ||
+  // myTagsSelector(color === '#24C3A7', theme.Colors.green[1], null)};
   padding: 20px;
   display: flex;
   align-items: center;

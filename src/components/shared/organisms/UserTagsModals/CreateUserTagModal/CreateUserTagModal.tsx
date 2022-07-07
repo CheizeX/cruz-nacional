@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../atoms/Text/Text';
 import { ContainerInput } from '../../../molecules/Input/ContainerInput';
@@ -18,10 +19,10 @@ import {
 } from './CreateUserTagModal.styles';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
-import { tagsColorsArrayCreate } from './CreateUserTagModal.shared';
 import { UserTagModalProps } from '../DeleteUserTagModal/DeleteUserTagModa.interface';
 // import { websocketContext } from '../../../../../chat';
 import { createUserTag } from '../../../../../api/tags';
+import { RootState } from '../../../../../redux';
 
 export const CreateUserTagModal: FC<
   StyledColorCheckboxProps & UserTagModalProps & ButtonMoleculeProps
@@ -32,16 +33,19 @@ export const CreateUserTagModal: FC<
   const [selectedColor, setSelectedColor] = useState('');
   const [tagName, setTagName] = useState('');
 
+  const { tagColors } = useSelector(
+    (state: RootState) => state.tags.tagsQueryState,
+  );
   const handleSelectTagColor = (tag: string) => {
     setSelectedColor(tag);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagName(
-      e.target.value
-        .split(' ')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' '),
+      e.target.value.toUpperCase(),
+      // .split(' ')
+      // .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      // .join(' ')
     );
   };
 
@@ -49,14 +53,12 @@ export const CreateUserTagModal: FC<
     try {
       if (tagName?.length > 0 && selectedColor?.length > 0) {
         await createUserTag({
-          name: tagName,
+          name: tagName.toUpperCase(),
           color: selectedColor,
         });
 
         // socket?.emit('newTag');
-
         setOpenNewTag(`${tags}`);
-
         showAlert?.addToast({
           alert: Toast.SUCCESS,
           title: 'Perfecto!',
@@ -96,21 +98,23 @@ export const CreateUserTagModal: FC<
         <ContainerInput
           setFocus={() => false}
           type="text"
+          value={tagName}
           onChange={handleChange}
         />
         <Text>Color</Text>
         <StyledModalColors>
-          {tagsColorsArrayCreate.map((item, index) => (
-            <StyledColorCheckbox
-              key={item.name}
-              name={index.toString()}
-              checked={selectedColor === item.color}
-              onClick={() => handleSelectTagColor(item.color)}>
-              <StyledIconCheckTag viewBox="-4 -4 32 32">
-                <polyline points="20 6 9 17 4 12" />
-              </StyledIconCheckTag>
-            </StyledColorCheckbox>
-          ))}
+          {tagColors &&
+            tagColors.map((item) => (
+              <StyledColorCheckbox
+                key={item.name}
+                name={item.color}
+                checked={selectedColor === item.color}
+                onClick={() => handleSelectTagColor(item.color)}>
+                <StyledIconCheckTag viewBox="-4 -4 32 32">
+                  <polyline points="20 6 9 17 4 12" />
+                </StyledIconCheckTag>
+              </StyledColorCheckbox>
+            ))}
         </StyledModalColors>
         <ButtonMolecule text="Crear" size={Size.MEDIUM} onClick={handleClick} />
       </StyledModalBody>

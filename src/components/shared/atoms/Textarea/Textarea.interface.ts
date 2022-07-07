@@ -1,3 +1,5 @@
+import { KeyboardEvent } from 'react';
+
 export interface ITextarea {
-  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyPress?: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
 }

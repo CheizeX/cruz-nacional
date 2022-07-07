@@ -11,11 +11,12 @@ import {
   FilterChannelsProps,
   FilterChannel,
 } from '../../templates/Chats/Components/ChatsFilter/ChatFilter/ChatFilter.interface';
-import { useAppSelector } from '../../../../redux/hook/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook/hooks';
 import useLocalStorage from '../../../../hooks/use-local-storage';
 import { UserRole } from '../../../../models/users/role';
 import { Loader } from '../../atoms/Loader/Loader';
 import { ContactsSetion } from '../../templates/Contacts/ContactsSection/ContactsSection';
+// import { getGeneralConfigurationData } from '../../../../redux/slices/configuration/configuration-info';
 
 export const LiveChatsPage: FC<
   UploadableFile & FilterChannelsProps & FilterChannel & IBackOfficeProps
@@ -32,7 +33,7 @@ export const LiveChatsPage: FC<
   setMyAccount,
 }) => {
   const { push } = useRouter();
-
+  const dispatch = useAppDispatch();
   const [accessToken] = useLocalStorage('AccessToken', '');
 
   const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
@@ -58,7 +59,16 @@ export const LiveChatsPage: FC<
     ) {
       push('/backoffice');
     }
-  }, [accessToken, decodedToken, push, userDataInState]);
+    // dispatch(getGeneralConfigurationData());
+  }, [accessToken, decodedToken, dispatch, push]);
+
+  // useEffect(() => {
+  //   if (userDataInState) {
+  //     dispatch(setUpdateSoundEnabled(userDataInState.soundEnabled));
+  //     setIsSoundPage(userDataInState.soundEnabled);
+  //   }
+  // }, [dispatch]);
+  // useEffect(() => {}, [listenSound]);
 
   return (
     <>

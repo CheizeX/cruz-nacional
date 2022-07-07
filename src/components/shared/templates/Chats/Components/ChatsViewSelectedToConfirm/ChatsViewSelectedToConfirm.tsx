@@ -1,12 +1,12 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { CgClipboard } from 'react-icons/cg';
 import { Text } from '../../../../atoms/Text/Text';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { ButtonMolecule } from '../../../../atoms/Button/Button';
-import { ContainerInput } from '../../../../molecules/Input/ContainerInput';
+// import { ContainerInput } from '../../../../molecules/Input/ContainerInput';
 import {
   IconButtonMolecule,
   IconButtonState,
@@ -42,7 +42,10 @@ import {
 import { baseRestApi } from '../../../../../../api/base';
 import { useToastContext } from '../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../molecules/Toast/Toast.interface';
-import { preDefinedTextsObject } from '../../ChatsSection/ChatsSection.shared';
+import {
+  NestedMessage,
+  preDefinedTextsObject,
+} from '../../ChatsSection/ChatsSection.shared';
 import { StyledEmojisContainer } from '../Emojis/Emojis.styled';
 import { emojisDisplayedObject } from '../Emojis/Emojis.shared';
 import {
@@ -62,6 +65,9 @@ import {
 } from '../DiaolguesBox/DialoguesBox.styles';
 import { Tooltip } from '../../../../atoms/Tooltip/Tooltip';
 import { TooltipPosition } from '../../../../atoms/Tooltip/tooltip.interface';
+import { PredefinedMessage } from '../PredefinedMessage/PredefinedMessage';
+import { Textarea } from '../../../../atoms/Textarea/Textarea';
+import { ContainerInput } from '../../../../molecules/Input/ContainerInput';
 
 export const ChatsViewSelectedToConfirm: FC<
   SelectedUserProps &
@@ -95,8 +101,9 @@ export const ChatsViewSelectedToConfirm: FC<
 }) => {
   const showAlert = useToastContext();
   const toasts = useToastContext();
-
   const dispatch = useAppDispatch();
+  const focusRef = useRef(null);
+
   const { userDataInState }: any = useAppSelector(
     (state) => state.userAuthCredentials,
   );
@@ -112,7 +119,7 @@ export const ChatsViewSelectedToConfirm: FC<
   );
 
   const [sendingMessage, setSendingMessage] = React.useState<boolean>(false);
-
+  const [sectionNext, setIsSecionNext] = React.useState<boolean>(false);
   const [accessToken] = useLocalStorage('AccessToken', '');
 
   const chatToSetInConversation = chatsPendings?.find(
@@ -138,9 +145,8 @@ export const ChatsViewSelectedToConfirm: FC<
     [toasts],
   );
 
-  const handleSetUserToOnConversation = async () => {
+  const handleSetUserToOnConversation = useCallback(async () => {
     // if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
-
     try {
       const result = await baseRestApi.patch(
         `/chats/initConversation/${chatToSetInConversationId}`,
@@ -148,7 +154,10 @@ export const ChatsViewSelectedToConfirm: FC<
           accessToken,
         },
       );
-      if (result.success === false && result.errorMessage === 'Limit reached') {
+      if (
+        result.success === false &&
+        result.errorMessage === 'Max chat count reached'
+      ) {
         showAlert?.addToast({
           alert: Toast.ERROR,
           title: 'ERROR',
@@ -174,10 +183,10 @@ export const ChatsViewSelectedToConfirm: FC<
     //     message: `Solo puedes tener ${userDataInState?.maxChatsOnConversation} chats activos`,
     //   });
     // }
-  };
+  }, []);
 
   const handleEnterToSendMessage = async (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     if (e.key === 'Enter' && chatInputDialogue !== '') {
       setChatInputDialogue('');
@@ -373,7 +382,9 @@ export const ChatsViewSelectedToConfirm: FC<
     dispatch(setChatsToSendId(chatToTalkWithUserId || ''));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
     setChatInputDialogue(e.target.value);
   };
 
@@ -398,6 +409,7 @@ export const ChatsViewSelectedToConfirm: FC<
 
   const handlePredefinedTexts = () => {
     setEmojisDisplayed(false);
+    setIsSecionNext(false);
     setShowPredefinedTexts(!showPredefinedTexts);
   };
   const handleDropZoneDisplayed = () => {
@@ -431,7 +443,7 @@ export const ChatsViewSelectedToConfirm: FC<
                 (chat) =>
                   chat.client.clientId === userSelected &&
                   chat.channel === Channels.CHAT_API,
-              )?.client.clientId && liveChatModal === false ? (
+              )?.client.clientId && !liveChatModal ? (
                 <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
                   <StyledCopyToClipboardUser
                     onClick={() =>
@@ -445,7 +457,7 @@ export const ChatsViewSelectedToConfirm: FC<
                 (chat) =>
                   chat.client.clientId === userSelected &&
                   chat.channel === Channels.WEBCHAT,
-              )?.client.clientId && liveChatModal === false ? (
+              )?.client.clientId && !liveChatModal ? (
                 <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
                   <StyledCopyToClipboardUser
                     onClick={() =>
@@ -637,29 +649,59 @@ export const ChatsViewSelectedToConfirm: FC<
                 ))}
               </StyledPredefinidedTexts>
             )}
-
+            {NestedMessage.length > 0 &&
+              userDataInState?.companyId === '62a3c8c92ca8cd7252a24155' && (
+                // '61f713aee1822f4d387ae7f6' && (
+                <PredefinedMessage
+                  focusRef={focusRef}
+                  agent={userDataInState.name}
+                  handleClickToSendPredefinidedTexts={
+                    handleClickToSendPredefinidedTexts
+                  }
+                  setChatInputDialogue={setChatInputDialogue}
+                  setShowPredefinedTexts={setShowPredefinedTexts}
+                  setIsSecionNext={setIsSecionNext}
+                  showPredefinedTexts={showPredefinedTexts}
+                  sectionNext={sectionNext}
+                />
+              )}
             <button type="button" onClick={handleDropZoneDisplayed}>
               <SVGIcon iconFile="/icons/clipper.svg" />
             </button>
             {/* <button type="button" onClick={handleSowEmojisButtton}>
               <SVGIcon iconFile="/icons/emojis.svg" />
             </button> */}
-            {preDefinedTextsObject.length > 0 && (
-              <button type="button" onClick={handlePredefinedTexts}>
-                <SVGIcon iconFile="/icons/ray.svg" />
-              </button>
-            )}
+            {preDefinedTextsObject.length > 0 ||
+              (userDataInState?.companyId === '62a3c8c92ca8cd7252a24155' && (
+                //  '61f713aee1822f4d387ae7f6' && (
+                <button type="button" onClick={handlePredefinedTexts}>
+                  <SVGIcon iconFile="/icons/ray.svg" />
+                </button>
+              ))}
           </span>
-          <ContainerInput
-            value={chatInputDialogue}
-            onChange={handleInputChange}
-            placeHolder="Enviar mensaje.."
-            setFocus={() => null}
-            LeftIcon={() => <SVGIcon iconFile="/icons/search-solid.svg" />}
-            onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) =>
-              handleEnterToSendMessage(e)
-            }
-          />
+          {chatInputDialogue && chatInputDialogue.length > 100 ? (
+            <Textarea
+              ref={focusRef}
+              value={chatInputDialogue}
+              onChange={handleInputChange}
+              placeholder="Enviar mensaje..."
+              onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) =>
+                handleEnterToSendMessage(e)
+              }
+            />
+          ) : (
+            <ContainerInput
+              forwardRef={focusRef}
+              value={chatInputDialogue}
+              onChange={handleInputChange}
+              placeHolder="Enviar mensaje..."
+              setFocus={() => null}
+              LeftIcon={() => <SVGIcon iconFile="/icons/search-solid.svg" />}
+              onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                handleEnterToSendMessage(e)
+              }
+            />
+          )}
           <IconButtonMolecule
             onClick={handleClickToSendMessage}
             state={

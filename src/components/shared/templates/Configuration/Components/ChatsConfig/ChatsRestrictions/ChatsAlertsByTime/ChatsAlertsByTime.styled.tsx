@@ -62,7 +62,6 @@ export const StyledChatsAlertsByTimeBody = styled.div`
     padding: 0px 0;
     height: fit-content;
     width: 100%;
-    /* border: 1px solid red; */
     flex-direction: column;
     & > div {
       display: flex;
@@ -74,7 +73,6 @@ export const StyledChatsAlertsByTimeBody = styled.div`
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
         background-color: ${({ theme }) => theme.Colors.orange[6]};
-        /* margin-left: 20px; */
         font-size: 12px;
         display: flex;
         justify-content: center;
@@ -102,7 +100,7 @@ export const StyledChatsAlertsByTimeBody = styled.div`
       }
     }
     & > button {
-      margin-top: 15px;
+      margin-top: 26px;
       height: 40px;
       width: 100%;
       & > span {

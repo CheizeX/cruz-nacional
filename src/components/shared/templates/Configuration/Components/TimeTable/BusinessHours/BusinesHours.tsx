@@ -440,7 +440,13 @@ export const BusinessHours: FC<ConfigSectionInterface> = () => {
                           timeRestrictions[day]?.start?.hour &&
                           `${timeRestrictions[day].start.hour}:${timeRestrictions[day].start.minute}`
                         }
-                        LeftIcon={() => <SVGIcon iconFile="/icons/watch.svg" />}
+                        LeftIcon={() =>
+                          startTimeController && dayActive === day ? (
+                            <SVGIcon iconFile="/icons/close.svg" />
+                          ) : (
+                            <SVGIcon iconFile="/icons/watch.svg" />
+                          )
+                        }
                       />
                     </div>
 
@@ -479,7 +485,13 @@ export const BusinessHours: FC<ConfigSectionInterface> = () => {
                           timeRestrictions[day]?.end?.hour &&
                           `${timeRestrictions[day].end.hour}:${timeRestrictions[day].end.minute}`
                         }
-                        LeftIcon={() => <SVGIcon iconFile="/icons/watch.svg" />}
+                        LeftIcon={() =>
+                          endTimeController && dayActive === day ? (
+                            <SVGIcon iconFile="/icons/close.svg" />
+                          ) : (
+                            <SVGIcon iconFile="/icons/watch.svg" />
+                          )
+                        }
                       />
                     </div>
 
@@ -542,9 +554,13 @@ export const BusinessHours: FC<ConfigSectionInterface> = () => {
                             timeRestrictions[day]?.reStart?.hour &&
                             `${timeRestrictions[day].reStart.hour}:${timeRestrictions[day].reStart.minute}`
                           }
-                          LeftIcon={() => (
-                            <SVGIcon iconFile="/icons/watch.svg" />
-                          )}
+                          LeftIcon={() =>
+                            startSecondTimeController && dayActive === day ? (
+                              <SVGIcon iconFile="/icons/close.svg" />
+                            ) : (
+                              <SVGIcon iconFile="/icons/watch.svg" />
+                            )
+                          }
                         />
                       </div>
 
@@ -560,9 +576,13 @@ export const BusinessHours: FC<ConfigSectionInterface> = () => {
                             timeRestrictions[day]?.reEnd?.hour &&
                             `${timeRestrictions[day].reEnd.hour}:${timeRestrictions[day].reEnd.minute}`
                           }
-                          LeftIcon={() => (
-                            <SVGIcon iconFile="/icons/watch.svg" />
-                          )}
+                          LeftIcon={() =>
+                            endSecondTimeController && dayActive === day ? (
+                              <SVGIcon iconFile="/icons/close.svg" />
+                            ) : (
+                              <SVGIcon iconFile="/icons/watch.svg" />
+                            )
+                          }
                         />
 
                         <SVGIcon color="red" iconFile="/icons/times.svg" />

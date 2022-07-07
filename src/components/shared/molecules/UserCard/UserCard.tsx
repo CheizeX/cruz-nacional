@@ -17,6 +17,7 @@ import {
   TriggerElement,
   StyledAvatar,
   StyledUsernameEmail,
+  StyledTag,
 } from './UserCard.styled';
 import { IUserCardMoleculeProps } from './UseCard.interface';
 import useLocalStorage from '../../../../hooks/use-local-storage';
@@ -68,7 +69,7 @@ export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
             </Tooltip>
           )}
         </span>
-        {infoUserRole !== UserRole.ADMIN && invitation && (
+        {infoUserRole !== UserRole.ADMIN && (
           <Dropdown
             triggerElement={() => (
               <TriggerElement>
@@ -76,15 +77,19 @@ export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
               </TriggerElement>
             )}>
             <DropdownContainer>
-              <BadgeMolecule
-                bgColor="transparent"
-                leftIcon={() => <SVGIcon iconFile="/icons/pen.svg" />}>
-                <button
-                  type="button"
-                  onClick={() => handleCardClick('Editar', userID, byNameUser)}>
-                  <Text>Editar</Text>
-                </button>
-              </BadgeMolecule>
+              {invitation && (
+                <BadgeMolecule
+                  bgColor="transparent"
+                  leftIcon={() => <SVGIcon iconFile="/icons/pen.svg" />}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleCardClick('Editar', userID, byNameUser)
+                    }>
+                    <Text>Editar</Text>
+                  </button>
+                </BadgeMolecule>
+              )}
               <BadgeMolecule
                 bgColor="transparent"
                 leftIcon={() => <SVGIcon iconFile="/icons/delete.svg" />}>
@@ -108,6 +113,14 @@ export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
         )}
       </StyledAvatar>
       <StyledUsernameEmail>{children}</StyledUsernameEmail>
+      <span>
+        {containerTags?.map((tag) => (
+          <Tooltip key={tag._id} text={tag.name} position={TooltipPosition.top}>
+            <StyledTag colorTag={tag.color}>{tag.name.slice(0, 1)}</StyledTag>
+          </Tooltip>
+        ))}
+      </span>
     </StyledUserCardMolecule>
   );
 };
+// habilitar para eliminar usuario

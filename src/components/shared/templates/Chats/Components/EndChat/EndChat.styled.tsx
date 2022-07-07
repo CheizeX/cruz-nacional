@@ -30,6 +30,11 @@ export const StyledEndChatHeader = styled.div`
           cursor: pointer;
           height: 13px;
           width: 13px;
+          & :hover {
+            & > path {
+              fill: ${({ theme }) => theme.Colors.grays[5]};
+            }
+          }
           & > path {
             fill: ${({ theme }) => theme.Colors.grays[7]};
           }
@@ -55,14 +60,11 @@ export const StyledEndChatBody = styled.div`
     font-size: ${({ theme }) => theme.fontSize[12]};
     line-height: 14px;
   }
-  & > :nth-child(1) {
-    padding-left: 12px;
-  }
   & > :nth-child(3) {
-    margin: 18px 0px;
+    margin: 18px 0px 20px 0;
   }
   & > textarea {
-    margin-top: 10px;
+    margin: 10px 0;
     margin-left: -2px;
     background-color: ${({ theme }) => theme.Colors.grays[9]};
     height: 89px;

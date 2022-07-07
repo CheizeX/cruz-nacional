@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-duplicate-string */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { FC, useState, useContext, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -33,15 +35,28 @@ import { Toast } from '../../molecules/Toast/Toast.interface';
 import { setDataUser } from '../../../../redux/slices/users/user-management';
 import { RootState } from '../../../../redux';
 import { IPropsTags } from './AddedUserSection.interface';
-import { setDataTag } from '../../../../redux/slices/tags/tag-management';
-import { readTags } from '../../../../api/tags';
+import {
+  setDataTag,
+  setTagColors,
+} from '../../../../redux/slices/tags/tag-management';
+import { readTagColor, readTags } from '../../../../api/tags';
 import { NotificationUsers } from '../../atoms/NotificationUsers/NotificationUsers';
 import { getSubscriptionsData } from '../../../../redux/slices/subscriptions/subscriptions-info';
 
 export const AddedUsersSection: FC = () => {
+  const dispatch = useAppDispatch();
+
+  const { usersData } = useSelector(
+    (state: RootState) => state.users.useQueryState,
+  );
   const { subscriptionsData } = useAppSelector(
     (state) => state.subscriptionsInfo,
   );
+  const { supervisores_registrados, invitaciones_disponibles_supervisor } =
+    useAppSelector(
+      (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
+    );
+
   const [sectionModal, setSectionModal] = useState(false);
   //  abrir y cerrar modal
   const [openNewSection, setOpenNewSection] = useState('');
@@ -59,12 +74,26 @@ export const AddedUsersSection: FC = () => {
   const [checkedAsignationTags, setCheckedAsignationTags] = useState<
     Array<string>
   >([]);
+
   const [filterRole, setFilterRole] = useState<string>('TODOS');
+
+  const [createUserValues, setCreateUserValues] = useState({
+    username: '' as string,
+    email: '' as string,
+    role:
+      supervisores_registrados > 0 || invitaciones_disponibles_supervisor === 0
+        ? ('AGENT' as UserRole)
+        : ('' as UserRole),
+    // tags: containerTags?.filter(
+    //   (v, i, a) =>
+    //     a.findIndex((t) => JSON.stringify(t) === JSON.stringify(v)) === i,
+    // ),
+  });
 
   const socket: any = useContext(websocketContext);
   // crear hook para toast
   const showAlert = useToastContext();
-  const createUser = 'Crear Usuario';
+
   const handleLetterLimitName = (name: string) => {
     if (name.length > 21) {
       return `${name.slice(0, 21)}...`;
@@ -91,8 +120,12 @@ export const AddedUsersSection: FC = () => {
   };
 
   const handleBadgesClick = (arg: string) => {
-    if (arg === createUser) {
-      if (subscriptionsData.generalPlan.invitaciones_disponibles > 0) {
+    if (arg === 'Crear Usuario') {
+      if (
+        subscriptionsData.generalPlan.invitaciones_disponibles_agente +
+          subscriptionsData.generalPlan.invitaciones_disponibles_supervisor >
+        0
+      ) {
         setSectionModal(true);
         setOpenNewSection(arg);
         setUsersCreate(arg);
@@ -109,10 +142,7 @@ export const AddedUsersSection: FC = () => {
       setUsersCreate(arg);
     }
   };
-  const dispatch = useAppDispatch();
-  const { usersData } = useSelector(
-    (state: RootState) => state.users.useQueryState,
-  );
+
   const dataApi = useCallback(async () => {
     try {
       const currentDta = await readingUsers(UserStatus.ALL);
@@ -133,10 +163,16 @@ export const AddedUsersSection: FC = () => {
   const getFilterTag = useCallback(async () => {
     try {
       const response = await readTags();
+      const result = await readTagColor();
       if (response.success === false) {
         dispatch(setDataTag([]));
       } else {
         dispatch(setDataTag(response));
+      }
+      if (result.success === false) {
+        dispatch(setTagColors([]));
+      } else {
+        dispatch(setTagColors(result));
       }
     } catch (err) {
       showAlert?.addToast({
@@ -180,25 +216,13 @@ export const AddedUsersSection: FC = () => {
     }
   };
 
-  const invitationsAvailable =
-    subscriptionsData?.generalPlan?.invitaciones_disponibles;
-
   useEffect(() => {
     dataApi();
     getFilterTag();
   }, [dataApi, getFilterTag]);
 
   useEffect(() => {
-    socket.on('newUser', (data: User[]) => {
-      // se emit un event newUserAdded ---- que viene del servidor
-      dispatch(setDataUser(data));
-    });
-    socket.on('updateUser', (data: User[]) => {
-      //   // se emit un event updateUser ---- que viene del servidor
-      dispatch(setDataUser(data));
-    });
-    socket.on('deleteUser', (data: User[]) => {
-      //   // se emit un event deleteUser ---- que viene del servidor
+    socket?.on('newRegisteredUser', (data: User[]) => {
       dispatch(setDataUser(data));
     });
     dispatch(getSubscriptionsData());
@@ -246,8 +270,10 @@ export const AddedUsersSection: FC = () => {
                 </BadgeMolecule>
               </button>
               <ModalMolecule isModal={sectionModal} setModal={setSectionModal}>
-                {openNewSection === createUser ? (
+                {openNewSection === 'Crear Usuario' ? (
                   <UserCreate
+                    createUserValues={createUserValues}
+                    setCreateUserValues={setCreateUserValues}
                     setUserActive={setUserActive}
                     userActive={userActive}
                     setUserModal={setSectionModal}
@@ -257,10 +283,15 @@ export const AddedUsersSection: FC = () => {
                     setUsers={setUsersCreate}
                     users={usersCreate}
                     editButton="Crear"
-                    titleHeader={createUser}
+                    titleHeader="Crear Usuario"
                     NotificationUsers={() => (
                       <NotificationUsers
-                        text={`Te quedan ${invitationsAvailable} usuarios por crear.`}
+                        text={`Te quedan ${
+                          subscriptionsData.generalPlan
+                            .invitaciones_disponibles_agente +
+                          subscriptionsData.generalPlan
+                            .invitaciones_disponibles_supervisor
+                        } usuarios por crear.`}
                         message="Contáctate con nuestro equipo comercial para ampliar el límite de usuarios"
                       />
                     )}
@@ -310,9 +341,9 @@ export const AddedUsersSection: FC = () => {
                     containerTags={containerTags}
                   />
                 ) : null}
-                {openNewSection === 'Modificar Etiquetas' ? (
+                {openNewSection === 'Seleccionar Etiquetas' ? (
                   <ModifyUserTagModal
-                    text="Modificar Etiquetas"
+                    text="Seleccionar Etiquetas"
                     tagModal={sectionModal}
                     openNewTag={openNewSection}
                     setTagModal={setSectionModal}
@@ -351,7 +382,7 @@ export const AddedUsersSection: FC = () => {
             <>
               <button
                 type="button"
-                onClick={() => handleBadgesClick(createUser)}>
+                onClick={() => handleBadgesClick('Crear Usuario')}>
                 <BadgeMolecule
                   bgColor="gray"
                   leftIcon={() => <SVGIcon iconFile="/icons/user_plus.svg" />}>

@@ -40,9 +40,9 @@ export const FilterByDate: FC<IFilterDay> = ({
           leftIcon={() => <SVGIcon iconFile="/icons/candelar_alt.svg" />}
           rightIcon={() =>
             isComponentVisible ? (
-              <SVGIcon iconFile="/icons/chevron-square-down.svg" />
-            ) : (
               <SVGIcon iconFile="/icons/chevron-square-up.svg" />
+            ) : (
+              <SVGIcon iconFile="/icons/chevron-square-down.svg" />
             )
           }>
           <Text>

@@ -14,7 +14,7 @@ export const StyledContainerWithOutTags = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    // margin: 30px auto;
+    margin: 0 auto;
     & > div {
       width: 30px;
       height: 30px;

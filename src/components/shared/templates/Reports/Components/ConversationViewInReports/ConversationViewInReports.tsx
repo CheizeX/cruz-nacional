@@ -227,7 +227,7 @@ export const CoversationViewInReports: FC<IConversationInReports> = ({
                 dataFilterReports
                   ?.filter((_, index) => index === seletedChatReport)
                   .map((chat: Chat) => (
-                    <SectionContainerConversationView>
+                    <SectionContainerConversationView key={chat._id}>
                       {chat.messages.map((item, index) => (
                         <div key={item._id}>
                           {item.contentType !== ContentType.ATTACHMENT

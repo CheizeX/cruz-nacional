@@ -242,19 +242,16 @@ export const StyledTimeAndState = styled.div`
 export const StyledLabelsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  gap: 5px;
   height: fit-content;
-  padding: 5px 0;
-  margin-bottom: 5px;
-  // border-top: 1px dotted ${({ theme }) => theme.Colors.grays[8]};
+  padding: 10px;
 `;
 
 export const StyledLabel = styled.span<StyledLabelProps>`
   height: 20px;
   width: max-content;
   border-radius: 3px;
-  margin-top: 5px;
-  background-color: red;
   background-color: ${({ color }) => color};
   & span {
     padding: 0px 7px;

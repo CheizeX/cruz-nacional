@@ -16,7 +16,6 @@ import {
   StyledEditUserTagModalHeader,
   StyledModalEditUserTag,
 } from './EditUserTagModal.styles';
-import { tagsColorsArrayEdit } from './EditUserTagModal.shared';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 // import { websocketContext } from '../../../../../chat';
@@ -29,22 +28,27 @@ export const EditUserTagModal: FC<
   // const socket: any = useContext(websocketContext);
 
   const dispatch = useAppDispatch();
-  const { tagEditById } = useSelector(
+  const { tagEditById, valueTag, valueColor } = useSelector(
     (state: RootState) => state.tags.tagEditByIdState,
   );
-  const [colorIndex, setColorIndex] = useState(0);
 
+  const { tagColors } = useSelector(
+    (state: RootState) => state.tags.tagsQueryState,
+  );
+  const editColor = tagColors?.find((item) => item.color === valueColor)?.name;
+
+  const [colorIndex, setColorIndex] = useState(Number(editColor));
   const showAlert = useToastContext();
 
   // datos que voy a enviar para editar la etiqueta
-  const [colorRgb, setSelectedColorRgb] = useState('#3AA4FF');
-  const [tagName, setTagName] = useState('');
+  const [colorRgb, setSelectedColorRgb] = useState(valueColor);
+  const [tagName, setTagName] = useState(valueTag);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const nameCapitalized = e.target.value
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+    const nameCapitalized = e.target.value.toUpperCase();
+    // .split(' ')
+    // .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    // .join(' ');
 
     setTagName(nameCapitalized);
   };
@@ -123,21 +127,23 @@ export const EditUserTagModal: FC<
           setFocus={() => false}
           type="text"
           name="email"
+          value={tagName}
           onChange={handleChange}
         />
         <Text>Color</Text>
         <StyledEditUserTagModalColors>
-          {tagsColorsArrayEdit.map((item, index) => (
-            <StyledEditUserTagColorCheckbox
-              key={item.color}
-              name={item.name}
-              checked={colorIndex === index}
-              onClick={() => handleSetColorIndex(index, item?.color)}>
-              <StyledEditUserTagIcon viewBox="-4 -4 32 32">
-                <polyline points="20 6 9 17 4 12" />
-              </StyledEditUserTagIcon>
-            </StyledEditUserTagColorCheckbox>
-          ))}
+          {tagColors &&
+            tagColors.map((item, index) => (
+              <StyledEditUserTagColorCheckbox
+                key={item.color}
+                name={item.color}
+                checked={colorIndex === index}
+                onClick={() => handleSetColorIndex(index, item?.color)}>
+                <StyledEditUserTagIcon viewBox="-4 -4 32 32">
+                  <polyline points="20 6 9 17 4 12" />
+                </StyledEditUserTagIcon>
+              </StyledEditUserTagColorCheckbox>
+            ))}
         </StyledEditUserTagModalColors>
         <ButtonMolecule
           text="Editar"

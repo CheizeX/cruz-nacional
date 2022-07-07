@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useCallback, useMemo } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { IType } from '../Components/LeftPanelReports/LeftPanel.interface';
 import { LeftPanelReports } from '../Components/LeftPanelReports/LeftPanelReports';
@@ -6,13 +6,10 @@ import { RightPanelReports } from '../Components/RightPanelReports/RightPanelRep
 import { StyledWrapperReports } from './ReportsSection.styled';
 import { readingUsers } from '../../../../../api/users';
 import { UserStatus } from '../../../../../models/users/status';
-import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../../../../redux/hook/hooks';
+import { useAppDispatch } from '../../../../../redux/hook/hooks';
 import { setDataAgents } from '../../../../../redux/slices/reports/reports-data-agents';
 import { useToastContext } from '../../../molecules/Toast/useToast';
-import { Channels, ChatStatus } from '../../../../../models/chat/chat';
+import { Channels, Chat, ChatStatus } from '../../../../../models/chat/chat';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { baseRestApi } from '../../../../../api/base';
 import { setDataReports } from '../../../../../redux/slices/reports/reports-management';
@@ -33,8 +30,11 @@ export const ReportsSection: FC = () => {
   const [searchReports, setSearchReports] = useState<string>('');
   const [isModalConversationInReports, setIsModalConversationInReports] =
     useState<boolean>(false);
-
+  const [allData, setAllData] = useState([]);
   const [clientIdInReports, setClientIdInReports] = useState<string>('');
+  const [total, setTotal] = useState<number>(0);
+  const [isHasMore, setIsHasMore] = useState<boolean>(true);
+  const [skip, setSkip] = useState<number>(0);
 
   const onChangeStart = (newDate: Date | null) => {
     setDateStart(newDate);
@@ -47,12 +47,12 @@ export const ReportsSection: FC = () => {
     setSearchReports(event.target.value);
   };
 
-  const { datsReports } = useAppSelector(
-    (state) => state.reports.reportsQueryState,
-  );
+  // const { datsReports } = useAppSelector(
+  //   (state) => state.reports.reportsQueryState,
+  // );
 
   const chatConversationInReports =
-    datsReports && datsReports.filter((chat) => chat._id === clientIdInReports);
+    allData && allData.filter((chat: Chat) => chat._id === clientIdInReports);
 
   const handleFilterState = (id: number) => {
     const currentState = filterState?.indexOf(id);
@@ -105,7 +105,7 @@ export const ReportsSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
 
   const responseChannels = filterChannel.map(
     (item) =>
@@ -121,29 +121,61 @@ export const ReportsSection: FC = () => {
   const responseByAgents = filterAsignation.map((item) => item);
 
   const handleToggle = async () => {
-    const queryParams = `${
-      process.env.NEXT_PUBLIC_REST_API_URL
-    }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?type=all&channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=read&extension=`;
-    try {
-      const response = await baseRestApi.get(queryParams);
-      if (response.success === false) {
-        dispatch(setDataReports([]));
-      } else {
-        dispatch(setDataReports(response));
+    setSearchReports('');
+    if (dateStart && dateEnd) {
+      const queryParams = `${
+        process.env.NEXT_PUBLIC_REST_API_URL
+      }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=read&extension=&limit=100&skip=${skip}`;
+      try {
+        const response = await baseRestApi.get(queryParams);
+        if (response.success === false) {
+          dispatch(setDataReports([]));
+        } else {
+          dispatch(setDataReports(response.chats));
+          setAllData((prevData) => prevData.concat(response.chats));
+          setIsHasMore(skip < response.total);
+          setTotal(response.total);
+        }
+      } catch (err) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `${err}`,
+        });
       }
-    } catch (err) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `${err}`,
-      });
     }
   };
+  const handleSearch = async () => {
+    setAllData([]);
+    if (dateStart && dateEnd && searchReports) {
+      const queryParams = `${
+        process.env.NEXT_PUBLIC_REST_API_URL
+      }/chats/reports/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?search=${searchReports}&channels=${responseChannels}&states=${responseStatus}`;
+      try {
+        const response = await baseRestApi.get(queryParams);
+        setAllData(response);
+        setIsHasMore(skip < response.total);
+        setTotal(response.length);
+      } catch (err) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `${err}`,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (skip !== 0) {
+      handleToggle();
+    }
+  }, [skip]);
 
   const handleDownload = async (extension: string) => {
     const queryParams = `${
       process.env.NEXT_PUBLIC_REST_API_URL
-    }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?type=all&channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=download&extension=${extension}`;
+    }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?type=all&channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=download&extension=${extension}&limit=&skip=`;
     try {
       const response = await axios({
         url: queryParams,
@@ -167,24 +199,28 @@ export const ReportsSection: FC = () => {
       });
     }
   };
-  const dataFilterReports = useMemo(() => {
-    if (!searchReports) return datsReports;
-    return datsReports.filter(
-      (item) =>
-        item.client.name.toLowerCase().includes(searchReports.toLowerCase()) ||
-        item.assignedAgent?.name
-          .toLocaleLowerCase()
-          .includes(searchReports.toLowerCase()),
-    );
-  }, [datsReports, searchReports]);
+  // const dataFilterReports = useMemo(() => {
+  //   if (!searchReports) return datsReports;
+  //   return datsReports.filter(
+  //     (item) =>
+  //       item.client.name.toLowerCase().includes(searchReports.toLowerCase()) ||
+  //       item.assignedAgent?.name
+  //         .toLocaleLowerCase()
+  //         .includes(searchReports.toLowerCase()),
+  //   );
+  // }, [datsReports, searchReports]);
 
   const handleReset = () => {
     setFilterState([]);
     setFilterChannel([]);
     setFilterAsignation([]);
+    setAllData([]);
     setDateStart(null);
     setDateEnd(null);
     dispatch(setDataReports([]));
+    setTotal(0);
+    setSkip(0);
+    setSearchReports('');
   };
   useEffect(() => {
     getInfoAgents();
@@ -211,8 +247,15 @@ export const ReportsSection: FC = () => {
         handleDownload={handleDownload}
         onChangeReports={onChangeReports}
         setIsModalConversationInReports={setIsModalConversationInReports}
-        datsReports={dataFilterReports}
+        datsReports={allData}
         setClientIdInReports={setClientIdInReports}
+        setSkip={setSkip}
+        isHasMore={isHasMore}
+        total={total}
+        handleSearch={handleSearch}
+        handleToggle={handleToggle}
+        isSearch={searchReports}
+        setAllData={setAllData}
       />
       <ModalMolecule isModal={isModalConversationInReports}>
         <SectionConversationInReports
@@ -223,4 +266,5 @@ export const ReportsSection: FC = () => {
     </StyledWrapperReports>
   );
 };
-// TODO = Limpiar la lista de reportes al cambiar de vista
+
+// TODO= AGREGAR UNA COLUMNA DE PACK

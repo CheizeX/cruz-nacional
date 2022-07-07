@@ -11,4 +11,9 @@ export enum StatusAgent {
   AVAILABLE = 'AVAILABLE',
   BATHROOM = 'BATHROOM',
   LUNCH = 'LUNCH',
+  CALL = 'CALL',
+  BREAK = 'BREAK',
+  PAUSES = 'PAUSES',
+  ADMINISTRATIVE = 'ADMINISTRATIVE',
+  END = 'END',
 }

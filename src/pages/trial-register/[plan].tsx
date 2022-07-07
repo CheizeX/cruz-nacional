@@ -5,7 +5,7 @@ import { TrialForm } from '../../components/shared/templates/TrialPeriod/shared/
 
 const TrialStartPage: NextPage = () => {
   const router = useRouter();
-  const plan = router.query.plan as PlanName;
+  const { plan } = router.query as { plan: PlanName };
   return (
     <>
       <TrialForm plan={plan} />

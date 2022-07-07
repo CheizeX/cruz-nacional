@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { StyledColorCheckboxProps } from './CreateUserTagModal.interface';
-import { myTagColorSelector } from './CreateUserTagModal.shared';
 
 export const StyledModalCreateUserTag = styled.div`
   background-color: ${({ theme }) => theme.Colors.grays[10]};
@@ -86,17 +85,17 @@ export const StyledModalColors = styled.div`
 `;
 
 export const StyledColorCheckbox = styled.div<StyledColorCheckboxProps>`
-  background-color: ${({ name, theme }) =>
-    myTagColorSelector(name === '0', theme.Colors.blue[1], null) ||
-    myTagColorSelector(name === '1', theme.Colors.green[2], null) ||
-    myTagColorSelector(name === '2', theme.Colors.orange[3], null) ||
-    myTagColorSelector(name === '3', theme.Colors.blue[2], null) ||
-    myTagColorSelector(name === '4', theme.Colors.orange[4], null) ||
-    myTagColorSelector(name === '5', theme.Colors.green[5], null) ||
-    myTagColorSelector(name === '6', theme.Colors.purples[4], null) ||
-    myTagColorSelector(name === '7', theme.Colors.purples[5], null) ||
-    myTagColorSelector(name === '8', theme.Colors.grays[4], null) ||
-    myTagColorSelector(name === '9', theme.Colors.green[1], null)};
+  background-color: ${({ name }) => name};
+  // myTagColorSelector(name === '0', theme.Colors.blue[1], null) ||
+  // myTagColorSelector(name === '1', theme.Colors.green[2], null) ||
+  // myTagColorSelector(name === '2', theme.Colors.orange[3], null) ||
+  // myTagColorSelector(name === '3', theme.Colors.blue[2], null) ||
+  // myTagColorSelector(name === '4', theme.Colors.orange[4], null) ||
+  // myTagColorSelector(name === '5', theme.Colors.green[5], null) ||
+  // myTagColorSelector(name === '6', theme.Colors.purples[4], null) ||
+  // myTagColorSelector(name === '7', theme.Colors.purples[5], null) ||
+  // myTagColorSelector(name === '8', theme.Colors.grays[4], null) ||
+  // myTagColorSelector(name === '9', theme.Colors.green[1], null)};
   border-radius: 3px;
   display: inline-block;
   & :hover {

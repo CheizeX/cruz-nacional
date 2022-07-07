@@ -81,7 +81,6 @@ export const AddAgentsConfirm: FC<AddAgentsConfirmProps> = ({
         <MdOutlineSupportAgent size={40} />
         <Text>
           Actualmente tu suscripción{' '}
-          {generalPlan.agentes + generalPlan.agentes_extra}{' '}
           {generalPlan.agentes + generalPlan.agentes_extra > 1
             ? ' agentes'
             : ' agente'}
@@ -93,23 +92,10 @@ export const AddAgentsConfirm: FC<AddAgentsConfirmProps> = ({
             {generalPlan.agentes_registrados > 1 ? 'agentes' : 'agente'}.
           </Text>
         )}
-        {Number(
-          generalPlan.agentes_extra +
-            generalPlan.agentes +
-            generalPlan.supervisores -
-            generalPlan.invitaciones_enviadas,
-        ) > 0 && (
+        {Number(generalPlan.invitaciones_disponibles_agente) > 0 && (
           <Text>
-            Aún dispones de{' '}
-            {generalPlan.agentes_extra +
-              generalPlan.agentes +
-              generalPlan.supervisores -
-              generalPlan.invitaciones_enviadas}{' '}
-            {generalPlan.agentes_extra +
-              generalPlan.agentes +
-              generalPlan.supervisores -
-              generalPlan.invitaciones_enviadas >
-            1
+            Aún dispones de {generalPlan.invitaciones_disponibles_agente}{' '}
+            {generalPlan.invitaciones_disponibles_agente > 1
               ? 'invitaciones'
               : 'invitación'}{' '}
             para enviar.

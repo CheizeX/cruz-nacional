@@ -39,6 +39,7 @@ export const CenterContainer = styled.div<ITooltipProps>`
       case 'top':
         return css`
           bottom: calc(100% + 5px);
+          max-width: 200px;
         `;
       case 'left':
         return css`
@@ -48,6 +49,7 @@ export const CenterContainer = styled.div<ITooltipProps>`
           top: 50%;
           right: calc(100% + 5px);
           width: max-content;
+          max-width: 200px;
         `;
       case 'right':
         return css`
@@ -56,11 +58,13 @@ export const CenterContainer = styled.div<ITooltipProps>`
           top: 50%;
           left: calc(100% + 5px);
           width: max-content;
+          max-width: 200px;
         `;
       default:
         return css`
           bottom: unset !important;
           top: calc(100% + 5px);
+          max-width: 200px;
         `;
     }
   }}

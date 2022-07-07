@@ -52,7 +52,7 @@ export const OutOfHourMessage: FC<ConfigSectionInterface> = () => {
       );
       showAlert?.addToast({
         alert: Toast.SUCCESS,
-        title: 'MÁXIMO ACTUALIZADO',
+        title: 'MENSAJE ACTUALIZADO',
         message: `Se ha seteado el nuevo mensaje`,
       });
       dispatch(getGeneralConfigurationData());
@@ -113,7 +113,7 @@ export const OutOfHourMessage: FC<ConfigSectionInterface> = () => {
                   state={
                     loading
                       ? ButtonState.LOADING
-                      : validateEmptyMessage === text
+                      : outOfTimeMessage === text
                       ? ButtonState.DISABLED
                       : ButtonState.NORMAL
                   }

@@ -6,6 +6,7 @@ import {
   supervisorSection,
   adminSectionRestricted,
   BackofficeSection,
+  adminSectionEnterprise,
 } from '../../../../config/backoffice';
 import { useAppSelector } from '../../../../redux/hook/hooks';
 import { SVGIcon } from '../../atoms/SVGIcon/SVGIcon';
@@ -13,7 +14,10 @@ import { Text } from '../../atoms/Text/Text';
 import { BadgeMolecule } from '../../molecules/Badge/Badge';
 import { CollapseSidebar } from '../BackofficeLayout/BackofficeLayout.interface';
 import { StyledSideBarProps } from './SideBar.interface';
-import { PlanStatus } from '../../templates/SubscriptionPlans/SubscriptionSection/SubscriptionSection.interface';
+import {
+  PlanStatus,
+  PlanName,
+} from '../../templates/SubscriptionPlans/SubscriptionSection/SubscriptionSection.interface';
 import {
   StyledSideBar,
   SideBarTopContainer,
@@ -23,12 +27,11 @@ import {
 import { UserRole } from '../../../../models/users/role';
 
 export const SideBarOrganism: FC<StyledSideBarProps & CollapseSidebar> = ({
-  backofficeSections,
   collapseArrow,
   setCollapseArrow,
   setSelectedSection,
 }) => {
-  const { planStatus } = useAppSelector(
+  const { planStatus, plan } = useAppSelector(
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
   const { userDataInState } = useAppSelector(
@@ -40,7 +43,9 @@ export const SideBarOrganism: FC<StyledSideBarProps & CollapseSidebar> = ({
       ? supervisorSection
       : planStatus === PlanStatus.INACTIVE
       ? adminSectionRestricted
-      : adminSection;
+      : plan !== PlanName.ENTERPRISE
+      ? adminSection
+      : adminSectionEnterprise;
 
   const [focusedSection, setFocusedSection] = React.useState<string>(
     planStatus === PlanStatus.INACTIVE ? sections[1].name : sections[0].name,
@@ -68,7 +73,7 @@ export const SideBarOrganism: FC<StyledSideBarProps & CollapseSidebar> = ({
         </button>
       </SideBarTopContainer>
       <SideBarBodyContainer collapseArrow={collapseArrow}>
-        {backofficeSections.map((section, index) => (
+        {sections.map((section, index) => (
           <StyledWrapperButton
             focused={section.name === focusedSection}
             key={index.toString()}

@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import {
   StyledConversationHistory,
@@ -83,8 +84,12 @@ export const ConversationView: FC<IConvertsationHistory> = ({
   const allIdSelected = chatConversationView
     ?.map((ele) => ele.messages)[0]
     ?.map((v) => v)
-    ?.map((e) =>
-      e.content.toLocaleLowerCase().includes(searchByWords.toLocaleLowerCase()),
+    ?.map(
+      (e) =>
+        e.contentType === 'TEXT' &&
+        e.content
+          .toLocaleLowerCase()
+          .includes(searchByWords.toLocaleLowerCase()),
     );
 
   const indexChat = allIdSelected?.map((item, index = 0) =>
@@ -257,12 +262,14 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                     <SectionContainerConversationView key={chat._id}>
                       {chat.messages.map((item, index) => (
                         <div key={item._id}>
-                          {item.contentType !== ContentType.ATTACHMENT
-                            ? handleWord(item.content)
-                            : null}
+                          {item.contentType === ContentType.TEXT &&
+                            handleWord(item.content)}
                           {item.from !== UserRole.AGENT ? (
                             <StyledUserConversationView
-                              isFocusWord={handleWord(item.content)}>
+                              isFocusWord={
+                                item.contentType === ContentType.TEXT &&
+                                handleWord(item.content)
+                              }>
                               <div>
                                 <Text
                                   ref={(ref) => {
@@ -294,8 +301,38 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                                       </>
                                     )}
                                   </>
-                                  {item.contentType !== 'ATTACHMENT' &&
-                                    item.content}
+                                  <>
+                                    {item.contentType === ContentType.TEXT
+                                      ? item.content
+                                      : item.contentType ===
+                                          (ContentType.INTERACTIVE_BUTTON ||
+                                            ContentType.INTERACTIVE_LIST) && (
+                                          <div>
+                                            <div>
+                                              {item.content.header.type ===
+                                              'text' ? (
+                                                item.content.header.body
+                                              ) : (
+                                                <img
+                                                  src={item.content.header.body}
+                                                  width="100px"
+                                                  height="100px"
+                                                  alt="message.content"
+                                                />
+                                              )}
+                                            </div>
+                                            <div>{item.content.body}</div>
+                                            <div>{item.content.footer}</div>
+                                            <div>
+                                              {item.content.action.map(
+                                                (act: string) => (
+                                                  <div key={act}>{act}</div>
+                                                ),
+                                              )}
+                                            </div>
+                                          </div>
+                                        )}
+                                  </>
                                 </Text>
                                 <Text>
                                   {new Date(item.createdAt).toLocaleTimeString(
@@ -342,7 +379,7 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                                         </>
                                       )}
                                     </>
-                                    {item.contentType !== 'ATTACHMENT' &&
+                                    {item.contentType === ContentType.TEXT &&
                                       item.content}
                                   </Text>
                                   <Text>

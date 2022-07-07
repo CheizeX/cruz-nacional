@@ -56,6 +56,8 @@ export interface GeneralPlanDataProps {
   agentes_extra: number;
   agentes_registrados: number;
   supervisores: number;
+  supervisores_extra: number;
+  supervisores_a_eliminar: number;
   supervisores_registrados: number;
   administradores: number;
   webchat: boolean;
@@ -68,8 +70,10 @@ export interface GeneralPlanDataProps {
   conversaciones_proactivas: boolean;
   soporte_via_email: boolean;
   soporte_personalizado: boolean;
-  invitaciones_enviadas: number;
-  invitaciones_disponibles: number;
+  invitaciones_enviadas_agente: number;
+  invitaciones_enviadas_supervisor: number;
+  invitaciones_disponibles_agente: number;
+  invitaciones_disponibles_supervisor: number;
   stripe_end_date: string;
   stripe_init_date: string;
   downgrade: boolean;

@@ -71,6 +71,8 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
       // ^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|v\/)?)([\w-]+)(\S+)?$/g;
       // ((http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))[\S]+/g;
       /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+    // const str = text;
+    // const result = str.split(',');
     // Extrae la url del array
     const t = regex.exec(text);
     const url = t ? t[0] : '';

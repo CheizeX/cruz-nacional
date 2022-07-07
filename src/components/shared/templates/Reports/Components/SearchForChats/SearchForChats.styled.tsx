@@ -12,7 +12,13 @@ export const StyledSearchForChats = styled.div`
   & > :nth-child(2) {
     overflow: scroll;
     max-height: 551px;
-    //padding: 20px;
+    & > div {
+      & > svg {
+        width: 60px;
+        margin: auto;
+        display: flex;
+      }
+    }
     &::-webkit-scrollbar {
       display: none;
     }
@@ -40,7 +46,7 @@ export const StyledTitle = styled.div`
     justify-content: center;
   }
 `;
-export const WrapperReports = styled.button<IContainerReports>`
+export const WrapperReports = styled.div<IContainerReports>`
   width: 679px;
   height: 56px;
   border-radius: 10px;

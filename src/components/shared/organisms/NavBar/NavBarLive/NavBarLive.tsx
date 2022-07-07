@@ -1,7 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState, useEffect, useCallback } from 'react';
 import { IoIosWarning } from 'react-icons/io';
+// import { FaBellSlash } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
+import { useJwt } from 'react-jwt';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
 import { Text } from '../../../atoms/Text/Text';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
@@ -23,7 +25,11 @@ import {
 } from './NavBarLive.styled';
 import { INavBar, INavBarLiveProps } from './NavBarLive.interface';
 import { useAuth } from '../../../../../hooks/auth';
-import { changeStatus } from '../../../../../api/users';
+import {
+  changeStatus,
+  // enabledUserSound,
+  readUser,
+} from '../../../../../api/users';
 import { StatusAgent, UserStatus } from '../../../../../models/users/status';
 import {
   useAppDispatch,
@@ -40,6 +46,7 @@ import { setComponentSection } from '../../../../../redux/slices/section/live-ch
 import { ITrafficLight } from '../../../../../models/chat/chat';
 import { Tooltip } from '../../../atoms/Tooltip/Tooltip';
 import { TooltipPosition } from '../../../atoms/Tooltip/tooltip.interface';
+import { getGeneralConfigurationData } from '../../../../../redux/slices/configuration/configuration-info';
 
 export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   componentsSection,
@@ -53,10 +60,10 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   const handleNavUserDropdown = () => {
     setIsComponentVisible(!isComponentVisible);
   };
-
   // Manejo de Logout
   const { signOut } = useAuth();
   const [accessToken] = useLocalStorage('AccessToken', '');
+  const { decodedToken } = useJwt(accessToken);
   const { userDataInState }: any = useAppSelector(
     (state) => state.userAuthCredentials,
   );
@@ -99,18 +106,45 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
     }
   };
 
-  // const getSettingSound = useCallback(async () => {
+  const readByAgent = useCallback(async () => {
+    try {
+      if (decodedToken) {
+        const dataUser = decodedToken as DecodedToken;
+        const response = await readUser(dataUser._id);
+        dispatch(setUserDataInState(response as DecodedToken));
+        // dispatch(setUpdateSoundEnabled(response.soundEnabled));
+        // setIsSoundPage(response.soundEnabled);
+      }
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'Error',
+        message: `${error}`,
+      });
+    }
+  }, [decodedToken]);
+
+  // const handleSoundEnabled = useCallback(async () => {
   //   try {
-  //     const response = await readSetting();
-  //     dispatch(setInfoSounds(response));
+  //     const response = await enabledUserSound();
+  //     if (response.success === false) {
+  //       showAlert?.addToast({
+  //         alert: Toast.ERROR,
+  //         title: '¡Upps!',
+  //         message: `Ocurio un error al activar el sonido`,
+  //       });
+  //     } else {
+  //       await readByAgent();
+  //       // dispatch(setUpdateSoundEnabled(userDataInState.soundEnabled));
+  //     }
   //   } catch (err) {
   //     showAlert?.addToast({
   //       alert: Toast.ERROR,
-  //       title: 'ERROR',
-  //       message: `No se puede establecer la conexión con el servidor`,
+  //       title: '¡Upps!',
+  //       message: `${err}`,
   //     });
   //   }
-  // }, [dispatch, showAlert]);
+  // }, [showAlert]);
 
   const profilePicture =
     userDataInState?.urlAvatar && userDataInState?.urlAvatar !== undefined
@@ -167,9 +201,17 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
       handleCloseSession();
     }
   }, [accessToken]);
-  // useEffect(() => {
-  //   getSettingSound();
-  // }, [getSettingSound]);
+
+  useEffect(() => {
+    readByAgent();
+  }, [decodedToken]);
+
+  useEffect(() => {
+    dispatch(getGeneralConfigurationData());
+  }, []);
+  // const { generalConfigurationData } = useAppSelector(
+  //   (state) => state.configurationInfo,
+  // );
 
   return (
     <>
@@ -192,6 +234,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                   {elipsis && elipsis()}
                 </BadgeMolecule>
               </button> */}
+
             <ButtonSelectedComponent
               isFocus={componentsSection === 'Contactos'}
               onClick={() => handleComponentsSection('Contactos')}>
@@ -236,7 +279,18 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                 </Tooltip>
               ) : null}
             </div>
-
+            <div>
+              {/* {generalConfigurationData.notificationSounds?.isActive &&
+                (userDataInState && userDataInState?.soundEnabled ? (
+                  <button type="button" onClick={handleSoundEnabled}>
+                    <SVGIcon iconFile="/icons/bell-sound-dark.svg" />
+                  </button>
+                ) : (
+                  <button type="button" onClick={handleSoundEnabled}>
+                    <FaBellSlash />
+                  </button>
+                ))} */}
+            </div>
             <DropdownStatus
               statusChecked={statusChecked}
               activoCheck={activoCheck}

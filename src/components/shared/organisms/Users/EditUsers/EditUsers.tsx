@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { useToastContext } from '../../../molecules/Toast/useToast';
@@ -115,8 +115,6 @@ export const EditUsers: FC<IEditUsersProps> = ({
           email: editByUserEmail,
           tags: updateContainerTags,
         });
-
-        // socket.emit('updateUser');
         showAlert?.addToast({
           alert: Toast.SUCCESS,
           title: '¡Perfecto!',
@@ -156,8 +154,8 @@ export const EditUsers: FC<IEditUsersProps> = ({
     <ContainerEditUsers>
       {dataByUser &&
         dataByUser.map((item) => (
-          <>
-            <StyledHeader key={item._id}>
+          <Fragment key={item._id}>
+            <StyledHeader>
               {' '}
               <Text size="14px" color="black">
                 {item.name}
@@ -173,7 +171,7 @@ export const EditUsers: FC<IEditUsersProps> = ({
                     <SVGIcon iconFile="/icons/unknown_user.svg" />
                     <SVGIcon iconFile="/icons/IconButtonSmall.svg" />
                   </StyledAvatar>
-                  {item.role === 'SUPERVISOR' && (
+                  {item.role === 'SUPERVISOR' ? (
                     <>
                       <StyledVisualContainerEditUser>
                         <StyledWrapperRadio
@@ -186,6 +184,20 @@ export const EditUsers: FC<IEditUsersProps> = ({
                           </StyledButton>
                           <span>Supervisor</span>
                         </StyledWrapperRadio>
+                        <StyledWrapperRadio
+                          onClick={() => handleClickRol('AGENT')}>
+                          <StyledButton focusedCheck={activoCheck === 'AGENT'}>
+                            <StyledRadio
+                              focusedCheck={activoCheck === 'AGENT'}
+                            />
+                          </StyledButton>
+                          <span>Agente</span>
+                        </StyledWrapperRadio>
+                      </StyledVisualContainerEditUser>
+                    </>
+                  ) : (
+                    <>
+                      <StyledVisualContainerEditUser>
                         <StyledWrapperRadio
                           onClick={() => handleClickRol('AGENT')}>
                           <StyledButton focusedCheck={activoCheck === 'AGENT'}>
@@ -248,7 +260,7 @@ export const EditUsers: FC<IEditUsersProps> = ({
                 size={Size.MEDIUM}
               />
             </StyledFooter>
-          </>
+          </Fragment>
         ))}
     </ContainerEditUsers>
   );

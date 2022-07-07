@@ -155,7 +155,8 @@ export const MonitorSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
+
   const getAgentsNotAvailable = useCallback(async () => {
     try {
       const data = await readingUsers(UserStatus.ALL);
@@ -184,7 +185,7 @@ export const MonitorSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
 
   const getChatsToday = useCallback(async () => {
     try {
@@ -221,7 +222,7 @@ export const MonitorSection: FC = () => {
         message: `${err}`,
       });
     }
-  }, [showAlert]);
+  }, []);
 
   // se agrego una nueva propiedad de CALL para realizar el fitro de busqueda por status.
   const handleOnClick = async () => {
@@ -318,7 +319,6 @@ export const MonitorSection: FC = () => {
     getAgentsAvailable();
     getAgentsNotAvailable();
     getChatsToday();
-    // socket.emit('joinSupervisorRooms', userDataInState?.companyId);
   }, [getAgentsAvailable, getAgentsNotAvailable, getChatsToday]);
 
   useEffect(() => {

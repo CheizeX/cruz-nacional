@@ -17,21 +17,10 @@ export const StyledDropdownStatus = styled.div<IPropsWraperDropdownStatus>`
   & > button {
     border-radius: 24px;
     background: ${({ statusChecked, theme }) =>
-      mySelector(statusChecked === 'Disponible', theme.Colors.green[3], null) ||
       mySelector(
-        statusChecked === 'En Pausa - Baño',
+        statusChecked === 'Disponible' || statusChecked === 'Activo',
+        theme.Colors.green[3],
         theme.Colors.orange[3],
-        null,
-      ) ||
-      mySelector(
-        statusChecked === 'En Pausa - En llamado',
-        theme.Colors.orange[3],
-        null,
-      ) ||
-      mySelector(
-        statusChecked === 'En Pausa - Almuerzo',
-        theme.Colors.orange[3],
-        null,
       )};
     padding: 4px 12px;
     justify-content: space-between;
@@ -52,11 +41,14 @@ export const StyledDropdownStatus = styled.div<IPropsWraperDropdownStatus>`
         line-height: 4px;
       }
       & > div {
-        padding-top: 4px;
+        padding-top: 12px;
         & > div {
+          display: flex;
+          align-items: center;
+          justify-content: center;
           & > svg {
             padding: 1px;
-
+            fill: ${({ theme }) => theme.Colors.grays[10]};
             & > path {
               fill: ${({ theme }) => theme.Colors.grays[10]};
             }
@@ -71,14 +63,14 @@ export const StyledAgentStatusDropdown = styled.div`
   width: 240px;
   background: ${({ theme }) => theme.Colors.grays[10]};
   border-radius: 10px;
-  height: 156px;
+  min-height: 156px;
   box-shadow: 0px 0px 7px 0px #0000004a;
-  padding: 14px 0 0 18px;
+  padding: 14px 0 10px 8px;
   position: absolute;
   z-index: 1;
   margin-top: 10px;
-  top: 38px;
-  left: 0;
+  top: 35px;
+  right: 0;
   & > :nth-child(4) {
     & > :nth-child(2) {
       & > div {
@@ -111,26 +103,24 @@ export const WrapperChackedAgent = styled.button<IPropsWraperDropdownStatus>`
     border-radius: 50%;
     cursor: pointer;
     background-color: ${({ position, theme }) =>
-      mySelector(position === 'one', theme.Colors.green[4], null) ||
-      mySelector(position === 'two', theme.Colors.orange[3], null) ||
-      mySelector(position === 'three', theme.Colors.orange[3], null)};
+      mySelector(
+        position === 'one',
+        theme.Colors.green[4],
+        theme.Colors.orange[3],
+      )};
     & > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 3px;
       & * {
-        & > svg {
-          width: ${({ position }) =>
-            mySelector(position === 'one', '13px', null) ||
-            mySelector(position === 'two', '9', null) ||
-            mySelector(position === 'three', '9', null)};
-          height: 11px;
-          margin: ${({ position }) =>
-            mySelector(position === 'one', '5px', null) ||
-            mySelector(position === 'two', '5.5px', null) ||
-            mySelector(position === 'three', '6.5px', null)};
-          & > path {
-            fill-opacity: 1;
-            fill: ${({ theme }) => theme.Colors.grays[10]};
-          }
-        }
+        width: 100%;
+        height: 100%;
+        max-width: 12px;
+        max-height: 12px;
+        fill: ${({ theme }) => theme.Colors.grays[10]};
+        color: ${({ theme }) => theme.Colors.grays[10]};
+        fill-opacity: 1;
       }
     }
   }
@@ -148,7 +138,7 @@ export const StyledButton = styled.div<IPropsWraperDropdownStatus>`
   width: 24px;
   min-height: 24px;
   border: 2px solid ${({ theme }) => theme.Colors.grays[8]};
-  margin-right: 7px;
+  margin-right: 10px;
   ${({ focusCheck }) =>
     focusCheck &&
     css<IPropsWraperDropdownStatus>`

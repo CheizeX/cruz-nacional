@@ -109,7 +109,7 @@ export const ChatsAlertsByTime: FC = () => {
           text={`Las alertas pueden activarse para ayudar a los agentes a mantener una conversación activa.
           En caso de estar activadas, deberán definirse los minutos transcurridos desde la última interacción con el agente. 
           Hay dos tipos de alerta: la AMARILLA que da un primer aviso de precaución haciendo que la conversación parpadee en amarillo, y la ROJA que da un segundo aviso parpadeando en rojo.`}
-          position={TooltipPosition.bottom}>
+          position={TooltipPosition.left}>
           <TooltipTarget>
             <FaInfoCircle />
           </TooltipTarget>

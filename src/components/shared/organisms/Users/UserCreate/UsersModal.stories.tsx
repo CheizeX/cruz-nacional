@@ -5,6 +5,7 @@ import { NotificationUsers } from '../../../atoms/NotificationUsers/Notification
 storiesOf('Ailalia/Organisms/Users/UserCreate', module).add('Default', () => {
   return (
     <UserCreate
+      setCreateUserValues={() => {}}
       setContainerTags={() => null}
       containerTags={[]}
       setUsers={() => null}

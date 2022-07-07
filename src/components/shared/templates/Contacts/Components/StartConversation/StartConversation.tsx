@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, KeyboardEvent } from 'react';
 import {
   StyledStartConversationContainer,
   StyledStartConversationHeader,
@@ -48,47 +48,47 @@ export const StartConversation: FC<IStartConversation> = ({
     setSelectedNumber(number);
   };
 
-  // const handleEnterToSendMessage = async (
-  //   e: React.KeyboardEvent<HTMLInputElement>,
-  // ) => {
-  //   if (e.key === 'Enter' && textSending !== '') {
-  //     setTextSending('');
-  //     try {
-  //       const response = await startConversation(
-  //         selectedByClient.contactId,
-  //         selectedChannel === 'WhatsApp' ? 'Wassenger' : selectedChannel,
-  //         {
-  //           content: textSending,
-  //           contentType: 'TEXT',
-  //           from: 'AGENT',
-  //         },
-  //       );
-  //       if (response.success === false) {
-  //         showAlert?.addToast({
-  //           alert: Toast.WARNING,
-  //           title: 'Upps!',
-  //           message: `${response}`,
-  //         });
-  //       } else {
-  //         showAlert?.addToast({
-  //           alert: Toast.SUCCESS,
-  //           title: 'Perfecto!',
-  //           message: `${response}`,
-  //         });
-  //         setIsOpenModal(false);
-  //         dispatch(setComponentSection('Chat'));
-  //         setActiveByDefaultTab(1);
-  //         setUserSelected(selectedByClient.contactId);
-  //       }
-  //     } catch (err) {
-  //       showAlert?.addToast({
-  //         alert: Toast.ERROR,
-  //         title: '¡Upps!',
-  //         message: `${err}`,
-  //       });
-  //     }
-  //   }
-  // };
+  const handleEnterToSendMessage = async (
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+  ) => {
+    if (e.key === 'Enter' && textSending !== '') {
+      setTextSending('');
+      try {
+        const response = await startConversation(
+          selectedByClient.contactId,
+          selectedChannel === 'WhatsApp' ? 'Wassenger' : selectedChannel,
+          {
+            content: textSending,
+            contentType: 'TEXT',
+            from: 'AGENT',
+          },
+        );
+        if (response.success === false) {
+          showAlert?.addToast({
+            alert: Toast.WARNING,
+            title: 'Upps!',
+            message: `${response}`,
+          });
+        } else {
+          showAlert?.addToast({
+            alert: Toast.SUCCESS,
+            title: 'Perfecto!',
+            message: `${response}`,
+          });
+          setIsOpenModal(false);
+          dispatch(setComponentSection('Chat'));
+          setActiveByDefaultTab(1);
+          setUserSelected(selectedByClient.contactId);
+        }
+      } catch (err) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: '¡Upps!',
+          message: `${err}`,
+        });
+      }
+    }
+  };
 
   const handleSendMessage = async () => {
     try {
@@ -219,9 +219,9 @@ export const StartConversation: FC<IStartConversation> = ({
           <Textarea
             placeholder="Enviar mensaje..."
             onChange={(e) => setTextSending(e.target.value)}
-            // onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) =>
-            //   handleEnterToSendMessage(e)
-            // }
+            onKeyPress={(e: KeyboardEvent<HTMLTextAreaElement>) =>
+              handleEnterToSendMessage(e)
+            }
           />
           <ButtonMolecule
             text="Iniciar Conversación"

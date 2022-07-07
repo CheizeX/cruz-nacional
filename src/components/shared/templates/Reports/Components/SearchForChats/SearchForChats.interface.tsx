@@ -6,6 +6,8 @@ export interface ISearchForChats {
   setIsModalConversationInReports: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  isHasMore: boolean;
+  setSkip: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface IContainerReports {

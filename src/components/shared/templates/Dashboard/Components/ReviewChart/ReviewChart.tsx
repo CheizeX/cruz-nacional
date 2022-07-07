@@ -63,7 +63,7 @@ export const ReviewChart: FC<IPropsReview> = ({
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
   useEffect(() => {
     readReview();
   }, [readReview]);

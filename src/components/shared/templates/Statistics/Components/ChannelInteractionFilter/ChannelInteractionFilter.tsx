@@ -23,9 +23,9 @@ export const ChannelInteractionFilter: FC<IChannelInteraction> = ({
         <BadgeMolecule
           rightIcon={() =>
             isComponentVisible ? (
-              <SVGIcon iconFile="/icons/chevron-square-down.svg" />
-            ) : (
               <SVGIcon iconFile="/icons/chevron-square-up.svg" />
+            ) : (
+              <SVGIcon iconFile="/icons/chevron-square-down.svg" />
             )
           }>
           <Text>Canal</Text>

@@ -22,6 +22,9 @@ import { ChatsCardMonitor } from '../ChatsCardMonitor/ChatsCardMonitor';
 import { IMonitorSecondSection } from './MonitorSecondSection.interface';
 import { UserStatus } from '../../../../../../models/users/status';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
+import { TooltipPosition } from '../../../../atoms/Tooltip/tooltip.interface';
+import { Tooltip } from '../../../../atoms/Tooltip/Tooltip';
+import { Tag } from '../../../../../../models/tags/tag';
 
 export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
   onChange,
@@ -66,6 +69,20 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
     return null;
   };
 
+  const handleTag = (tags: Tag[]) => {
+    if (tags && tags.length > 1) {
+      return tags.length.toString();
+    }
+    return tags && tags[0].name;
+  };
+  const handleLetterTag = (tags: Tag[]) => {
+    if (tags && tags.length > 1) {
+      const str = tags.map((item) => item.name);
+      return str.toString();
+    }
+    return tags && tags[0].name;
+  };
+
   return (
     <StyledWrapperSectionMonitor>
       <StyledHeaderFirstSection>
@@ -106,7 +123,7 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
       />
       <WrapperSecondSectionAgent>
         {(dateAgent &&
-          dateAgent.map(({ _id, name, email, status, urlAvatar }) => (
+          dateAgent.map(({ _id, name, email, status, urlAvatar, tags }) => (
             <div key={_id}>
               <div>
                 {urlAvatar && urlAvatar !== '' ? (
@@ -146,6 +163,19 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
               </div>
               <span>
                 <div>
+                  {tags && (
+                    <Tooltip
+                      text={handleLetterTag(tags)}
+                      position={TooltipPosition.top}>
+                      <BadgeMolecule
+                        bgColor="#24C3A7"
+                        rightIcon={() => (
+                          <SVGIcon iconFile="/icons/etiqueta.svg" />
+                        )}>
+                        <Text>{handleTag(tags).slice(0, 1)}</Text>
+                      </BadgeMolecule>
+                    </Tooltip>
+                  )}
                   <BadgeMolecule
                     bgColor="#3AA4FF"
                     rightIcon={() => (

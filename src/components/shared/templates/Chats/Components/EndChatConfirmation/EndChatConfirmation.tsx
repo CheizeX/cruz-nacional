@@ -10,6 +10,7 @@ import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
 import {
   ButtonMolecule,
+  ButtonState,
   ButtonVariant,
   Size,
 } from '../../../../atoms/Button/Button';
@@ -17,6 +18,7 @@ import {
 export const EndChatConfirmation: FC<IEndChatConfirmationProps> = ({
   setOpenEndChat,
   handleFinishedChat,
+  isLoanding,
 }) => {
   return (
     <StyledEndChatConfirmation>
@@ -39,6 +41,7 @@ export const EndChatConfirmation: FC<IEndChatConfirmationProps> = ({
         <ButtonMolecule
           text="Finalizar"
           size={Size.MEDIUM}
+          state={isLoanding ? ButtonState.LOADING : ButtonState.NORMAL}
           onClick={handleFinishedChat}
         />
       </StyledFooterEndChatConfirmation>

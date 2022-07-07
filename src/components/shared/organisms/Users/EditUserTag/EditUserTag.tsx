@@ -35,7 +35,7 @@ export const EditUserTag: FC<IEditTagProps> = ({
         <button
           type="button"
           onClick={() =>
-            handlerUserActiveTag('Modificar Etiquetas', 1, `${titleHeader}`)
+            handlerUserActiveTag('Seleccionar Etiquetas', 1, `${titleHeader}`)
           }>
           <SVGIcon iconFile="/icons/pen.svg" />
         </button>

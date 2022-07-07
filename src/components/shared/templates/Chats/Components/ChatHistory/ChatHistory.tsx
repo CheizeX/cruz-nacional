@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { FC, useState, useRef, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -344,7 +345,7 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
           <SectionAgentsContainer>
             {chatHistory?.map((element, index) => (
               <StyledCardAgents
-                key={element._id}
+                key={index.toString()}
                 onClick={() => setSelected(index)}
                 focusedChats={index === selected}>
                 <span>
@@ -398,12 +399,14 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                     <SectionContainerChats key={chat._id}>
                       {chat.messages.map((element: Message, index) => (
                         <div id={element._id}>
-                          {element.contentType !== ContentType.ATTACHMENT
-                            ? handleWord(element.content)
-                            : null}
+                          {element.contentType === ContentType.TEXT &&
+                            handleWord(element.content)}
                           {element.from !== 'AGENT' ? (
                             <StyledUserChats
-                              isFocusWord={handleWord(element.content)}>
+                              isFocusWord={
+                                element.contentType === ContentType.TEXT &&
+                                handleWord(element.content)
+                              }>
                               <div>
                                 <Text
                                   ref={(ref) => {
@@ -434,8 +437,40 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                                       </>
                                     )}
                                   </>
-                                  {element.contentType !== 'ATTACHMENT' &&
-                                    element.content}
+                                  <>
+                                    {element.contentType === ContentType.TEXT
+                                      ? element.content
+                                      : element.contentType ===
+                                          (ContentType.INTERACTIVE_BUTTON ||
+                                            ContentType.INTERACTIVE_LIST) && (
+                                          <div>
+                                            <div>
+                                              {element.content.header.type ===
+                                              'text' ? (
+                                                element.content.header.body
+                                              ) : (
+                                                <img
+                                                  src={
+                                                    element.content.header.body
+                                                  }
+                                                  width="100px"
+                                                  height="100px"
+                                                  alt="message.content"
+                                                />
+                                              )}
+                                            </div>
+                                            <div>{element.content.body}</div>
+                                            <div>{element.content.footer}</div>
+                                            <div>
+                                              {element.content.action.map(
+                                                (act: string) => (
+                                                  <div key={act}>{act}</div>
+                                                ),
+                                              )}
+                                            </div>
+                                          </div>
+                                        )}
+                                  </>
                                 </Text>
                                 <Text>
                                   {new Date(

@@ -8,6 +8,8 @@ import {
   StyledClientAndAgentAvatars,
   StyledNameAndDialog,
   StyledTimeAndState,
+  StyledLabelsContainer,
+  StyledLabel,
 } from './PendingsChatItem.styles';
 import {
   IPropsStringName,
@@ -34,7 +36,7 @@ import {
   setChatsIdChannel,
   setChatsIdClient,
 } from '../../../../../../redux/slices/live-chat/chat-history';
-// import { Tag } from '../../../../../../models/tags/tag';
+import { Tag } from '../../../../../../models/tags/tag';
 
 export const PendingsChatItem: FC<
   SelectedUserProps &
@@ -141,10 +143,9 @@ export const PendingsChatItem: FC<
                     {chat.messages &&
                       chat.messages[chat.messages.length - 1].contentType ===
                         ContentType.TEXT &&
-                      chat.messages[chat.messages.length - 1].content.substring(
-                        0,
-                        14,
-                      )}
+                      chat.messages[
+                        chat.messages.length - 1
+                      ].content?.substring(0, 14)}
                     {chat.messages &&
                       chat.messages[chat.messages.length - 1].contentType ===
                         ContentType.INTERACTIVE_BUTTON &&
@@ -163,7 +164,7 @@ export const PendingsChatItem: FC<
                   </div>
                 </StyledTimeAndState>
               </StyledPendingChatItem>
-              {/* {chat.tags && (
+              {chat.tags && (
                 <StyledLabelsContainer>
                   {chat.tags.map((tag: Tag, index: number) => (
                     <StyledLabel color={tag.color} key={index.toString()}>
@@ -171,7 +172,7 @@ export const PendingsChatItem: FC<
                     </StyledLabel>
                   ))}
                 </StyledLabelsContainer>
-              )} */}
+              )}
             </StyledPendingWrapper>
           ))}
     </StyledPendingChatsContainer>

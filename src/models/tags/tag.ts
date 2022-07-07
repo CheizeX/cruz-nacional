@@ -3,3 +3,8 @@ export type Tag = {
   name: string;
   color: string;
 };
+
+export type ITagColor = {
+  name: string;
+  color: string;
+};

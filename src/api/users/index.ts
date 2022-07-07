@@ -10,13 +10,13 @@ export const createUser = async (userData: Omit<User, '_id'>) => {
   }
 };
 
-export const readUsers = async (qs: string) => {
-  try {
-    return await baseRestApi.get<User[]>(`/users?${qs}`);
-  } catch (error) {
-    return error;
-  }
-};
+// export const readUsers = async (qs: string) => {
+//   try {
+//     return await baseRestApi.get<User[]>(`/users?${qs}`);
+//   } catch (error) {
+//     return error;
+//   }
+// };
 
 export const readingUsers = async (status: string) => {
   try {
@@ -58,4 +58,8 @@ export const changeStatus = async (userStatus: Partial<Status>) => {
 
 export const deleteUser = (userId: string) => {
   return baseRestApi.delete<boolean>(`/users/${userId}`);
+};
+
+export const enabledUserSound = async () => {
+  return baseRestApi.patch<string>('/users/switchSoundEnabled', {});
 };

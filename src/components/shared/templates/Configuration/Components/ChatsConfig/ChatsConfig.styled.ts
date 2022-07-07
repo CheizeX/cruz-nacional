@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledUsersConfigSection = styled.section`
+export const StyledChatsConfigSection = styled.section`
   /* outline: 1px solid black; */
   width: 1060px;
   min-height: 615px;

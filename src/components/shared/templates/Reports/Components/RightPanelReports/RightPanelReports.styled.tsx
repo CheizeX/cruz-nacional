@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IPropsWrappeReport } from './RightReports.interface';
+import { IPropsInput, IPropsWrappeReport } from './RightReports.interface';
 
 export const StyledRightPanel = styled.div`
   width: 725px;
@@ -28,35 +28,11 @@ export const StyledHeaderRightPanel = styled.div`
     }
   }
   & > :nth-child(2) {
-    width: 320px;
+    width: 360px;
     display: flex;
     justify-content: start;
     display: flex;
     align-items: center;
-    //position: relative;
-    & > :first-child {
-      width: 16rem;
-      height: 2.4rem;
-      & > input {
-        width: 100%;
-      }
-      & > button:first-child {
-        display: none;
-      }
-      & > button:last-child {
-        & > div {
-          & * {
-            & > svg {
-              width: 14px;
-              height: 14px;
-              & > path {
-                fill: ${({ theme }) => theme.Colors.grays[7]};
-              }
-            }
-          }
-        }
-      }
-    }
 
     & > span {
       display: flex;
@@ -168,6 +144,97 @@ export const ContainerDropdown = styled.div`
     width: 20px;
     & path {
       fill: ${({ theme }) => theme.Colors.grays[3]};
+    }
+  }
+`;
+
+export const InputSearch = styled.div<IPropsInput>`
+  display: flex;
+  justify-content: start;
+  border-radius: 20px;
+  background-color: ${({ theme }) => theme.Colors.grays[9]};
+  min-width: 15.3rem;
+  width: 300px;
+  height: 2.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 4px;
+  box-shadow: inset 0 0 0 2px
+    ${({ theme, focusInput }) =>
+      focusInput ? theme.Colors.purples[1] : 'none'};
+  & > input {
+    width: 100%;
+    max-height: 2rem;
+    max-width: 186px;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+    background-color: ${({ theme }) => theme.Colors.grays[9]};
+  }
+  & > div {
+    display: flex;
+    height: 2rem;
+    padding-right: 2px;
+    & > :nth-child(1) {
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 32px;
+      height: 100%;
+      max-height: 2.1rem;
+      background-color: ${({ theme }) => theme.Colors.grays[8]};
+      & > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        & * {
+          display: flex;
+          height: 100%;
+          max-height: 2.2rem;
+          align-items: center;
+          justify-content: center;
+          & > svg {
+            width: 14px;
+            height: 14px;
+            & > path {
+              fill: ${({ theme }) => theme.Colors.grays[6]};
+            }
+          }
+        }
+      }
+    }
+    & > button:last-child {
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 2.9rem;
+      height: 100%;
+      max-height: 2.1rem;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      background-color: ${({ theme }) => theme.Colors.grays[8]};
+      & > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        & * {
+          display: flex;
+          height: 100%;
+          max-height: 2.2rem;
+          align-items: center;
+          justify-content: center;
+          & > svg {
+            width: 16px;
+            height: 16px;
+            & > path {
+              fill: ${({ theme }) => theme.Colors.grays[6]};
+            }
+          }, 
+        }
+      }
     }
   }
 `;

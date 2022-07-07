@@ -1,5 +1,13 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useJwt } from 'react-jwt';
+import { ImMenu3, ImMenu4 } from 'react-icons/im';
 import { Text } from '../../../atoms/Text/Text';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
 import {
@@ -9,6 +17,9 @@ import {
   StyledAvatar,
   ArrowIcon,
   BackofficeDropdownContainer,
+  StyledAdminTagsFilterSelector,
+  StyledAdminTagsFilterSelectorDropdown,
+  StyledTagToFilter,
 } from './NavBarBackOffice.styled';
 import { IBackOfficeProps } from './NavBarBackOffice.interface';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
@@ -29,6 +40,7 @@ import {
   getConfigurationData,
   getGeneralConfigurationData,
   getListOfRestrictions,
+  setConstructingWebchat,
 } from '../../../../../redux/slices/configuration/configuration-info';
 import { getSubscriptionsData } from '../../../../../redux/slices/subscriptions/subscriptions-info';
 import { getAllInvoices } from '../../../../../redux/slices/subscriptions/invoices';
@@ -38,8 +50,22 @@ import { DowngradeAlert } from './Components/DowngradeAlert';
 import { readingUsers, readUser } from '../../../../../api/users';
 import { UserStatus } from '../../../../../models/users/status';
 import { UserRole } from '../../../../../models/users/role';
+import { websocketContext } from '../../../../../chat';
+import {
+  IPropsScripts,
+  ListChannel,
+} from '../../../../../models/channels/channel';
+import {
+  setlistChannel,
+  setScript,
+} from '../../../../../redux/slices/channels/list-channel';
+import { getAllChannel } from '../../../../../api/channels';
+import { readTags } from '../../../../../api/tags';
+import { setDataTag } from '../../../../../redux/slices/tags/tag-management';
+import { Tag } from '../../../../../models/tags/tag';
 
 export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
+  const socket: any = useContext(websocketContext);
   const { signOut } = useAuth();
 
   const dispatch = useAppDispatch();
@@ -57,15 +83,33 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const { generalPlan, ...rest } = useAppSelector(
     (state) => state.subscriptionsInfo.subscriptionsData,
   );
+  const { tagsData } = useAppSelector((state) => state.tags.tagsQueryState);
 
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
+
+  const refTags = useRef<HTMLDivElement | null>(null);
 
   const [myAccount, setMyAccount] = useState<number>(0);
   const [modal, setModal] = useState<boolean>(false);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [selectedUsersBuffer, setSelectedUsersBuffer] = useState<string[]>([]);
+  const [adminTagName, setAdminTagName] = useState<string>('TODOS');
+  const [adminTagColor, setAdminTagColor] = useState<string>('#2A2A2A');
+  const [openAdminTag, setOpenAdminTag] = useState<boolean>(false);
+
+  const validateIfAllAgentsAreSelected =
+    selectedUsers.length === rest.persistentAgentsCount;
+  const validateIfAllAgentsAreSelectedBuffer =
+    selectedUsersBuffer.length === rest.persistentAgentsCount;
+
+  const handleClickOutside = (event: any) => {
+    if (refTags.current && !refTags.current.contains(event.target)) {
+      event.stopPropagation();
+      setOpenAdminTag(false);
+    }
+  };
 
   const dataApi = useCallback(async () => {
     try {
@@ -101,11 +145,6 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
     }
   }, [dispatch, showAlert]);
 
-  const validateIfAllAgentsAreSelected =
-    selectedUsers.length === rest.persistentAgentsCount;
-  const validateIfAllAgentsAreSelectedBuffer =
-    selectedUsersBuffer.length === rest.persistentAgentsCount;
-
   const handleNavUserDropdown = () => {
     setIsComponentVisible(!isComponentVisible);
   };
@@ -113,6 +152,24 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const handleMyAccount = (number: number) => {
     setMyAccount(number);
     setIsComponentVisible(false);
+  };
+
+  const getDataTag = async () => {
+    try {
+      const response = await readTags();
+
+      if (response.success === false) {
+        dispatch(setDataTag([]));
+      } else {
+        dispatch(setDataTag(response));
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
   };
 
   // Manejo de Logout
@@ -129,6 +186,23 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
       });
     }
   };
+
+  const getChannelList = useCallback(async () => {
+    try {
+      const response = await getAllChannel();
+      if (response.success === false) {
+        dispatch(setlistChannel({} as ListChannel));
+      } else {
+        dispatch(setlistChannel(response));
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  }, []);
 
   const profilePicture = userDataInState.urlAvatar
     ? `${userDataInState.urlAvatar}?token=${accessToken}`
@@ -173,12 +247,88 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
     dispatch(getBusinessHoursData(configurationData));
   }, [configurationData, dispatch, loadingConfigData]);
 
+  useEffect(() => {
+    getChannelList();
+  }, []);
+
+  useEffect(() => {
+    socket.on('webchatScriptDone', (script: IPropsScripts) => {
+      dispatch(setConstructingWebchat(false));
+      dispatch(setScript(script));
+      dispatch(getGeneralConfigurationData());
+    });
+  }, [dispatch, socket]);
+
+  useEffect(() => {
+    if (userDataInState?.role === UserRole.ADMIN) {
+      getDataTag();
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  });
+
   return (
     <>
       <StyledNavBarBackOffice>
-        <Text color="#2A2A2A" size="18px" weight="600">
-          {text}
-        </Text>
+        <StyledAdminTagsFilterSelector
+          colorTag={adminTagColor}
+          openAdminTag={openAdminTag}>
+          <Text color="#2A2A2A" size="18px" weight="600">
+            {text}
+          </Text>
+          {userDataInState?.role === UserRole.ADMIN && (
+            <>
+              <button
+                type="button"
+                onClick={() => setOpenAdminTag(!openAdminTag)}>
+                {openAdminTag ? <ImMenu4 size={24} /> : <ImMenu3 size={24} />}
+                <Text color="#2A2A2A" size="18px" weight="600">
+                  {adminTagName}
+                </Text>
+              </button>
+              {openAdminTag && (
+                <StyledAdminTagsFilterSelectorDropdown
+                  ref={refTags}
+                  colorTag={adminTagColor}>
+                  <div>
+                    {adminTagName !== 'TODOS' && (
+                      <StyledTagToFilter
+                        key="TODOS"
+                        colorTag="#2A2A2A"
+                        onClick={() => {
+                          setAdminTagName('TODOS');
+                          setAdminTagColor('#2A2A2A');
+                          setOpenAdminTag(false);
+                        }}>
+                        TODOS
+                      </StyledTagToFilter>
+                    )}
+                    {tagsData
+                      .filter((item: Tag) => item.name !== adminTagName)
+                      .map((tag: Tag) => (
+                        <StyledTagToFilter
+                          key={tag._id}
+                          colorTag={tag.color}
+                          onClick={() => {
+                            setAdminTagName(tag.name);
+                            setAdminTagColor(tag.color);
+                            setOpenAdminTag(false);
+                          }}>
+                          {tag.name}
+                        </StyledTagToFilter>
+                      ))}
+                  </div>
+                </StyledAdminTagsFilterSelectorDropdown>
+              )}
+            </>
+          )}
+        </StyledAdminTagsFilterSelector>
+
         {rest.persistentAgentsCount > 0 && (
           <DowngradeAlert
             setModal={setModal}
@@ -228,7 +378,6 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
         setMyAccount={setMyAccount}
         myAccount={myAccount}
       />
-
       <ModalMolecule isModal={modal} setModal={setModal}>
         <UsersToSelect
           validateIfAllAgentsAreSelectedBuffer={

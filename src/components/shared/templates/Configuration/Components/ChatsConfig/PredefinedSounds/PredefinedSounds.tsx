@@ -144,7 +144,7 @@ export const PredefinedSounds: FC<IPropsPredefinedSound> = ({ soundList }) => {
         <Text>Sonidos Predeterminados</Text>
         <Tooltip
           text="Puedes establecer sonidos prederterminados para los nuevos mesajes que llegan al Live Chat. Debes seleccionar un sonido para los chat pendientes y uno para chat en conversación, en caso contrario podras desactivar los sonidos."
-          position={TooltipPosition.bottom}>
+          position={TooltipPosition.left}>
           <FaInfoCircle />
         </Tooltip>
       </NotificationSoundsHeader>
@@ -223,7 +223,6 @@ export const PredefinedSounds: FC<IPropsPredefinedSound> = ({ soundList }) => {
               ) : null}
             </div>
           </StyledWrapperSoundsPending>
-
           <StyledWrapperSoundsPending openContainer={openChatOnConversation}>
             <button type="button" onClick={handleOpenSoundsChatOnConversation}>
               <div>

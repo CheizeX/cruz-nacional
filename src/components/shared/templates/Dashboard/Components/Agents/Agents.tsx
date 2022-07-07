@@ -79,7 +79,7 @@ export const Agents: FC<IPropsAgents & IContainerReview> = ({
         message: `${err}`,
       });
     }
-  }, [dispatch, showAlert]);
+  }, [dispatch]);
 
   useEffect(() => {
     dataApi();

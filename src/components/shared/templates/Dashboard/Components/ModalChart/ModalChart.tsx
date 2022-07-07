@@ -116,7 +116,7 @@ export const ModalChart: FC<IPropsChart> = ({ setComponentReview }) => {
             <div>
               {infoByAgent &&
               infoByAgent.tags &&
-              infoByAgent.tags.length > 1 ? (
+              infoByAgent.tags.length > 0 ? (
                 infoByAgent.tags.map((item) => (
                   <StyledContainerTagModal key={item._id} isColor={item.color}>
                     {item.name}

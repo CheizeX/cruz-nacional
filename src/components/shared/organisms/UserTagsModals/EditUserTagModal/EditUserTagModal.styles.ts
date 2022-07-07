@@ -99,17 +99,17 @@ export const myOwnIfEdit = (
 ) => (condition ? then : otherwise);
 
 export const StyledEditUserTagColorCheckbox = styled.div<StyledEditUserTagColorCheckboxProps>`
-  background-color: ${({ name, theme }) =>
-    myOwnIfEdit(name === '0', theme.Colors.blue[1], null) ||
-    myOwnIfEdit(name === '1', theme.Colors.green[2], null) ||
-    myOwnIfEdit(name === '2', theme.Colors.orange[3], null) ||
-    myOwnIfEdit(name === '3', theme.Colors.blue[2], null) ||
-    myOwnIfEdit(name === '4', theme.Colors.orange[4], null) ||
-    myOwnIfEdit(name === '5', theme.Colors.green[5], null) ||
-    myOwnIfEdit(name === '6', theme.Colors.purples[4], null) ||
-    myOwnIfEdit(name === '7', theme.Colors.purples[5], null) ||
-    myOwnIfEdit(name === '8', theme.Colors.grays[4], null) ||
-    myOwnIfEdit(name === '9', theme.Colors.green[1], null)};
+  background-color: ${({ name }) => name};
+  // myOwnIfEdit(name === '0', theme.Colors.blue[1], null) ||
+  // myOwnIfEdit(name === '1', theme.Colors.green[2], null) ||
+  // myOwnIfEdit(name === '2', theme.Colors.orange[3], null) ||
+  // myOwnIfEdit(name === '3', theme.Colors.blue[2], null) ||
+  // myOwnIfEdit(name === '4', theme.Colors.orange[4], null) ||
+  // myOwnIfEdit(name === '5', theme.Colors.green[5], null) ||
+  // myOwnIfEdit(name === '6', theme.Colors.purples[4], null) ||
+  // myOwnIfEdit(name === '7', theme.Colors.purples[5], null) ||
+  // myOwnIfEdit(name === '8', theme.Colors.grays[4], null) ||
+  // myOwnIfEdit(name === '9', theme.Colors.green[1], null)};
   border-radius: 3px;
   display: inline-block;
   & :hover {

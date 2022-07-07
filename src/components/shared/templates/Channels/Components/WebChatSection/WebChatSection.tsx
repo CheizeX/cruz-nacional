@@ -25,7 +25,7 @@ import { setScript } from '../../../../../../redux/slices/channels/list-channel'
 import { useAppDispatch } from '../../../../../../redux/hook/hooks';
 import { IPropsScripts } from '../../../../../../models/channels/channel';
 import { CustomSound } from './Components/CustomSound/CustomSound';
-import { IListSounds } from '../../../Configuration/Components/UsersConfig/PredefinedSounds/PredefinedSounds.interface';
+import { IListSounds } from '../../../Configuration/Components/ChatsConfig/PredefinedSounds/PredefinedSounds.interface';
 
 const data = [
   {
@@ -265,7 +265,3 @@ export const WebChatSection: FC<IPropsWebChat> = ({
     </StyledWebChat>
   );
 };
-
-// TODO = VERIFICAR INPUT DE MENSAJE DE BIENVENIDA
-// TODO = FUNCIONALIDAD DE IMAGEN PERSONALIZADA
-// TODO = ERROR DE WEB CHAT

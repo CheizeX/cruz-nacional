@@ -314,14 +314,35 @@ export const WrapperSecondSectionAgent = styled.div`
         display: flex;
         justify-content: space-evenly;
         width: 136px;
+        & > :first-child {
+          width: 48px;
+          height: 34px;
+          display: flex;
+          align-items: center;
+          & > div {
+            height: 34px;
+            padding: 0;
+            & > div {
+              width: 40px;
+              padding: 5.5px 6px;
+            }
+          }
+        }
         & > div {
           width: 40px;
           padding: 5.5px 7px;
+          & * {
+            & > svg {
+              & > path {
+                fill: ${({ theme }) => theme.Colors.grays[10]};
+              }
+            }
+          }
           & > span {
             margin-right: 1px;
           }
         }
-        & > :nth-child(2) {
+        & > :nth-child(3) {
           & > div {
             & * {
               & > svg {

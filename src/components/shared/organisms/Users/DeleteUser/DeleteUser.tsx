@@ -34,7 +34,6 @@ export const DeleteUser: FC<IDeleteUserProps> = ({ setDeleteModal }) => {
         title: '¡Perfecto!',
         message: 'Se ha eliminado el usuario con exito',
       });
-      // socket.emit('deleteUser');
       setDeleteModal(false);
     } catch (error) {
       showAlert?.addToast({

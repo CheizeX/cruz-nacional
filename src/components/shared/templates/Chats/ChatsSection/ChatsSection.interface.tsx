@@ -109,3 +109,10 @@ export interface FindDialogueInChatInterface {
   findDialogueInChat: string;
   setFindDialogueInChat: React.Dispatch<React.SetStateAction<string>>;
 }
+
+export interface ISoundLiveChat {
+  isSoundPage: boolean;
+  setIsSoundPage: React.Dispatch<React.SetStateAction<boolean>>;
+  // getSettingSound: () => Promise<void>;
+  // audioConversation: HTMLAudioElement | null;
+}

@@ -12,6 +12,9 @@ import {
   StyledMaxConversations,
   StyledMaxConversationsBody,
   StyledMaxConversationsHeader,
+  ToogleComponentForMappedRestrictions,
+  ToogleComponentForMappedRestrictionsNoSel,
+  StyledInputContainer,
 } from './MaxConversations.styled';
 import { useToastContext } from '../../../../../molecules/Toast/useToast';
 import { Toast } from '../../../../../molecules/Toast/Toast.interface';
@@ -28,13 +31,30 @@ export const MaxConversations: FC = () => {
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
 
-  const { generalConfigurationData } = useAppSelector(
-    (state) => state.configurationInfo,
+  const { maxChatsOnConversation, automaticAssignment } = useAppSelector(
+    (state) => state.configurationInfo.generalConfigurationData,
   );
-  const { maxChatsOnConversation } = generalConfigurationData;
 
   const [maxChats, setMaxChats] = useState(String(maxChatsOnConversation));
   const [loading, setLoading] = useState(false);
+
+  const handleActive = async (arg: boolean) => {
+    try {
+      await baseRestApi.patch(
+        `${process.env.NEXT_PUBLIC_REST_API_URL}/settings/changeAutomaticAssignment`,
+        {
+          automaticAssignment: arg,
+        },
+      );
+      dispatch(getGeneralConfigurationData());
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `Inténtelo nuevamente o de lo contrario consulte con el administrador`,
+      });
+    }
+  };
 
   const handleClick = async () => {
     setLoading(true);
@@ -68,21 +88,48 @@ export const MaxConversations: FC = () => {
       <StyledMaxConversationsHeader>
         <Text>Conversaciones por agente</Text>
         <Tooltip
-          text="Define la cantidad máxima de conversaciones que puede atender un agente al mismo tiempo. Cuando el valor es 0 significa que el agente puede tomar la cantidad de conversaciones que quiera."
-          position={TooltipPosition.bottom}>
+          text="ENCOLADO AUTOMÁTICO: envía las conversaciones que ingresan automáticamente hacia los AGENTES disponibles.   LÍMITE DE CONVERSACIONES POR AGENTE: especifica la cantidad máxima de conversaciones que puede atender un agente al mismo tiempo. Cuando el valor es 0 significa que el agente puede tomar la cantidad de conversaciones que quiera."
+          position={TooltipPosition.left}>
           <TooltipTarget>
             <FaInfoCircle />
           </TooltipTarget>
         </Tooltip>
       </StyledMaxConversationsHeader>
       <StyledMaxConversationsBody>
-        <StyledInputTypeNumber
-          type="number"
-          name="max-conve"
-          min="0"
-          value={maxChats}
-          onChange={(ev) => setMaxChats(ev.target.value)}
-        />
+        <span>
+          {automaticAssignment ? (
+            <Text color="#50da71">Encolado automático activado</Text>
+          ) : (
+            <Text color="#bec0be">Encolado automático desactivado</Text>
+          )}
+          <div>
+            {automaticAssignment ? (
+              <ToogleComponentForMappedRestrictions
+                onClick={() => handleActive(false)}>
+                <div />
+              </ToogleComponentForMappedRestrictions>
+            ) : (
+              <ToogleComponentForMappedRestrictionsNoSel
+                onClick={() => handleActive(true)}>
+                <div />
+              </ToogleComponentForMappedRestrictionsNoSel>
+            )}
+          </div>
+        </span>
+        <StyledInputContainer quantity={Number(maxChats)}>
+          <Text>
+            {Number(maxChats) > 0
+              ? 'Máximo de conversaciones simultáneas por agente'
+              : 'Sin límite de conversaciones simultáneas por agente'}
+          </Text>
+          <StyledInputTypeNumber
+            type="number"
+            name="max-conve"
+            min="0"
+            value={maxChats}
+            onChange={(ev) => setMaxChats(ev.target.value)}
+          />
+        </StyledInputContainer>
         <ButtonMolecule
           type="button"
           onClick={handleClick}

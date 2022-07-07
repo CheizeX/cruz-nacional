@@ -10,7 +10,8 @@ export const StyledConfigurationSectionContainer = styled.div`
     margin-bottom: 10px;
     & > button {
       height: 40px;
-      min-width: 150px;
+      min-width: fit-content;
+      padding: 0 10px;
       border-radius: 3px;
       margin-right: 10px;
       margin-bottom: 20px;

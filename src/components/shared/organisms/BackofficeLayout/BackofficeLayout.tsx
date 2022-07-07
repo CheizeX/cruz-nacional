@@ -104,7 +104,6 @@ export const BackofficeLayout: FC<
               setMyAccount={setMyAccount}
               myAccount={myAccount}
               text={selectedSection}
-              // messageIcon={() => <SVGIcon iconFile="/icons/message_icons.svg" />}
               bellIcon={() => <SVGIcon iconFile="/icons/bell.svg" />}
             />
             {selectedSection === 'Dashboard' && (

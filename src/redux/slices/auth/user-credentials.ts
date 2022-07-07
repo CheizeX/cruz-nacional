@@ -20,9 +20,15 @@ export const userDataInState = createSlice({
     setUpdateDataInState: (state, action: PayloadAction<string>) => {
       state.userDataInState.urlAvatar = action.payload;
     },
+    setUpdateSoundEnabled: (state, action: PayloadAction<boolean>) => {
+      state.userDataInState.soundEnabled = action.payload;
+    },
   },
 });
 
-export const { setUserDataInState, setUpdateDataInState } =
-  userDataInState.actions;
+export const {
+  setUserDataInState,
+  setUpdateDataInState,
+  setUpdateSoundEnabled,
+} = userDataInState.actions;
 export default userDataInState.reducer;

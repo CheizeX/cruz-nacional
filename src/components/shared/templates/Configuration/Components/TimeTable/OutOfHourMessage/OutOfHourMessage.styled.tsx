@@ -19,7 +19,7 @@ export const StyledOutOfHourMessage = styled.div`
 `;
 export const StyledOutOfHourMessageHeader = styled.div`
   width: 100%;
-  height: 60px;
+  height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -77,8 +77,8 @@ export const StyledOutOfHourMessageBodySetted = styled.div`
   flex-direction: column;
   & > button {
     margin-top: 5px;
-    width: 150%;
-    min-height: 40px;
+    width: 320px;
+    min-height: 35px;
     transform: translateY(10px);
   }
   input::placeholder {
@@ -88,16 +88,14 @@ export const StyledOutOfHourMessageBodySetted = styled.div`
   }
 `;
 export const StyledOutOfHourTextarea = styled.textarea`
-  width: 300px;
-  min-height: 100px;
+  width: 320px;
+  min-height: 50px;
   height: 100%;
   outline: 2px solid ${({ theme }) => theme.Colors.grays[9]};
   border: none;
   resize: none;
   padding: 10px;
   margin: 0;
-  margin-top: 5px;
-  margin-bottom: 5px;
   font-size: 14px;
   font-weight: 400;
   border-radius: 5px;
