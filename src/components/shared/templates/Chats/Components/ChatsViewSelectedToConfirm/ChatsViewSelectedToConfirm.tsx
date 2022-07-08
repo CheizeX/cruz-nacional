@@ -671,13 +671,13 @@ export const ChatsViewSelectedToConfirm: FC<
             {/* <button type="button" onClick={handleSowEmojisButtton}>
               <SVGIcon iconFile="/icons/emojis.svg" />
             </button> */}
-            {preDefinedTextsObject.length > 0 ||
-              (userDataInState?.companyId === '62a3c8c92ca8cd7252a24155' && (
-                //  '61f713aee1822f4d387ae7f6' && (
-                <button type="button" onClick={handlePredefinedTexts}>
-                  <SVGIcon iconFile="/icons/ray.svg" />
-                </button>
-              ))}
+            {(preDefinedTextsObject.length > 0 ||
+              userDataInState?.companyId === '62a3c8c92ca8cd7252a24155') && (
+              //  '61f713aee1822f4d387ae7f6' && (
+              <button type="button" onClick={handlePredefinedTexts}>
+                <SVGIcon iconFile="/icons/ray.svg" />
+              </button>
+            )}
           </span>
           {chatInputDialogue && chatInputDialogue.length > 100 ? (
             <Textarea
