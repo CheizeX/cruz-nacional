@@ -18,8 +18,9 @@ export const StyledWrapperCheckedAgent = styled.div<FilterAgentsStateProps>`
 
   & > :nth-child(1) {
     height: fit-content;
+    cursor: pointer;
     /* background: ${({ checkedAgents, theme }) =>
-      checkedAgents ? theme.Colors.purples[1] : theme.Colors.grays[8]}; */
+      checkedAgents ? theme.Colors.purples[1] : theme.Colors.grays[10]}; */
   }
   & > :nth-child(2) {
     width: 24px;

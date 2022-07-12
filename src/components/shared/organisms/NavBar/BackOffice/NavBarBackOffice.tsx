@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, {
   FC,
   useCallback,
@@ -8,6 +9,7 @@ import React, {
 } from 'react';
 import { useJwt } from 'react-jwt';
 import { ImMenu3, ImMenu4 } from 'react-icons/im';
+import { SpinnerDotted } from 'spinners-react';
 import { Text } from '../../../atoms/Text/Text';
 import { SVGIcon } from '../../../atoms/SVGIcon/SVGIcon';
 import {
@@ -63,6 +65,7 @@ import { getAllChannel } from '../../../../../api/channels';
 import { readTags } from '../../../../../api/tags';
 import { setDataTag } from '../../../../../redux/slices/tags/tag-management';
 import { Tag } from '../../../../../models/tags/tag';
+import { baseRestApi } from '../../../../../api/base';
 
 export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const socket: any = useContext(websocketContext);
@@ -76,6 +79,9 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
 
   const { userDataInState } = useAppSelector(
     (state) => state.userAuthCredentials,
+  );
+  const { currentTagFilter } = useAppSelector(
+    (state) => state.configurationInfo.generalConfigurationData,
   );
   const { configurationData, loadingConfigData } = useAppSelector(
     (state) => state.configurationInfo,
@@ -95,9 +101,11 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [selectedUsersBuffer, setSelectedUsersBuffer] = useState<string[]>([]);
-  const [adminTagName, setAdminTagName] = useState<string>('TODOS');
-  const [adminTagColor, setAdminTagColor] = useState<string>('#2A2A2A');
+  const [adminTagName, setAdminTagName] = useState<any>('TODOS');
+  const [adminTagColor, setAdminTagColor] = useState<any>('#2A2A2A');
   const [openAdminTag, setOpenAdminTag] = useState<boolean>(false);
+  const [loadingChangeAdminTag, setLoadingChangeAdminTag] =
+    useState<boolean>(false);
 
   const validateIfAllAgentsAreSelected =
     selectedUsers.length === rest.persistentAgentsCount;
@@ -109,6 +117,28 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
       event.stopPropagation();
       setOpenAdminTag(false);
     }
+  };
+
+  const handleChangeAdminTag = async (name: string, color: string) => {
+    setLoadingChangeAdminTag(true);
+    setAdminTagName(name === 'TODOS' ? 'ALL' : name);
+    setAdminTagColor(color);
+    setOpenAdminTag(false);
+    try {
+      await baseRestApi.patch(
+        `${process.env.NEXT_PUBLIC_REST_API_URL}/settings/setCurrentTagFilter`,
+        {
+          newFilter: name === 'TODOS' ? 'ALL' : name,
+        },
+      );
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `Error al cambiar filtro por etiqueta`,
+      });
+    }
+    setLoadingChangeAdminTag(false);
   };
 
   const dataApi = useCallback(async () => {
@@ -260,10 +290,21 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   }, [dispatch, socket]);
 
   useEffect(() => {
-    if (userDataInState?.role === UserRole.ADMIN) {
+    if (decodedToken?.role === UserRole.ADMIN) {
       getDataTag();
     }
-  }, []);
+  }, [decodedToken]);
+
+  useEffect(() => {
+    if (typeof currentTagFilter === 'string' && tagsData.length > 0) {
+      setAdminTagName(currentTagFilter === 'ALL' ? 'TODOS' : currentTagFilter);
+      setAdminTagColor(
+        currentTagFilter === 'ALL'
+          ? '#2A2A2A'
+          : tagsData.find((tag) => tag.name === currentTagFilter)?.color,
+      );
+    }
+  }, [currentTagFilter, tagsData]);
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
@@ -287,9 +328,13 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
                 type="button"
                 onClick={() => setOpenAdminTag(!openAdminTag)}>
                 {openAdminTag ? <ImMenu4 size={24} /> : <ImMenu3 size={24} />}
-                <Text color="#2A2A2A" size="18px" weight="600">
-                  {adminTagName}
-                </Text>
+                {loadingChangeAdminTag ? (
+                  <SpinnerDotted color="#fafafa" size="20px" />
+                ) : (
+                  <Text color="#2A2A2A" size="18px" weight="600">
+                    {adminTagName}
+                  </Text>
+                )}
               </button>
               {openAdminTag && (
                 <StyledAdminTagsFilterSelectorDropdown
@@ -301,23 +346,19 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
                         key="TODOS"
                         colorTag="#2A2A2A"
                         onClick={() => {
-                          setAdminTagName('TODOS');
-                          setAdminTagColor('#2A2A2A');
-                          setOpenAdminTag(false);
+                          handleChangeAdminTag('TODOS', '#2A2A2A');
                         }}>
                         TODOS
                       </StyledTagToFilter>
                     )}
                     {tagsData
-                      .filter((item: Tag) => item.name !== adminTagName)
+                      ?.filter((item: Tag) => item.name !== adminTagName)
                       .map((tag: Tag) => (
                         <StyledTagToFilter
                           key={tag._id}
                           colorTag={tag.color}
                           onClick={() => {
-                            setAdminTagName(tag.name);
-                            setAdminTagColor(tag.color);
-                            setOpenAdminTag(false);
+                            handleChangeAdminTag(tag.name, tag.color);
                           }}>
                           {tag.name}
                         </StyledTagToFilter>
@@ -329,12 +370,13 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
           )}
         </StyledAdminTagsFilterSelector>
 
-        {rest.persistentAgentsCount > 0 && (
-          <DowngradeAlert
-            setModal={setModal}
-            validateIfAllAgentsAreSelected={validateIfAllAgentsAreSelected}
-          />
-        )}
+        {rest.persistentAgentsCount > 0 &&
+          generalPlan.agentes_registrados > rest.persistentAgentsCount && (
+            <DowngradeAlert
+              setModal={setModal}
+              validateIfAllAgentsAreSelected={validateIfAllAgentsAreSelected}
+            />
+          )}
         <Wraper>
           <TriggerElement>
             <StyledAvatar>

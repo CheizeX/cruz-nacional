@@ -6,7 +6,6 @@ import { CgClipboard } from 'react-icons/cg';
 import { Text } from '../../../../atoms/Text/Text';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { ButtonMolecule } from '../../../../atoms/Button/Button';
-// import { ContainerInput } from '../../../../molecules/Input/ContainerInput';
 import {
   IconButtonMolecule,
   IconButtonState,
@@ -67,7 +66,6 @@ import { Tooltip } from '../../../../atoms/Tooltip/Tooltip';
 import { TooltipPosition } from '../../../../atoms/Tooltip/tooltip.interface';
 import { PredefinedMessage } from '../PredefinedMessage/PredefinedMessage';
 import { Textarea } from '../../../../atoms/Textarea/Textarea';
-import { ContainerInput } from '../../../../molecules/Input/ContainerInput';
 
 export const ChatsViewSelectedToConfirm: FC<
   SelectedUserProps &
@@ -125,6 +123,7 @@ export const ChatsViewSelectedToConfirm: FC<
   const chatToSetInConversation = chatsPendings?.find(
     (chat) => chat.client.clientId === userSelected,
   );
+
   const chatToSetInConversationId = chatToSetInConversation?._id;
   const chatToTalkWithUser = chatsOnConversation?.find(
     (chat) => chat.client.clientId === userSelected,
@@ -145,7 +144,7 @@ export const ChatsViewSelectedToConfirm: FC<
     [toasts],
   );
 
-  const handleSetUserToOnConversation = useCallback(async () => {
+  const handleSetUserToOnConversation = async () => {
     // if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
     try {
       const result = await baseRestApi.patch(
@@ -174,25 +173,20 @@ export const ChatsViewSelectedToConfirm: FC<
         message: `INIT-CONVERSATION-ERROR ${error}`,
       });
     }
-
-    // }
-    // } else {
-    //   showAlert?.addToast({
-    //     alert: Toast.ERROR,
-    //     title: 'Máximo de chats alcanzado',
-    //     message: `Solo puedes tener ${userDataInState?.maxChatsOnConversation} chats activos`,
-    //   });
-    // }
-  }, []);
+  };
 
   const handleEnterToSendMessage = async (
     e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    if (e.key === 'Enter' && chatInputDialogue !== '') {
+    if (
+      e.key === 'Enter' &&
+      chatInputDialogue &&
+      chatInputDialogue.trim() !== ''
+    ) {
       setChatInputDialogue('');
       const bodyObject: Message = {
         from: userDataInState.role,
-        content: chatInputDialogue || '',
+        content: chatInputDialogue,
         contentType: ContentType.TEXT,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -234,6 +228,7 @@ export const ChatsViewSelectedToConfirm: FC<
             bodyObject,
           );
         }
+
         // https://rest-ailalia.ngrok.io/rest/v1/api/wassenger/sendMessageToUser/:chatId/:userId
       } catch (error) {
         showAlert?.addToast({
@@ -416,6 +411,15 @@ export const ChatsViewSelectedToConfirm: FC<
     setDropZoneDisplayed(true);
     setEmojisDisplayed(false);
     setShowPredefinedTexts(false);
+  };
+  const validText = () => {
+    if (
+      (chatInputDialogue && chatInputDialogue.trim() === '') ||
+      chatInputDialogue === ''
+    ) {
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -611,7 +615,10 @@ export const ChatsViewSelectedToConfirm: FC<
           setEmojisDisplayed={setEmojisDisplayed}
           emojisDisplayed={emojisDisplayed}
           showPredefinedTexts={showPredefinedTexts}
-          setShowPredefinedTexts={setShowPredefinedTexts}>
+          setShowPredefinedTexts={setShowPredefinedTexts}
+          longText={
+            chatInputDialogue !== undefined && chatInputDialogue.length > 100
+          }>
           <span>
             <StyledEmojisContainer
               setEmojisDisplayed={setEmojisDisplayed}
@@ -679,33 +686,30 @@ export const ChatsViewSelectedToConfirm: FC<
               </button>
             )}
           </span>
-          {chatInputDialogue && chatInputDialogue.length > 100 ? (
-            <Textarea
-              ref={focusRef}
-              value={chatInputDialogue}
-              onChange={handleInputChange}
-              placeholder="Enviar mensaje..."
-              onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) =>
-                handleEnterToSendMessage(e)
-              }
-            />
-          ) : (
-            <ContainerInput
-              forwardRef={focusRef}
-              value={chatInputDialogue}
-              onChange={handleInputChange}
-              placeHolder="Enviar mensaje..."
-              setFocus={() => null}
-              LeftIcon={() => <SVGIcon iconFile="/icons/search-solid.svg" />}
-              onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) =>
-                handleEnterToSendMessage(e)
-              }
-            />
-          )}
+          <Textarea
+            ref={focusRef}
+            value={chatInputDialogue}
+            onChange={handleInputChange}
+            placeholder="Enviar mensaje..."
+            onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) =>
+              handleEnterToSendMessage(e)
+            }
+          />
+          {/* <ContainerInput
+            forwardRef={focusRef}
+            value={chatInputDialogue}
+            onChange={handleInputChange}
+            placeHolder="Enviar mensaje..."
+            setFocus={() => null}
+            LeftIcon={() => <SVGIcon iconFile="/icons/search-solid.svg" />}
+            onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) =>
+              handleEnterToSendMessage(e)
+            }
+          /> */}
           <IconButtonMolecule
             onClick={handleClickToSendMessage}
             state={
-              chatInputDialogue === ''
+              !validText()
                 ? IconButtonState.DISABLED
                 : sendingMessage === true
                 ? IconButtonState.LOADING

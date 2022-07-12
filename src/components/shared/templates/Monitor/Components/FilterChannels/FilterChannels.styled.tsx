@@ -11,6 +11,7 @@ export const StyledWrapperChecked = styled.div<FilterChannelsProps>`
   padding-left: 2px;
   & > :nth-child(1) {
     height: fit-content;
+    cursor: pointer;
     /* background: ${({ checked, theme }) =>
       checked ? theme.Colors.purples[1] : theme.Colors.grays[8]}; */
   }

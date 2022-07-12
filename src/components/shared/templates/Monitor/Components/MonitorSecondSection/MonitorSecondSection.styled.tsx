@@ -68,7 +68,7 @@ export const StyledHeaderFirstSection = styled.div`
     }
   }
   & > :nth-child(3) {
-    z-index: 1;
+    z-index: 2;
   }
 `;
 
@@ -319,6 +319,7 @@ export const WrapperSecondSectionAgent = styled.div`
           height: 34px;
           display: flex;
           align-items: center;
+          z-index: 1;
           & > div {
             height: 34px;
             padding: 0;

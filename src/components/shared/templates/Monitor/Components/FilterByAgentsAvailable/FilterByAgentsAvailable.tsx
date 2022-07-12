@@ -34,7 +34,6 @@ export const FilterAgentsAvailable: FC<IFilterByAgent> = ({
             key={_id}
             checkedAgent={byAgents.indexOf(_id) !== -1}>
             <Checkbox
-              isTransparent
               checked={byAgents.indexOf(_id) !== -1}
               onClick={() => handleFilterAgents(_id)}
             />

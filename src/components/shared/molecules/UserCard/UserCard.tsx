@@ -1,10 +1,16 @@
 import React, { FC } from 'react';
+import { MdSupportAgent } from 'react-icons/md';
+import { FaUserShield } from 'react-icons/fa';
+import { GrUserAdmin } from 'react-icons/gr';
 import { useAppDispatch } from '../../../../redux/hook/hooks';
 import { SVGIcon } from '../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../atoms/Text/Text';
 import { Dropdown } from '../../atoms/Dropdown/Dropdown';
 import { BadgeMolecule } from '../Badge/Badge';
-import { setUpdateContainerTag } from '../../../../redux/slices/users/user-update-container-tags';
+import {
+  setObserveChange,
+  setUpdateContainerTag,
+} from '../../../../redux/slices/users/user-update-container-tags';
 import { setUserByInfoEmail } from '../../../../redux/slices/users/user-seleted-email';
 import { setUserByIdEdit } from '../../../../redux/slices/users/user-seleted-edit';
 import { setByUserFirstName } from '../../../../redux/slices/users/user-seleted-name';
@@ -55,12 +61,17 @@ export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
     dispatch(setByUserFirstName(currentName));
     dispatch(setByUserSeletedRole(infoUserRole));
     dispatch(setUserByInfoEmail(infoUserEmail));
+    dispatch(setObserveChange(containerTags || []));
   };
   return (
     <StyledUserCardMolecule isAdmin={isAdmin} invitation={invitation}>
       <StyledCardHeader isAdmin={isAdmin} invitation={invitation}>
         <span>
-          {isAdmin && <SVGIcon iconFile="/icons/user_card_admin.svg" />}
+          {isAdmin && <GrUserAdmin />}
+          {invitation && infoUserRole === UserRole.AGENT && <MdSupportAgent />}
+          {invitation && infoUserRole === UserRole.SUPERVISOR && (
+            <FaUserShield />
+          )}
           {!invitation && (
             <Tooltip
               text="Invitación en proceso."
@@ -114,11 +125,16 @@ export const UserCardMolecule: FC<IUserCardMoleculeProps> = ({
       </StyledAvatar>
       <StyledUsernameEmail>{children}</StyledUsernameEmail>
       <span>
-        {containerTags?.map((tag) => (
-          <Tooltip key={tag._id} text={tag.name} position={TooltipPosition.top}>
-            <StyledTag colorTag={tag.color}>{tag.name.slice(0, 1)}</StyledTag>
-          </Tooltip>
-        ))}
+        {containerTags
+          ?.map((tag) => (
+            <Tooltip
+              key={tag._id}
+              text={tag.name}
+              position={TooltipPosition.top}>
+              <StyledTag colorTag={tag.color}>{tag.name.slice(0, 1)}</StyledTag>
+            </Tooltip>
+          ))
+          .reverse()}
       </span>
     </StyledUserCardMolecule>
   );

@@ -235,15 +235,9 @@ export const StyledAgentOrSUpervisorDialogue = styled.div<IWrapperColorDialogues
       max-width: 100%;
       display: flex;
       overflow: hidden;
-      background-color: ${({ theme, chatFrom, contentTypeProps }) =>
-        chatFrom &&
-        (chatFrom === 'Bot' || chatFrom === 'BOT') &&
-        contentTypeProps === ContentType.TEXT
+      background-color: ${({ theme, chatFrom }) =>
+        chatFrom && (chatFrom === 'Bot' || chatFrom === 'BOT')
           ? theme.Colors.blue[2]
-          : contentTypeProps ===
-            (ContentType.INTERACTIVE_BUTTON ||
-              contentTypeProps === ContentType.INTERACTIVE_LIST)
-          ? theme.Colors.grays[1]
           : theme.Colors.purples[1]};
       ${({ contentTypeProps }) =>
         contentTypeProps === ContentType.TEXT &&

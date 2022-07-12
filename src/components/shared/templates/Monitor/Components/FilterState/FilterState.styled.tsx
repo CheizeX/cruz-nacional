@@ -17,6 +17,7 @@ export const StyledFilterState = styled.div<IFilterStateProps>`
   padding-left: 2px;
   & > :nth-child(1) {
     height: fit-content;
+    cursor: pointer;
     /* background: ${({ checkedState, theme }) =>
       checkedState ? theme.Colors.purples[1] : theme.Colors.grays[8]}; */
   }

@@ -14,15 +14,28 @@ export const StyledUserCardMolecule = styled.div<IUserCardContainerProps>`
   opacity: ${({ invitation }) => (invitation ? 'none' : 0.8)};
   & > span {
     width: 100%;
-    margin-top: -8px;
+    margin-top: -10px;
+    margin-left: -8px;
     z-index: 1;
+    & > div {
+      margin-left: -10px;
+      & > div {
+        & > div {
+          border-radius: 50%;
+          box-shadow: -1px 0 2px ${({ theme }) => theme.Colors.grays[10]};
+        }
+      }
+    }
+    & > :first-child {
+      margin-left: 0px;
+    }
   }
 `;
 
 export const StyledTag = styled.div<IContainerTag>`
   background-color: ${({ colorTag }) => colorTag};
-  min-width: 22px;
-  min-height: 22px;
+  min-width: 24px;
+  min-height: 24px;
   width: fit-content;
   height: fit-content;
   display: flex;
@@ -56,6 +69,14 @@ export const StyledCardHeader = styled.div<IUserCardContainerProps>`
     /* :hover {
       background-color: ${({ theme }) => theme.Colors.grays[9]};
     } */
+    & > svg {
+      fill: ${({ theme }) => theme.Colors.green[2]};
+      fill: ${({ theme, isAdmin }) =>
+        isAdmin ? theme.Colors.orange[2] : theme.Colors.green[2]};
+      & > path {
+        stroke: ${({ theme, isAdmin }) => isAdmin && theme.Colors.orange[2]};
+      }
+    }
     & > div {
       width: 100%;
       height: 24px;
@@ -63,7 +84,7 @@ export const StyledCardHeader = styled.div<IUserCardContainerProps>`
         color: ${({ theme }) => theme.Colors.grays[10]};
         & > svg {
           & > path {
-            fill: ${({ theme, isAdmin }) => !isAdmin && theme.Colors.orange[2]};
+            fill: ${({ theme }) => theme.Colors.orange[2]};
             opacity: 0.9;
           }
         }

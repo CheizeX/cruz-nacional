@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { FC, useState, useEffect, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
@@ -10,6 +11,7 @@ import {
   ButtonMolecule,
   Size,
   ButtonVariant,
+  ButtonState,
 } from '../../../atoms/Button/Button';
 import { EditUserTag } from '../EditUserTag/EditUserTag';
 import { IEditUsersProps } from './EditUsers.interface';
@@ -30,20 +32,23 @@ import {
   StyledRadio,
 } from './EditUser.styled';
 import { UserRole } from '../../../../../models/users/role';
-// import { websocketContext } from '../../../../../chat/index';
 import { updateUser } from '../../../../../api/users';
 import { RootState } from '../../../../../redux';
+import { getSubscriptionsData } from '../../../../../redux/slices/subscriptions/subscriptions-info';
+import { useAppDispatch } from '../../../../../redux/hook/hooks';
 
 export const EditUsers: FC<IEditUsersProps> = ({
+  users,
   firstName,
   userActive,
-  setUserModal,
-  setOpenNewSection,
-  setUserActive,
   setUsers,
-  users,
+  setUserModal,
+  setUserActive,
+  setOpenNewSection,
+  setCheckedModifyUser,
 }) => {
   const showAlert = useToastContext();
+  const dispatch = useAppDispatch();
   // Redux
   const { usersData } = useSelector(
     (state: RootState) => state.users.useQueryState,
@@ -51,7 +56,7 @@ export const EditUsers: FC<IEditUsersProps> = ({
   const { userByIdEdit } = useSelector(
     (state: RootState) => state.users.userByIdEditState,
   );
-  const { updateContainerTags } = useSelector(
+  const { updateContainerTags, observeChange } = useSelector(
     (state: RootState) => state.users.updateContainerTagState,
   );
   const { userByInfoEmail } = useSelector(
@@ -63,18 +68,31 @@ export const EditUsers: FC<IEditUsersProps> = ({
   const { currentByUserFirstName } = useSelector(
     (state: RootState) => state.users.currentByUserFirstNameState,
   );
+  const {
+    // supervisores_registrados,
+    invitaciones_disponibles_supervisor,
+    invitaciones_disponibles_agente,
+  } = useSelector(
+    (state: RootState) => state.subscriptionsInfo.subscriptionsData.generalPlan,
+  );
+
   const dataByUser = usersData.filter((item) => item._id === userByIdEdit);
   const [activoCheck, setActivoChecked] = useState<string>(currentByUserRole);
   const [editByUserName, setEditByUserName] = useState<string>('');
   const [editByUserEmail, setEditByUserEmail] = useState<string>('');
   const [editRole, setEditRole] = useState<string>(currentByUserRole);
 
-  useEffect(() => {
-    setEditByUserName(currentByUserFirstName);
-    setEditRole(currentByUserRole);
-    setEditByUserEmail(userByInfoEmail);
-    setActivoChecked(currentByUserRole);
-  }, [currentByUserFirstName, userByInfoEmail, currentByUserRole]);
+  const checkChanges = () => {
+    if (
+      currentByUserFirstName === editByUserName &&
+      userByInfoEmail === editByUserEmail &&
+      activoCheck === currentByUserRole &&
+      JSON.stringify(observeChange) === JSON.stringify(updateContainerTags)
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -132,6 +150,7 @@ export const EditUsers: FC<IEditUsersProps> = ({
         setUserModal(false);
         setUserActive(0);
       }
+      dispatch(getSubscriptionsData());
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -140,8 +159,10 @@ export const EditUsers: FC<IEditUsersProps> = ({
       });
     }
   };
+
   const handleClickUserTags = (arg: boolean) => {
     setUserModal(arg);
+    setCheckedModifyUser([]);
     setUserActive(0);
   };
 
@@ -149,6 +170,13 @@ export const EditUsers: FC<IEditUsersProps> = ({
     setEditRole(arg);
     setActivoChecked(arg);
   };
+
+  useEffect(() => {
+    setEditByUserName(currentByUserFirstName);
+    setEditRole(currentByUserRole);
+    setEditByUserEmail(userByInfoEmail);
+    setActivoChecked(currentByUserRole);
+  }, [currentByUserFirstName, userByInfoEmail, currentByUserRole]);
 
   return (
     <ContainerEditUsers>
@@ -172,18 +200,19 @@ export const EditUsers: FC<IEditUsersProps> = ({
                     <SVGIcon iconFile="/icons/IconButtonSmall.svg" />
                   </StyledAvatar>
                   {item.role === 'SUPERVISOR' ? (
-                    <>
-                      <StyledVisualContainerEditUser>
-                        <StyledWrapperRadio
-                          onClick={() => handleClickRol('SUPERVISOR')}>
-                          <StyledButton
-                            focusedCheck={activoCheck === 'SUPERVISOR'}>
-                            <StyledRadio
-                              focusedCheck={activoCheck === 'SUPERVISOR'}
-                            />
-                          </StyledButton>
-                          <span>Supervisor</span>
-                        </StyledWrapperRadio>
+                    <StyledVisualContainerEditUser>
+                      <StyledWrapperRadio
+                        onClick={() => handleClickRol('SUPERVISOR')}>
+                        <StyledButton
+                          focusedCheck={activoCheck === 'SUPERVISOR'}>
+                          <StyledRadio
+                            focusedCheck={activoCheck === 'SUPERVISOR'}
+                          />
+                        </StyledButton>
+                        <span>Supervisor</span>
+                      </StyledWrapperRadio>
+
+                      {invitaciones_disponibles_agente > 0 && (
                         <StyledWrapperRadio
                           onClick={() => handleClickRol('AGENT')}>
                           <StyledButton focusedCheck={activoCheck === 'AGENT'}>
@@ -193,11 +222,23 @@ export const EditUsers: FC<IEditUsersProps> = ({
                           </StyledButton>
                           <span>Agente</span>
                         </StyledWrapperRadio>
-                      </StyledVisualContainerEditUser>
-                    </>
+                      )}
+                    </StyledVisualContainerEditUser>
                   ) : (
                     <>
                       <StyledVisualContainerEditUser>
+                        {invitaciones_disponibles_supervisor > 0 && (
+                          <StyledWrapperRadio
+                            onClick={() => handleClickRol('SUPERVISOR')}>
+                            <StyledButton
+                              focusedCheck={activoCheck === 'SUPERVISOR'}>
+                              <StyledRadio
+                                focusedCheck={activoCheck === 'SUPERVISOR'}
+                              />
+                            </StyledButton>
+                            <span>Supervisor</span>
+                          </StyledWrapperRadio>
+                        )}
                         <StyledWrapperRadio
                           onClick={() => handleClickRol('AGENT')}>
                           <StyledButton focusedCheck={activoCheck === 'AGENT'}>
@@ -256,7 +297,10 @@ export const EditUsers: FC<IEditUsersProps> = ({
               <ButtonMolecule
                 onClick={handleClickEditByUser}
                 type="submit"
-                text="Editar"
+                text="Guardar"
+                state={
+                  checkChanges() ? ButtonState.NORMAL : ButtonState.DISABLED
+                }
                 size={Size.MEDIUM}
               />
             </StyledFooter>

@@ -46,6 +46,7 @@ import {
   StyledVisualContainerEditUser,
   StyledWrapperRadio,
 } from '../EditUsers/EditUser.styled';
+import { getSubscriptionsData } from '../../../../../redux/slices/subscriptions/subscriptions-info';
 
 interface Values {
   email: string;
@@ -79,10 +80,12 @@ export const UserCreate: FC<IUserCreateProps> = ({
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
 
-  const { supervisores_registrados, invitaciones_disponibles_supervisor } =
-    useAppSelector(
-      (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
-    );
+  const {
+    //  supervisores_registrados,
+    invitaciones_disponibles_supervisor,
+  } = useAppSelector(
+    (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
+  );
 
   const { username, email, role } = createUserValues;
 
@@ -136,6 +139,7 @@ export const UserCreate: FC<IUserCreateProps> = ({
               message: 'Se ha creado un usuario con exito',
             });
           }
+          dispatch(getSubscriptionsData());
           submitProps?.setSubmitting(false);
           submitProps?.resetForm();
         }
@@ -199,8 +203,7 @@ export const UserCreate: FC<IUserCreateProps> = ({
                       <SVGIcon iconFile="/icons/unknown_user.svg" />
                       <SVGIcon iconFile="/icons/IconButtonSmall.svg" />
                     </StyledAvatar>
-                    {supervisores_registrados < 1 ||
-                    invitaciones_disponibles_supervisor > 0 ? (
+                    {invitaciones_disponibles_supervisor > 0 ? (
                       <>
                         <StyledRealFunctionalRadiosContainer
                           role="group"
@@ -365,3 +368,5 @@ export const UserCreate: FC<IUserCreateProps> = ({
     </Formik>
   );
 };
+
+// TODO = no deja crear usuarios si no tiene etiquetas

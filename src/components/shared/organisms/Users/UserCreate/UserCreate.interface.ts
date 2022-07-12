@@ -23,6 +23,7 @@ export interface ICreateUserProps {
   onSubmit?: (userData: Omit<User, '_id'>) => void | Promise<void>;
 }
 export interface IPropsTags {
+  _id: string;
   name: string;
   color: string;
   status: boolean;

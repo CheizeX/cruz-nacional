@@ -95,6 +95,7 @@ export const Tabs = ({ children, largeTabs, activeByDefault }: Props) => {
 
     return (
       <StyledTabs
+        type="button"
         focusedTab={active === index}
         key={title}
         onClick={() => handleClick()}>

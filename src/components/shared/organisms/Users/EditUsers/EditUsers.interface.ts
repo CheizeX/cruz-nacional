@@ -8,6 +8,7 @@ export interface IEditUsersProps {
   userActive?: number;
   setUsers: React.Dispatch<React.SetStateAction<string>>;
   users?: string;
+  setCheckedModifyUser: React.Dispatch<React.SetStateAction<string[]>>;
 }
 export interface IButtonProp {
   focusedCheck?: boolean;

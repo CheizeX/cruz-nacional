@@ -1,8 +1,11 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { FC, useState, useContext, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { FaUserShield } from 'react-icons/fa';
+import { MdSupportAgent } from 'react-icons/md';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hook/hooks';
 import { ContainerInput } from '../../molecules/Input/ContainerInput';
 import { Text } from '../../atoms/Text/Text';
@@ -24,6 +27,10 @@ import {
   StyledHeaderUsersSection,
   StyledUsersCounter,
   StyledDisplayedUsers,
+  StyledInfoUsersSection,
+  StyledInfoUsersBySupOrAgent,
+  StyledInfoNameAndIcon,
+  StyledUsersAvailableInfo,
 } from './AddedUserSection.styled';
 import { UserRole } from '../../../../models/users/role';
 import { EditUsers } from '../Users/EditUsers/EditUsers';
@@ -49,13 +56,18 @@ export const AddedUsersSection: FC = () => {
   const { usersData } = useSelector(
     (state: RootState) => state.users.useQueryState,
   );
+
   const { subscriptionsData } = useAppSelector(
     (state) => state.subscriptionsInfo,
   );
-  const { supervisores_registrados, invitaciones_disponibles_supervisor } =
-    useAppSelector(
-      (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
-    );
+  const {
+    invitaciones_disponibles_supervisor,
+    invitaciones_enviadas_supervisor,
+    invitaciones_enviadas_agente,
+    invitaciones_disponibles_agente,
+  } = useAppSelector(
+    (state) => state.subscriptionsInfo.subscriptionsData.generalPlan,
+  );
 
   const [sectionModal, setSectionModal] = useState(false);
   //  abrir y cerrar modal
@@ -74,20 +86,18 @@ export const AddedUsersSection: FC = () => {
   const [checkedAsignationTags, setCheckedAsignationTags] = useState<
     Array<string>
   >([]);
-
+  // chacked para seleccionar tag que ya se encuentran seleccionadas
+  const [checkedModifyUser, setCheckedModifyUser] = useState<Array<string>>([]);
   const [filterRole, setFilterRole] = useState<string>('TODOS');
-
   const [createUserValues, setCreateUserValues] = useState({
     username: '' as string,
     email: '' as string,
     role:
-      supervisores_registrados > 0 || invitaciones_disponibles_supervisor === 0
+      invitaciones_disponibles_supervisor === 0
         ? ('AGENT' as UserRole)
-        : ('' as UserRole),
-    // tags: containerTags?.filter(
-    //   (v, i, a) =>
-    //     a.findIndex((t) => JSON.stringify(t) === JSON.stringify(v)) === i,
-    // ),
+        : invitaciones_disponibles_supervisor === 0
+        ? ('SUPERVISOR' as UserRole)
+        : '',
   });
 
   const socket: any = useContext(websocketContext);
@@ -117,6 +127,17 @@ export const AddedUsersSection: FC = () => {
       newChecked.splice(currentIndex, 1);
     }
     setCheckedAsignationTags(newChecked);
+  };
+
+  const handleCheckedModifyUser = (name: string) => {
+    const currentId = checkedModifyUser.indexOf(name);
+    const newChecked = [...checkedModifyUser];
+    if (currentId === -1) {
+      newChecked.push(name);
+    } else {
+      newChecked.splice(currentId, 1);
+    }
+    setCheckedModifyUser(newChecked);
   };
 
   const handleBadgesClick = (arg: string) => {
@@ -226,7 +247,7 @@ export const AddedUsersSection: FC = () => {
       dispatch(setDataUser(data));
     });
     dispatch(getSubscriptionsData());
-  }, [dispatch, socket, usersData]);
+  }, [dispatch, socket]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextInput(event.target.value);
@@ -329,6 +350,7 @@ export const AddedUsersSection: FC = () => {
                 ) : null}{' '}
                 {openNewSection === 'Gestionar Etiquetas' ? (
                   <ModifyUserTagModal
+                    handleChecked={handleCheckedModifyUser}
                     text="Gestionar Etiquetas"
                     tagModal={sectionModal}
                     openNewTag={openNewSection}
@@ -339,6 +361,8 @@ export const AddedUsersSection: FC = () => {
                     setTags={setTags}
                     setContainerTags={setContainerTags}
                     containerTags={containerTags}
+                    checkedModifyUser={checkedModifyUser}
+                    setCheckedModifyUser={setCheckedModifyUser}
                   />
                 ) : null}
                 {openNewSection === 'Seleccionar Etiquetas' ? (
@@ -351,16 +375,20 @@ export const AddedUsersSection: FC = () => {
                     InconArrow={() => (
                       <SVGIcon iconFile="/icons/collapse-left.svg" />
                     )}
+                    handleChecked={handleCheckedModifyUser}
                     users={usersCreate}
                     tags={tags}
                     setTags={setTags}
                     setContainerTags={setContainerTags}
                     containerTags={containerTags}
+                    checkedModifyUser={checkedModifyUser}
+                    setCheckedModifyUser={setCheckedModifyUser}
                   />
                 ) : null}
                 {openNewSection === 'Editar' ? (
                   <EditUsers
                     firstName="Editar"
+                    setCheckedModifyUser={setCheckedModifyUser}
                     userModal={sectionModal}
                     setUserModal={setSectionModal}
                     openNewSection={openNewSection}
@@ -393,6 +421,38 @@ export const AddedUsersSection: FC = () => {
           </span>
         </div>
       </StyledHeaderUsersSection>
+      <StyledInfoUsersSection>
+        <StyledInfoUsersBySupOrAgent>
+          <StyledInfoNameAndIcon>
+            <FaUserShield size={24} />
+          </StyledInfoNameAndIcon>
+          <StyledUsersAvailableInfo>
+            <span>
+              Creados
+              <div>{invitaciones_enviadas_supervisor}</div>
+            </span>
+            <span>
+              Disponibles por crear{' '}
+              <div>{invitaciones_disponibles_supervisor}</div>
+            </span>
+          </StyledUsersAvailableInfo>
+        </StyledInfoUsersBySupOrAgent>
+
+        <StyledInfoUsersBySupOrAgent>
+          <StyledInfoNameAndIcon>
+            <MdSupportAgent size={26} />
+          </StyledInfoNameAndIcon>
+          <StyledUsersAvailableInfo>
+            <span>
+              Creados
+              <div>{invitaciones_enviadas_agente}</div>
+            </span>
+            <span>
+              Disponibles por crear <div>{invitaciones_disponibles_agente}</div>
+            </span>
+          </StyledUsersAvailableInfo>
+        </StyledInfoUsersBySupOrAgent>
+      </StyledInfoUsersSection>
       <StyledDisplayedUsers>
         <div>
           {(textInput === ''

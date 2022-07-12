@@ -40,11 +40,11 @@ export const FilterByAgents = styled.div<IFilterAvailableProps>`
   padding: 15px;
   display: flex;
   & > :nth-child(1) {
+    cursor: pointer;
     & > svg {
-      stroke: ${({ theme }) => theme.Colors.grays[10]};
+      stroke: ${({ checkedAgent, theme }) =>
+        checkedAgent ? theme.Colors.purples[1] : theme.Colors.grays[10]};
     }
-    /* background: ${({ checkedAgent, theme }) =>
-      checkedAgent ? theme.Colors.purples[1] : theme.Colors.grays[8]}; */
   }
   & > :nth-child(2) {
     width: 24px;

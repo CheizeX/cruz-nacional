@@ -144,7 +144,10 @@ export const SubscriptionInformation: FC<InformationProps> = ({
                       <input
                         type="number"
                         min="0"
-                        max={generalPlan.agentes_extra}
+                        max={
+                          generalPlan.agentes_extra -
+                          generalPlan.agentes_a_eliminar
+                        }
                         onChange={(e) =>
                           setNumberOfAgentsToDelete(e.target.value)
                         }

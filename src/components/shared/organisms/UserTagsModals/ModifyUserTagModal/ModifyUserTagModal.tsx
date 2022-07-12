@@ -41,6 +41,9 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
   setOpenNewTag,
   setTags,
   setContainerTags,
+  setCheckedModifyUser,
+  handleChecked,
+  checkedModifyUser,
   containerTags,
   tags,
   InconArrow,
@@ -54,10 +57,13 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
     (state: RootState) => state.tags.tagsQueryState,
   );
 
+  const { updateContainerTags } = useSelector(
+    (state: RootState) => state.users.updateContainerTagState,
+  );
+
   const getDataTag = async () => {
     try {
       const response = await readTags();
-
       if (response.success === false) {
         dispatch(setDataTag([]));
       } else {
@@ -101,6 +107,7 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
     colorTag: string,
     idUser: string,
   ) => {
+    handleChecked(idUser);
     const updatedCheckedState = checkedState.map((item, index) =>
       index === position ? !item : item,
     );
@@ -122,6 +129,7 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
         ? setContainerTags([
             ...containerTags,
             {
+              _id: idUser,
               name: argTag,
               color: colorTag,
               status: index === position,
@@ -158,8 +166,27 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
 
   const handleClickClose = () => {
     setTagModal(false);
+    setCheckedModifyUser([]);
     dispatch(setUpdateContainerTag([]));
   };
+
+  useEffect(() => {
+    if (users === 'Editar') {
+      updateContainerTags &&
+        updateContainerTags.map(
+          (tag: Tag) =>
+            tag._id &&
+            setCheckedModifyUser((prev) => prev.concat(tag._id ?? '')),
+        );
+      setCheckedModifyUser((_containerTags) =>
+        _containerTags.filter(
+          (valor, i) => _containerTags.indexOf(valor) === i,
+        ),
+      );
+    } else {
+      setCheckedModifyUser([]);
+    }
+  }, []);
 
   return (
     <StyledModalModifyUserTag>
@@ -196,6 +223,9 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
               .map((tag: any, index: number) => (
                 <StyledModifyTag
                   key={tag._id}
+                  setCheckedModifyUser={setCheckedModifyUser}
+                  checkedModifyUser={checkedModifyUser}
+                  handleChecked={handleChecked}
                   tags={tags}
                   setTags={setTags}
                   users={users}
@@ -209,7 +239,7 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
                     {text === 'Seleccionar Etiquetas' && (
                       <Checkbox
                         // isTransparent
-                        checked={checkedState[index]}
+                        checked={checkedModifyUser.indexOf(tag._id) !== -1}
                         onClick={() =>
                           handleCheckboxChange(
                             index,
@@ -262,3 +292,5 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
     </StyledModalModifyUserTag>
   );
 };
+
+// TODO = Eliminar opción de eliminar y editar etiqueta general

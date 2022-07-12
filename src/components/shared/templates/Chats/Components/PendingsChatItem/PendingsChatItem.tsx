@@ -55,9 +55,6 @@ export const PendingsChatItem: FC<
   const { chatsPendings } = useAppSelector(
     (state) => state.liveChat.chatsPendings,
   );
-  // const { tagsToFilter, channelsToFilter } = useAppSelector(
-  //   (state) => state.optionsToFilterChats,
-  // );
 
   const handleClick = (chat: Chat) => {
     setUserSelected(chat.client.clientId);

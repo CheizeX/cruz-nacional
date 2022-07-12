@@ -16,7 +16,7 @@ import useLocalStorage from '../../../../hooks/use-local-storage';
 import { UserRole } from '../../../../models/users/role';
 import { Loader } from '../../atoms/Loader/Loader';
 import { ContactsSetion } from '../../templates/Contacts/ContactsSection/ContactsSection';
-// import { getGeneralConfigurationData } from '../../../../redux/slices/configuration/configuration-info';
+import { getGeneralConfigurationData } from '../../../../redux/slices/configuration/configuration-info';
 
 export const LiveChatsPage: FC<
   UploadableFile & FilterChannelsProps & FilterChannel & IBackOfficeProps
@@ -44,7 +44,7 @@ export const LiveChatsPage: FC<
     (state) => state.userAuthCredentials,
   );
   // State que se encarga de cambiar de sección
-  const { componentsSection }: any = useAppSelector(
+  const { componentsSection } = useAppSelector(
     (state) => state.section.componentsSectionState,
   );
 
@@ -59,16 +59,11 @@ export const LiveChatsPage: FC<
     ) {
       push('/backoffice');
     }
-    // dispatch(getGeneralConfigurationData());
   }, [accessToken, decodedToken, dispatch, push]);
 
-  // useEffect(() => {
-  //   if (userDataInState) {
-  //     dispatch(setUpdateSoundEnabled(userDataInState.soundEnabled));
-  //     setIsSoundPage(userDataInState.soundEnabled);
-  //   }
-  // }, [dispatch]);
-  // useEffect(() => {}, [listenSound]);
+  useEffect(() => {
+    dispatch(getGeneralConfigurationData());
+  }, []);
 
   return (
     <>

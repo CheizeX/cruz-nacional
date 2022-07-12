@@ -18,7 +18,6 @@ export const PredefinedMessage: FC<IPredefinedMessage> = ({
   agent,
   setIsSecionNext,
 }) => {
-  console.log(focusRef);
   const NestedMessage = [
     {
       id: 1,

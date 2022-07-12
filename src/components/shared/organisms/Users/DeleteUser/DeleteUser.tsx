@@ -19,12 +19,15 @@ import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { deleteUser } from '../../../../../api/users';
 import { RootState } from '../../../../../redux';
+import { getSubscriptionsData } from '../../../../../redux/slices/subscriptions/subscriptions-info';
+import { useAppDispatch } from '../../../../../redux/hook/hooks';
 
 export const DeleteUser: FC<IDeleteUserProps> = ({ setDeleteModal }) => {
   const { userByIdDelete } = useSelector(
     (state: RootState) => state.users.userByIdDeleteState,
   );
   const showAlert = useToastContext();
+  const dispatch = useAppDispatch();
   // const socket: any = useContext(websocketContext);
   const handleCurrentDeleteUserId = async () => {
     try {
@@ -35,6 +38,7 @@ export const DeleteUser: FC<IDeleteUserProps> = ({ setDeleteModal }) => {
         message: 'Se ha eliminado el usuario con exito',
       });
       setDeleteModal(false);
+      dispatch(getSubscriptionsData());
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -50,7 +54,7 @@ export const DeleteUser: FC<IDeleteUserProps> = ({ setDeleteModal }) => {
         <SVGIcon iconFile="/icons/warning.svg" />
       </StyledIcon>
       <StyledInformation>
-        <Text>¿Estas seguro de querer eliminar a este usuario?</Text>
+        <Text>¿Estás seguro de querer eliminar a este usuario?</Text>
         <Text>
           Toda la información asociada a este usuario dejará de estar disponible
         </Text>

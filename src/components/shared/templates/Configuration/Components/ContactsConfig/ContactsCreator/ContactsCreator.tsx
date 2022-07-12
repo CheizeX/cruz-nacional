@@ -93,8 +93,8 @@ export const ContactsCreator: FC = () => {
     if (newStatusNameAndColor.name.length > 0) {
       try {
         await baseRestApi.patch(
-          `${process.env.NEXT_PUBLIC_REST_API_URL}/settings/contactStatus/${
-            editingStatusId ? newStatusNameAndColor.id : ''
+          `${process.env.NEXT_PUBLIC_REST_API_URL}/settings/contactStatus${
+            editingStatusId ? `/${newStatusNameAndColor.id}` : ''
           }`,
           {
             name: newStatusNameAndColor.name.toUpperCase(),

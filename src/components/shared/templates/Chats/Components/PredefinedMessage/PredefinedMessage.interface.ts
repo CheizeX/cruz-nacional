@@ -13,3 +13,6 @@ export interface IPredefinedMessage {
 export interface IContainerBox {
   showPredefinedTexts: boolean;
 }
+export interface IContainerFooter {
+  longText?: boolean;
+}

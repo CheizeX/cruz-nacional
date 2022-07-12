@@ -19,7 +19,7 @@ export const StyledHeaderUsersSection = styled.header`
   justify-content: space-between;
   padding: 0px 24px;
   width: 100%;
-  margin-bottom: 16px;
+
   & > span {
     align-items: center;
     display: flex;
@@ -142,5 +142,80 @@ export const StyledDisplayedUsers = styled.article`
   overflow-y: auto;
   &::-webkit-scrollbar {
     display: none;
+  }
+`;
+
+export const StyledInfoUsersSection = styled.div`
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 24px;
+  max-width: 984px;
+  border-radius: 10px;
+  overflow: hidden;
+  & > :first-child {
+    border-right: 1px solid ${({ theme }) => theme.Colors.grays[10]};
+  }
+  & > :last-child {
+    border-left: 1px solid ${({ theme }) => theme.Colors.grays[10]};
+  }
+`;
+export const StyledInfoUsersBySupOrAgent = styled.div`
+  /* border: 1px solid ${({ theme }) => theme.Colors.grays[1]} */
+  height: 100%;
+  width: 49.4%;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.Colors.grays[9]};
+  display: flex;
+`;
+export const StyledInfoNameAndIcon = styled.div`
+  /* border-bottom: 3px solid ${({ theme }) => theme.Colors.grays[5]}; */
+  border-right: 2px dashed ${({ theme }) => theme.Colors.grays[10]};
+  height: 100%;
+  width: 60px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & > svg {
+    height: 100%;
+    fill: ${({ theme }) => theme.Colors.green[1]};
+  }
+`;
+
+export const StyledUsersAvailableInfo = styled.span`
+  /* border-bottom: 3px solid ${({ theme }) => theme.Colors.grays[5]}; */
+  height: 100%;
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  & > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: ${({ theme }) => theme.fontSize[12]};
+    font-weight: ${({ theme }) => theme.fontWeight[500]};
+    color: ${({ theme }) => theme.Colors.grays[3]};
+    & > div {
+      border-radius: 3px;
+      padding: 5px;
+      margin-left: 10px;
+      color: ${({ theme }) => theme.Colors.grays[10]};
+      font-size: ${({ theme }) => theme.fontSize[14]};
+      min-width: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: ${({ theme }) => theme.fontWeight[600]};
+      color: ${({ theme }) => theme.Colors.grays[3]};
+      background-color: ${({ theme }) => theme.Colors.grays[10]};
+    }
   }
 `;

@@ -1,6 +1,13 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useState, useCallback, useEffect, useContext } from 'react';
-// import { useJwt } from 'react-jwt';
+import React, {
+  FC,
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+} from 'react';
 import { ChatsList } from '../Components/ChatsList/ChatsList';
 import { ChatsViewNoSelected } from '../Components/ChatsViewNoSelected/ChatsViewNoSelected';
 import { ChatsViewSelectedToConfirm } from '../Components/ChatsViewSelectedToConfirm/ChatsViewSelectedToConfirm';
@@ -8,7 +15,7 @@ import { StyledChatsSection } from './ChatsSection.styles';
 import { ModalMolecule } from '../../../molecules/Modal/Modal';
 import { TransferConfirmation } from '../Components/TransferConfirmation/TransferConfirmation';
 import { UploadableFile } from '../Components/UploadFiles/UploadFiles.interface';
-import { readChat, readSetting } from '../../../../../api/chat';
+import { readChat } from '../../../../../api/chat';
 import { Chat, ChatStatus } from '../../../../../models/chat/chat';
 import {
   ChatInputDialogueProps,
@@ -62,15 +69,18 @@ export const ChatsSection: FC<
   const showAlert = useToastContext();
   const dispatch = useAppDispatch();
 
+  const { userDataInState }: any = useAppSelector(
+    (state) => state.userAuthCredentials,
+  );
+
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
-  // const { userDataInState }: any = useAppSelector(
-  //   (state) => state.userAuthCredentials,
-  // );
 
-  // const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
-  // const [userSelected, setUserSelected] = useState<string>('');
+  const { generalConfigurationData } = useAppSelector(
+    (state) => state.configurationInfo,
+  );
+
   const [sortedChats, setSortedChats] = useState<boolean>(false);
   const [showOnlyPausedChats, setShowOnlyPausedChats] =
     useState<boolean>(false);
@@ -80,9 +90,6 @@ export const ChatsSection: FC<
   const [chatInputDialogue, setChatInputDialogue] = useState<string>('');
   const [dropZoneDisplayed, setDropZoneDisplayed] = useState<boolean>(false);
   const [emojisDisplayed, setEmojisDisplayed] = React.useState<boolean>(false);
-  // const [accessToken] = useLocalStorage('AccessToken', '');
-  // const { decodedToken } = useJwt(accessToken);
-  // state para guardar el string para realizar la busqueda(email, name o telefono).
   const [searchByName, setSearchByName] = useState<string>('');
   // -------------------------------------------------------------------------
   const [showPredefinedTexts, setShowPredefinedTexts] =
@@ -100,51 +107,36 @@ export const ChatsSection: FC<
   // const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setSearchByName(event.target.value);
   // };
-  // Fución para buscar por Rut
-
-  // Funcion para buscar por nombre, email o telefono
   const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchByName(event.target.value);
   };
-
-  // -------------------------------------------------------
-  let activeSound: boolean;
-  let audioPending: HTMLAudioElement | null;
-  let audioConversation: HTMLAudioElement | null;
-
-  // const [isSound, setIsSound] = useState<boolean>(false);
-  // trae todas las configuraciones
-
-  const getSettingSound = useCallback(async () => {
-    try {
-      const response = await readSetting();
-      if (response.success === false) {
-        showAlert?.addToast({
-          alert: Toast.ERROR,
-          title: 'ERROR',
-          message: `Ocurrio un error al cargar los sonidos`,
-        });
-      } else {
-        audioConversation =
-          response.notificationSounds.conversationSound !== ''
-            ? new Audio(response.notificationSounds.conversationSound)
-            : null;
-        activeSound = response.notificationSounds.isActive;
-        audioPending =
-          response.notificationSounds.pendingSound !== ''
-            ? new Audio(response.notificationSounds.pendingSound)
-            : null;
-      }
-    } catch (err) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `No se puede establecer la conexión con el servidor`,
-      });
-    }
-  }, [showAlert]);
+  // Variables de configuración de sonido.
+  const activeSound = generalConfigurationData.notificationSounds?.isActive;
+  const audioConversation = useRef<HTMLAudioElement | null>(
+    new Audio(generalConfigurationData.notificationSounds?.conversationSound),
+  );
+  const audioPending = useRef<HTMLAudioElement | null>(
+    new Audio(generalConfigurationData.notificationSounds?.pendingSound),
+  );
 
   // ---------------------------------
+  useEffect(() => {
+    if (userDataInState.soundEnabled) {
+      audioConversation.current = new Audio(
+        generalConfigurationData.notificationSounds?.conversationSound,
+      );
+      audioPending.current = new Audio(
+        generalConfigurationData.notificationSounds?.pendingSound,
+      );
+    } else {
+      audioConversation.current = null;
+      audioPending.current = null;
+    }
+  }, [
+    userDataInState.soundEnabled,
+    generalConfigurationData.notificationSounds?.conversationSound,
+    generalConfigurationData.notificationSounds?.pendingSound,
+  ]);
 
   // trae todos los chats que se encuentran ON_CONVERSATION
   const getOnConversationChats = useCallback(async () => {
@@ -163,7 +155,7 @@ export const ChatsSection: FC<
       });
       localStorage.removeItem('AccessToken');
     }
-  }, [dispatch]);
+  }, []);
 
   // trae todos los chats que se encuentran ASSIGNMENT_PENDING
   const getPendingChats = useCallback(async () => {
@@ -182,20 +174,24 @@ export const ChatsSection: FC<
       });
       localStorage.removeItem('AccessToken');
     }
-  }, [dispatch]);
+  }, []);
 
   // --------------- <<< WEB SOCKET EVENTS >>> -----------------
   // Escucha los chats de usuarios o agentes según el parámetro que se le pase
 
   const getNewMessageFromNewUserOrAgent = useCallback(async (event: string) => {
     socket?.on(event, async (data: Chat[]) => {
-      if (event === 'newUserMessage' && activeSound) {
-        await audioConversation?.play();
+      if (
+        event === 'newUserMessage' &&
+        userDataInState.soundEnabled &&
+        activeSound &&
+        audioConversation.current
+      ) {
+        await audioConversation.current.play();
       }
       dispatch(setChatsOnConversation(data));
     });
   }, []);
-
   // Escucha los nuevpos chats de conversació y ejecuta el new audio
   const getNewMessageOnConversationTrafficLight = useCallback(async () => {
     socket?.on('trafficLight', async (data: Chat[]) => {
@@ -213,10 +209,10 @@ export const ChatsSection: FC<
   // escucha los chats de nuevos usuarios
   const wsNewChat = useCallback(async () => {
     socket?.on('newChat', async (data: Chat[]) => {
-      dispatch(setChatsPendings(data));
-      if (activeSound) {
-        await audioPending?.play();
+      if (activeSound && audioPending.current && userDataInState.soundEnabled) {
+        await audioPending.current.play();
       }
+      dispatch(setChatsPendings(data));
     });
   }, []);
 
@@ -287,15 +283,9 @@ export const ChatsSection: FC<
   useEffect(() => {
     getPendingChats();
     getOnConversationChats();
-  }, [getOnConversationChats, getPendingChats]);
+  }, []);
 
   useEffect(() => {
-    getSettingSound();
-  }, [getSettingSound]);
-
-  useEffect(() => {
-    // getNewMessageFromNewUserOrAgent('newAgentMessage');
-    // getNewMessageFromNewUserOrAgent('newUserMessage');
     wsNewChat();
     wsNewChatAssigned();
     getNewPendingChat();
@@ -305,19 +295,7 @@ export const ChatsSection: FC<
     wsClosePreviousSession();
     wsCloseByInactivity();
     getNewMessageOnConversationTrafficLight();
-  }, [
-    // getNewMessageFromNewUserOrAgent,
-    getNewPendingChat,
-    newPausedConversation,
-    socket,
-    wsCloseByInactivity,
-    wsClosePreviousSession,
-    wsGetPendingChats,
-    wsGetTransferedChats,
-    wsNewChat,
-    wsNewChatAssigned,
-    getNewMessageOnConversationTrafficLight,
-  ]);
+  }, [socket]);
 
   return (
     <StyledChatsSection>

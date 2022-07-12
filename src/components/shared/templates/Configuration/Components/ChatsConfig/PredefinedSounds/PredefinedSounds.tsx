@@ -39,7 +39,7 @@ export const PredefinedSounds: FC<IPropsPredefinedSound> = ({ soundList }) => {
     useState<boolean>(false);
   const [isLoanding, setIsLoanding] = useState<boolean>(false);
 
-  const { isActive } = useAppSelector(
+  const { isActive, pendingSound, conversationSound } = useAppSelector(
     (state) =>
       state.configurationInfo.generalConfigurationData.notificationSounds,
   );
@@ -56,15 +56,30 @@ export const PredefinedSounds: FC<IPropsPredefinedSound> = ({ soundList }) => {
     }
     setOpenChatOnConversation(!openChatOnConversation);
   };
+  const initStatePending = pendingSound
+    ? `notification_sound_${pendingSound?.slice(
+        pendingSound.length - 1,
+        pendingSound.length,
+      )}`
+    : '';
 
-  const [radioCheckedPending, setRadioCheckedPending] = useState<string>('');
+  const [radioCheckedPending, setRadioCheckedPending] =
+    useState<string>(initStatePending);
+
   const handleRadioChangePending = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value: targetValue } = e.target;
     setRadioCheckedPending(targetValue);
   };
 
+  const initStateConversation = conversationSound
+    ? `notification_sound_${conversationSound?.slice(
+        conversationSound.length - 1,
+        conversationSound.length,
+      )}`
+    : '';
+
   const [radioCheckedInCoversation, setRadioCheckedInConversation] =
-    useState<string>('');
+    useState<string>(initStateConversation);
   const handleRadioChangeInConversation = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {

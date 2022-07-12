@@ -3,6 +3,7 @@ import {
   Emojis,
   PredefinidedTextsInterface,
 } from '../../ChatsSection/ChatsSection.interface';
+import { IContainerFooter } from '../PredefinedMessage/PredefinedMessage.interface';
 
 export const StyledChatsViewSelectedToConfirm = styled.div`
   height: 620px;
@@ -230,7 +231,7 @@ export const StyledFooterButtonsSelectedToConfirm = styled.div`
 `;
 
 export const StyledFooterToChat = styled.div<
-  PredefinidedTextsInterface & Emojis
+  PredefinidedTextsInterface & Emojis & IContainerFooter
 >`
   position: relative;
   min-height: 40px;
@@ -285,18 +286,24 @@ export const StyledFooterToChat = styled.div<
     border: none;
     width: 100%;
     min-height: 2.5rem;
+    height: 100%;
     border-radius: 24px;
     justify-content: center;
-    // box-shadow: inset 0 0 0 2px #dcdcdc;
     font-size: 12px;
     line-height: 14px;
     outline: none;
+    padding: ${({ longText }) => (longText ? '4px 16px' : '18px')};
     &::-webkit-scrollbar {
       display: none;
     }
+    :focus {
+      box-shadow: inset 0 0 0 2px ${({ theme }) => theme.Colors.purples[1]};
+    }
     ::placeholder {
-      color: ${({ theme }) => theme.Colors.grays[5]};
+      color: ${({ theme }) => theme && theme.Colors.grays[5]};
       font-size: 14px;
+      font-weight: 400;
+      line-height: 12px;
     }
     & button {
       display: none;
@@ -309,10 +316,10 @@ export const StyledFooterToChat = styled.div<
       }
     }
   }
-  & textarea {
-    padding: 12px 12px;
-    box-shadow: inset 0 0 0 2px #dcdcdc;
-  }
+  // & textarea {
+  //   padding: 12px 12px;
+  //   box-shadow: inset 0 0 0 2px #dcdcdc;
+  // }
   & > :nth-child(3) {
     & > div {
       & > div {

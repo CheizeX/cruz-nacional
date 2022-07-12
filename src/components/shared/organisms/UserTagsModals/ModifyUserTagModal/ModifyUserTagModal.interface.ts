@@ -17,10 +17,14 @@ export interface StyledColorCheckboxProps {
   tags?: string;
   setContainerTags: React.Dispatch<React.SetStateAction<IPropsTags[]>>;
   containerTags: IPropsTags[];
+  handleChecked: (arg: string) => void;
   arrayHelpers?: any;
+  checkedModifyUser: string[];
+  setCheckedModifyUser: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export interface IPropsTags {
+  _id: string;
   name: string;
   color: string;
   status: boolean;

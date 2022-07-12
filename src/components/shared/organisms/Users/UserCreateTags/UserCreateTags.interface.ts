@@ -15,6 +15,7 @@ export interface IContainerCreateUserProps {
   color?: string;
 }
 export interface IUserPropsTags {
+  _id: string;
   name: string;
   color: string;
   status: boolean;

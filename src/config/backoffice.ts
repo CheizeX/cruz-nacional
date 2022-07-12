@@ -21,10 +21,10 @@ export const supervisorSection: BackofficeSection[] = [
     name: 'Reportes',
     icon: '/icons/reports.svg',
   },
-  {
-    name: 'Canales',
-    icon: '/icons/sidebar_chats.svg',
-  },
+  // {
+  //   name: 'Canales',
+  //   icon: '/icons/sidebar_chats.svg',
+  // },
 ];
 
 export const adminSection: BackofficeSection[] = [

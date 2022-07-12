@@ -7,6 +7,7 @@ export interface IAddedUserSectionProps {
 }
 
 export interface IPropsTags {
+  _id: string;
   name: string;
   color: string;
   status: boolean;

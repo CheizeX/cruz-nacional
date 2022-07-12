@@ -7,6 +7,9 @@ storiesOf('Ailalia/Organisms/UserTagsModals/ModifyTag', module).add(
   () => {
     return (
       <ModifyUserTagModal
+        setCheckedModifyUser={() => null}
+        handleChecked={() => null}
+        checkedModifyUser={[]}
         setContainerTags={() => {}}
         containerTags={[]}
         setTags={() => null}

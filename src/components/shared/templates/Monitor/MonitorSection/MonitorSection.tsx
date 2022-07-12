@@ -438,3 +438,5 @@ export const MonitorSection: FC = () => {
     </StyledMonitoSection>
   );
 };
+
+// TODO = crear el filtro de monitor

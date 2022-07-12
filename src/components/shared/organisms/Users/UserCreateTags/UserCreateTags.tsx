@@ -72,8 +72,8 @@ export const UserCreateTags: FC<ICreateTagProps> = ({
                 a.findIndex((t) => JSON.stringify(t) === JSON.stringify(v)) ===
                 i,
             )
-            .map(({ name, color }, index) => (
-              <ContainerChecked key={index} color={color}>
+            .map(({ name, color, _id }, index) => (
+              <ContainerChecked key={_id} color={color}>
                 <span>{name}</span>
                 <button type="button" onClick={() => clearTagsCrearUser(index)}>
                   <SVGIcon iconFile="/icons/times.svg" />

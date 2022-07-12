@@ -4,12 +4,14 @@ import { Tag } from '../../../models/tags/tag';
 
 interface IUpdateContainerTagSlice {
   updateContainerTags: Tag[];
+  observeChange: Tag[];
   isLoanding: boolean;
   error: string | null;
 }
 
 const initialState: IUpdateContainerTagSlice = {
   updateContainerTags: [],
+  observeChange: [],
   isLoanding: false,
   error: null,
 };
@@ -33,6 +35,9 @@ export const updateContainerTagStore = createSlice({
       }
       return { ...state };
     },
+    setObserveChange: (state, action: PayloadAction<Tag[]>) => {
+      state.observeChange = action.payload;
+    },
     setDeleteTagContainer: (state, action: PayloadAction<string>) => {
       const updateContainerTag = state.updateContainerTags.filter(
         (item) => item._id !== action.payload,
@@ -46,5 +51,6 @@ export const {
   setUpdateContainerTag,
   setNewtagsContainer,
   setDeleteTagContainer,
+  setObserveChange,
 } = updateContainerTagStore.actions;
 export default updateContainerTagStore.reducer;

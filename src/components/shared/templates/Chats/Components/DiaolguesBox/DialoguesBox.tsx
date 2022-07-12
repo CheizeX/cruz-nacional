@@ -408,28 +408,33 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                               </WrapperOnConversation>
                             )}
 
-                            {message.contentType ===
-                              (ContentType.INTERACTIVE_BUTTON ||
+                            {(message.contentType ===
+                              ContentType.INTERACTIVE_BUTTON ||
+                              message.contentType ===
                                 ContentType.INTERACTIVE_LIST) && (
                               <StyledInteractiveButton>
-                                <StyledInteractiveButtonHeader>
-                                  {message.content.header.type === 'text' ? (
-                                    message.content.header.body
-                                  ) : (
-                                    <img
-                                      src={message.content.header.body}
-                                      width="100px"
-                                      height="100px"
-                                      alt="message.content"
-                                    />
-                                  )}
-                                </StyledInteractiveButtonHeader>
+                                {message.content.header && (
+                                  <StyledInteractiveButtonHeader>
+                                    {message.content.header.type === 'text' ? (
+                                      message.content.header.body
+                                    ) : (
+                                      <img
+                                        src={message.content.header.body}
+                                        width="100px"
+                                        height="100px"
+                                        alt="message.content"
+                                      />
+                                    )}
+                                  </StyledInteractiveButtonHeader>
+                                )}
                                 <StyledInteractiveButtonBody>
                                   {message.content.body}
                                 </StyledInteractiveButtonBody>
-                                <StyledInteractiveButtonFooter>
-                                  {message.content.footer}
-                                </StyledInteractiveButtonFooter>
+                                {message.content.footer && (
+                                  <StyledInteractiveButtonFooter>
+                                    {message.content.footer}
+                                  </StyledInteractiveButtonFooter>
+                                )}
                                 <StyledInteractiveButtonActions>
                                   {message.content.action.map((act: string) => (
                                     <div key={act}>{act}</div>
@@ -726,28 +731,33 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                               </WrapperOnConversation>
                             )}
 
-                            {message.contentType ===
-                              (ContentType.INTERACTIVE_BUTTON ||
+                            {(message.contentType ===
+                              ContentType.INTERACTIVE_BUTTON ||
+                              message.contentType ===
                                 ContentType.INTERACTIVE_LIST) && (
                               <StyledInteractiveButton>
-                                <StyledInteractiveButtonHeader>
-                                  {message.content.header.type === 'text' ? (
-                                    message.content.header.body
-                                  ) : (
-                                    <img
-                                      src={message.content.header.body}
-                                      width="100px"
-                                      height="100px"
-                                      alt="message.content"
-                                    />
-                                  )}
-                                </StyledInteractiveButtonHeader>
+                                {message.content.header && (
+                                  <StyledInteractiveButtonHeader>
+                                    {message.content.header.type === 'text' ? (
+                                      message.content.header.body
+                                    ) : (
+                                      <img
+                                        src={message.content.header.body}
+                                        width="100px"
+                                        height="100px"
+                                        alt="message.content"
+                                      />
+                                    )}
+                                  </StyledInteractiveButtonHeader>
+                                )}
                                 <StyledInteractiveButtonBody>
                                   {message.content.body}
                                 </StyledInteractiveButtonBody>
-                                <StyledInteractiveButtonFooter>
-                                  {message.content.footer}
-                                </StyledInteractiveButtonFooter>
+                                {message.content.footer && (
+                                  <StyledInteractiveButtonFooter>
+                                    {message.content.footer}
+                                  </StyledInteractiveButtonFooter>
+                                )}
                                 <StyledInteractiveActionTitle>
                                   {message.content.actionTitle || ''}
                                 </StyledInteractiveActionTitle>
@@ -856,28 +866,34 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                   {readUrl(message.content)}
                                 </WrapperOnConversation>
                               )}
-                              {message.contentType ===
-                                (ContentType.INTERACTIVE_BUTTON ||
+                              {(message.contentType ===
+                                ContentType.INTERACTIVE_BUTTON ||
+                                message.contentType ===
                                   ContentType.INTERACTIVE_LIST) && (
                                 <StyledInteractiveButton>
-                                  <StyledInteractiveButtonHeader>
-                                    {message.content.header.type === 'text' ? (
-                                      message.content.header.body
-                                    ) : (
-                                      <img
-                                        src={message.content.header.body}
-                                        width="100px"
-                                        height="100px"
-                                        alt="message.content"
-                                      />
-                                    )}
-                                  </StyledInteractiveButtonHeader>
+                                  {message.content.header && (
+                                    <StyledInteractiveButtonHeader>
+                                      {message.content.header.type ===
+                                      'text' ? (
+                                        message.content.header.body
+                                      ) : (
+                                        <img
+                                          src={message.content.header.body}
+                                          width="100px"
+                                          height="100px"
+                                          alt="message.content"
+                                        />
+                                      )}
+                                    </StyledInteractiveButtonHeader>
+                                  )}
                                   <StyledInteractiveButtonBody>
                                     {message.content.body}
                                   </StyledInteractiveButtonBody>
-                                  <StyledInteractiveButtonFooter>
-                                    {message.content.footer}
-                                  </StyledInteractiveButtonFooter>
+                                  {message.content.footer && (
+                                    <StyledInteractiveButtonFooter>
+                                      {message.content.footer}
+                                    </StyledInteractiveButtonFooter>
+                                  )}
                                   <StyledInteractiveButtonActions>
                                     {message.content.action.map(
                                       (act: string) => (
@@ -921,28 +937,33 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                 {readUrl(message.content)}
                               </WrapperOnConversation>
                             )}
-                            {message.contentType ===
-                              (ContentType.INTERACTIVE_BUTTON ||
+                            {(message.contentType ===
+                              ContentType.INTERACTIVE_BUTTON ||
+                              message.contentType ===
                                 ContentType.INTERACTIVE_LIST) && (
                               <StyledInteractiveButton>
-                                <StyledInteractiveButtonHeader>
-                                  {message.content.header.type === 'text' ? (
-                                    message.content.header.body
-                                  ) : (
-                                    <img
-                                      src={message.content.header.body}
-                                      width="100px"
-                                      height="100px"
-                                      alt="message.content"
-                                    />
-                                  )}
-                                </StyledInteractiveButtonHeader>
+                                {message.content.header && (
+                                  <StyledInteractiveButtonHeader>
+                                    {message.content.header.type === 'text' ? (
+                                      message.content.header.body
+                                    ) : (
+                                      <img
+                                        src={message.content.header.body}
+                                        width="100px"
+                                        height="100px"
+                                        alt="message.content"
+                                      />
+                                    )}
+                                  </StyledInteractiveButtonHeader>
+                                )}
                                 <StyledInteractiveButtonBody>
                                   {message.content.body}
                                 </StyledInteractiveButtonBody>
-                                <StyledInteractiveButtonFooter>
-                                  {message.content.footer}
-                                </StyledInteractiveButtonFooter>
+                                {message.content.footer && (
+                                  <StyledInteractiveButtonFooter>
+                                    {message.content.footer}
+                                  </StyledInteractiveButtonFooter>
+                                )}
                                 <StyledInteractiveButtonActions>
                                   {message.content.action.map((act: string) => (
                                     <div key={act}>{act}</div>
