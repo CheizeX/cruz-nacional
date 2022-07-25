@@ -147,6 +147,10 @@ export const PendingsChatItem: FC<
                       chat.messages[chat.messages.length - 1].contentType ===
                         ContentType.INTERACTIVE_BUTTON &&
                       chat.messages[chat.messages.length - 1].content.body}
+                    {chat.messages &&
+                      chat.messages[chat.messages.length - 1].contentType ===
+                        ContentType.INTERACTIVE_LIST &&
+                      chat.messages[chat.messages.length - 1].content.body}
                     ...
                   </Text>
                 </StyledNameAndDialog>
