@@ -1,8 +1,13 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { FC, useCallback, useEffect } from 'react';
 import { IoPeople } from 'react-icons/io5';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
-import { Channels, Chat } from '../../../../../../models/chat/chat';
+import {
+  Channels,
+  Chat,
+  ContentType,
+} from '../../../../../../models/chat/chat';
 import {
   StyledClientAndAgentAvatars,
   StyledLabel,
@@ -193,10 +198,15 @@ export const InConversationChatItem: FC<
                   </Text>
                   <Text>
                     {chat.messages &&
-                      chat.messages[chat.messages.length - 1].content.substring(
-                        0,
-                        14,
-                      )}
+                      chat.messages[chat.messages.length - 1].contentType ===
+                        ContentType.TEXT &&
+                      chat.messages[
+                        chat.messages.length - 1
+                      ].content?.substring(0, 14)}
+                    {chat.messages &&
+                      chat.messages[chat.messages.length - 1].contentType ===
+                        ContentType.INTERACTIVE_BUTTON &&
+                      chat.messages[chat.messages.length - 1].content.body}
                     ...
                   </Text>
                 </StyledNameAndDialog>
