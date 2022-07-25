@@ -440,8 +440,9 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                                   <>
                                     {element.contentType === ContentType.TEXT
                                       ? element.content
-                                      : element.contentType ===
-                                          (ContentType.INTERACTIVE_BUTTON ||
+                                      : (element.contentType ===
+                                          ContentType.INTERACTIVE_BUTTON ||
+                                          element.contentType ===
                                             ContentType.INTERACTIVE_LIST) && (
                                           <div>
                                             <div>
@@ -460,7 +461,11 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                                               )}
                                             </div>
                                             <div>{element.content.body}</div>
-                                            <div>{element.content.footer}</div>
+                                            {element.content.footer && (
+                                              <div>
+                                                {element.content.footer}
+                                              </div>
+                                            )}
                                             <div>
                                               {element.content.action.map(
                                                 (act: string) => (

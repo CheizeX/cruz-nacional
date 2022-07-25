@@ -304,8 +304,9 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                                   <>
                                     {item.contentType === ContentType.TEXT
                                       ? item.content
-                                      : item.contentType ===
-                                          (ContentType.INTERACTIVE_BUTTON ||
+                                      : (item.contentType ===
+                                          ContentType.INTERACTIVE_BUTTON ||
+                                          item.contentType ===
                                             ContentType.INTERACTIVE_LIST) && (
                                           <div>
                                             <div>
@@ -322,7 +323,9 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                                               )}
                                             </div>
                                             <div>{item.content.body}</div>
-                                            <div>{item.content.footer}</div>
+                                            {item.content.footer && (
+                                              <div>{item.content.footer}</div>
+                                            )}
                                             <div>
                                               {item.content.action.map(
                                                 (act: string) => (
