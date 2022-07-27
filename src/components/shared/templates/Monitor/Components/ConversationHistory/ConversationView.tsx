@@ -309,19 +309,23 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                                           item.contentType ===
                                             ContentType.INTERACTIVE_LIST) && (
                                           <div>
-                                            <div>
-                                              {item.content.header.type ===
-                                              'text' ? (
-                                                item.content.header.body
-                                              ) : (
-                                                <img
-                                                  src={item.content.header.body}
-                                                  width="100px"
-                                                  height="100px"
-                                                  alt="message.content"
-                                                />
-                                              )}
-                                            </div>
+                                            {item.content.header && (
+                                              <div>
+                                                {item.content.header.type ===
+                                                'text' ? (
+                                                  item.content.header.body
+                                                ) : (
+                                                  <img
+                                                    src={
+                                                      item.content.header.body
+                                                    }
+                                                    width="100px"
+                                                    height="100px"
+                                                    alt="message.content"
+                                                  />
+                                                )}
+                                              </div>
+                                            )}
                                             <div>{item.content.body}</div>
                                             {item.content.footer && (
                                               <div>{item.content.footer}</div>

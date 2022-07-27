@@ -445,21 +445,24 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                                           element.contentType ===
                                             ContentType.INTERACTIVE_LIST) && (
                                           <div>
-                                            <div>
-                                              {element.content.header.type ===
-                                              'text' ? (
-                                                element.content.header.body
-                                              ) : (
-                                                <img
-                                                  src={
-                                                    element.content.header.body
-                                                  }
-                                                  width="100px"
-                                                  height="100px"
-                                                  alt="message.content"
-                                                />
-                                              )}
-                                            </div>
+                                            {element.content.header && (
+                                              <div>
+                                                {element.content.header.type ===
+                                                'text' ? (
+                                                  element.content.header.body
+                                                ) : (
+                                                  <img
+                                                    src={
+                                                      element.content.header
+                                                        .body
+                                                    }
+                                                    width="100px"
+                                                    height="100px"
+                                                    alt="message.content"
+                                                  />
+                                                )}
+                                              </div>
+                                            )}
                                             <div>{element.content.body}</div>
                                             {element.content.footer && (
                                               <div>
