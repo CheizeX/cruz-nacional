@@ -30,7 +30,7 @@ const BackofficePage: NextPage<
   );
 
   useEffect(() => {
-    socket?.emit('joinSupervisorRooms', {
+    socket?.emit('joinBackofficeRooms', {
       companyId,
       userId,
     });

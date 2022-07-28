@@ -125,27 +125,26 @@ export const WebChatSection: FC<IPropsWebChat> = ({
   const handleSubmit = async () => {
     // dispatch(setScript({}));
     try {
-      if (isAnimation === true) {
-        const response = await createWebChat({
-          name: customTitle,
-          description: customDescription,
-          animation: isAnimation,
-          greetingMessage,
-          avatar: customAvatar,
-          primaryColor,
-          secondaryColor,
-          activeSound,
-          notificationSound,
-        });
+      const response = await createWebChat({
+        name: customTitle,
+        description: customDescription,
+        animation: isAnimation,
+        greetingMessage,
+        avatar: customAvatar,
+        primaryColor,
+        secondaryColor,
+        activeSound,
+        notificationSound,
+      });
 
-        if (response === 'Creating webchat') {
-          showAlert?.addToast({
-            alert: Toast.SUCCESS,
-            title: '¡Perfecto!',
-            message: `Se creo el Web Chat satisfactoriamente`,
-          });
-        }
+      if (response === 'Creating webchat') {
+        showAlert?.addToast({
+          alert: Toast.SUCCESS,
+          title: '¡Perfecto!',
+          message: `Se creo el Web Chat satisfactoriamente`,
+        });
       }
+
       setTimeout(() => {
         setIsSectionWebChat(false);
         setSeletedComponent('script');

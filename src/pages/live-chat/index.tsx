@@ -27,7 +27,7 @@ const LiveChatPage: NextPage<
     (state) => state.userAuthCredentials,
   );
   useEffect(() => {
-    socket?.emit('joinRooms', {
+    socket?.emit('joinAgentRooms', {
       userId: userDataInState?._id,
       companyId: userDataInState?.companyId,
     });
