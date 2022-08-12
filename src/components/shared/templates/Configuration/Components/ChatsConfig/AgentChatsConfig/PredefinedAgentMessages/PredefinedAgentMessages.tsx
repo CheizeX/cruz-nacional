@@ -4,29 +4,29 @@ import { FaInfoCircle } from 'react-icons/fa';
 import {
   ButtonMolecule,
   ButtonState,
-} from '../../../../../atoms/Button/Button';
-import { Text } from '../../../../../atoms/Text/Text';
-import { baseRestApi } from '../../../../../../../api/base';
+} from '../../../../../../atoms/Button/Button';
+import { Text } from '../../../../../../atoms/Text/Text';
+import { baseRestApi } from '../../../../../../../../api/base';
 import {
   StyledTextArea,
   StyledPredefinedAgentMessages,
   StyledPredefinedAgentMessagesBody,
   StyledPredefinedAgentMessagesHeader,
 } from './PredefinedAgentMessages.styled';
-import { useToastContext } from '../../../../../molecules/Toast/useToast';
-import { Toast } from '../../../../../molecules/Toast/Toast.interface';
+import { useToastContext } from '../../../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../../../molecules/Toast/Toast.interface';
 import {
   useAppDispatch,
   useAppSelector,
-} from '../../../../../../../redux/hook/hooks';
-import { getGeneralConfigurationData } from '../../../../../../../redux/slices/configuration/configuration-info';
-import { Tooltip } from '../../../../../atoms/Tooltip/Tooltip';
-import { TooltipTarget } from '../../../../../atoms/Tooltip/tooltip.styled';
-import { TooltipPosition } from '../../../../../atoms/Tooltip/tooltip.interface';
+} from '../../../../../../../../redux/hook/hooks';
+import { getGeneralConfigurationData } from '../../../../../../../../redux/slices/configuration/configuration-info';
+import { Tooltip } from '../../../../../../atoms/Tooltip/Tooltip';
+import { TooltipTarget } from '../../../../../../atoms/Tooltip/tooltip.styled';
+import { TooltipPosition } from '../../../../../../atoms/Tooltip/tooltip.interface';
 import {
   ToogleComponentForMappedRestrictions,
   ToogleComponentForMappedRestrictionsNoSel,
-} from '../../../../Channels/Components/CardChannel/CardChannel.styled';
+} from '../../../../../Channels/Components/CardChannel/CardChannel.styled';
 
 export const PredefinedAgentMessages: FC = () => {
   const dispatch = useAppDispatch();

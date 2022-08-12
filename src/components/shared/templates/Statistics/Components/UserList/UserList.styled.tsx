@@ -123,13 +123,11 @@ export const StyledBodyUserList = styled.div`
       display: none;
     }
     & > :nth-child(2n) {
-      // padding: 0 24px;
       border-radius: 10px;
       background: ${({ theme }) => theme.Colors.grays[10]};
     }
     & > div {
       display: grid;
-      //padding: 0 24px;
       grid-template-columns: 3.5fr 5fr 3.5fr 3fr;
       border-radius: 10px;
       height: 56px;
@@ -140,13 +138,8 @@ export const StyledBodyUserList = styled.div`
         color: ${({ theme }) => theme.Colors.grays[1]};
         display: flex;
         align-items: center;
-
         justify-content: center;
       }
-      /* & > span:nth-child(3) {
-        display: flex;
-        justify-content: end;
-      } */
     }
   }
 `;

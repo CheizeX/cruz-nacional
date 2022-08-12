@@ -5,7 +5,7 @@ import { ITooltipProps } from './tooltip.interface';
 export const TooltipWrapper = styled.div`
   position: relative;
   display: inline-flex;
-  z-index: 999;
+  z-index: 1;
 `;
 
 export const TooltipTarget = styled.div<ITooltipProps>`
@@ -17,6 +17,7 @@ export const TooltipTarget = styled.div<ITooltipProps>`
   color: inherit;
   cursor: pointer;
   display: flex;
+  z-index: 999;
   ${({ showOnFocus }) =>
     !showOnFocus &&
     css`
@@ -86,13 +87,12 @@ export const TooltipBox = styled.span<ITooltipProps>`
   text-align: center;
   border-radius: 5px;
   padding: 10px 8px;
-  // hacer que el text haga un salto de line cuando haya un .
   word-break: break-word;
-  // hacer que el text haga un salto de line cuando haya un .
   word-wrap: break-word;
+  z-index: 999;
 
   line-height: 1.3;
-  font-size: ${({ theme }) => theme.fontSize[12]};
+  font-size: ${({ theme }) => theme.fontSize[10]};
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.2);
   ${({ background }) =>
     background &&

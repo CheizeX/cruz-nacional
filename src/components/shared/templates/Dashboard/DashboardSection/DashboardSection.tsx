@@ -12,7 +12,6 @@ import {
 
 export const DashboardSection: FC<IPropsAgents> = () => {
   const [datePicker, setDatePicker] = useState<number>(0);
-  // const [close, setClose] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [chartDatePicker, setChartDatePicker] = useState<number>(0);

@@ -1,22 +1,18 @@
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react';
 import { FaInfoCircle } from 'react-icons/fa';
-import {
-  ButtonMolecule,
-  ButtonState,
-} from '../../../../../../atoms/Button/Button';
-import { Text } from '../../../../../../atoms/Text/Text';
-import { baseRestApi } from '../../../../../../../../api/base';
-import { useToastContext } from '../../../../../../molecules/Toast/useToast';
-import { Toast } from '../../../../../../molecules/Toast/Toast.interface';
+import { Text } from '../../../../../../../atoms/Text/Text';
+import { baseRestApi } from '../../../../../../../../../api/base';
+import { useToastContext } from '../../../../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../../../../molecules/Toast/Toast.interface';
 import {
   useAppDispatch,
   useAppSelector,
-} from '../../../../../../../../redux/hook/hooks';
-import { getGeneralConfigurationData } from '../../../../../../../../redux/slices/configuration/configuration-info';
-import { TooltipTarget } from '../../../../../../atoms/Tooltip/tooltip.styled';
-import { TooltipPosition } from '../../../../../../atoms/Tooltip/tooltip.interface';
-import { Tooltip } from '../../../../../../atoms/Tooltip/Tooltip';
+} from '../../../../../../../../../redux/hook/hooks';
+import { getGeneralConfigurationData } from '../../../../../../../../../redux/slices/configuration/configuration-info';
+import { TooltipTarget } from '../../../../../../../atoms/Tooltip/tooltip.styled';
+import { TooltipPosition } from '../../../../../../../atoms/Tooltip/tooltip.interface';
+import { Tooltip } from '../../../../../../../atoms/Tooltip/Tooltip';
 import {
   StyledCloseChatsByInactivity,
   StyledCloseChatsByInactivityBody,
@@ -26,7 +22,11 @@ import {
 import {
   ToogleComponentForMappedRestrictions,
   ToogleComponentForMappedRestrictionsNoSel,
-} from '../../../../../Channels/Components/CardChannel/CardChannel.styled';
+} from '../../../../../../Channels/Components/CardChannel/CardChannel.styled';
+import {
+  ButtonMolecule,
+  ButtonState,
+} from '../../../../../../../atoms/Button/Button';
 
 export const CloseChatsByInactivity: FC = () => {
   const dispatch = useAppDispatch();

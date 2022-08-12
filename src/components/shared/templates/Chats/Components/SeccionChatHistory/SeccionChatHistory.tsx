@@ -17,7 +17,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
   const tokenQueryParam = `?token=${accessToken}`;
 
   const handleModalAttachment = (content: string, channel: string) => {
-    if (content.substring(content.length - 3, content.length) === 'jpg') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'jpg'
+    ) {
       return (
         <img
           src={`${
@@ -30,7 +33,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'png') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'png'
+    ) {
       return (
         <img
           src={`${
@@ -43,7 +49,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
         />
       );
     }
-    if (content.substring(content.length - 4, content.length) === 'jpeg') {
+    if (
+      content.substring(content.length - 4, content.length).toLowerCase() ===
+      'jpeg'
+    ) {
       return (
         <img
           src={`${
@@ -56,7 +65,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'pdf') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'pdf'
+    ) {
       return (
         <iframe
           src={`${
@@ -78,7 +90,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
   };
 
   const handleModalAttachmentAgent = (content: string) => {
-    if (content.substring(content.length - 3, content.length) === 'jpg') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'jpg'
+    ) {
       return (
         <img
           src={`${
@@ -91,7 +106,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'png') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'png'
+    ) {
       return (
         <img
           src={`${
@@ -104,7 +122,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
         />
       );
     }
-    if (content.substring(content.length - 4, content.length) === 'jpeg') {
+    if (
+      content.substring(content.length - 4, content.length).toLowerCase() ===
+      'jpeg'
+    ) {
       return (
         <img
           src={`${
@@ -117,7 +138,10 @@ export const SeccionChatHistory: FC<IPropsSeccionChatHistory> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'pdf') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'pdf'
+    ) {
       return (
         <iframe
           src={`${

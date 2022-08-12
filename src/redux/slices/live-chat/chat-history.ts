@@ -22,19 +22,34 @@ export const chatsHistoryStore = createSlice({
   name: 'chatsHistoryState',
   initialState,
   reducers: {
-    setChatsIdClient: (state, action: PayloadAction<string>) => {
+    setChatsIdClient: (
+      state: { idClient: string },
+      action: PayloadAction<string>,
+    ) => {
       state.idClient = action.payload;
     },
-    setChatsIdChannel: (state, action: PayloadAction<string>) => {
+    setChatsIdChannel: (
+      state: { idChannel: string },
+      action: PayloadAction<string>,
+    ) => {
       state.idChannel = action.payload;
     },
-    setChatsHistory: (state, action: PayloadAction<Chat[]>) => {
+    setChatsHistory: (
+      state: { chatHistory: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.chatHistory = action.payload;
     },
-    setChatsHasHistory: (state, action: PayloadAction<boolean>) => {
+    setChatsHasHistory: (
+      state: { hasHistory: boolean },
+      action: PayloadAction<boolean>,
+    ) => {
       state.hasHistory = action.payload;
     },
-    setPendingSession: (state, action: PayloadAction<boolean>) => {
+    setPendingSession: (
+      state: { pendingSession: boolean },
+      action: PayloadAction<boolean>,
+    ) => {
       state.pendingSession = action.payload;
     },
   },

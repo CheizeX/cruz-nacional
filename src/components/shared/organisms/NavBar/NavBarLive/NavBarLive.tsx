@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState, useEffect, useCallback } from 'react';
 import { IoIosWarning } from 'react-icons/io';
-import { FaBellSlash } from 'react-icons/fa';
+// import { FaBellSlash } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { useJwt } from 'react-jwt';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
@@ -28,7 +28,7 @@ import { INavBar, INavBarLiveProps } from './NavBarLive.interface';
 import { useAuth } from '../../../../../hooks/auth';
 import {
   changeStatus,
-  enabledUserSound,
+  // enabledUserSound,
   readUser,
 } from '../../../../../api/users';
 import { StatusAgent, UserStatus } from '../../../../../models/users/status';
@@ -38,7 +38,7 @@ import {
 } from '../../../../../redux/hook/hooks';
 import { DropdownStatus } from '../../DropdownStatus/DropdownStatus';
 import {
-  setUpdateSoundEnabled,
+  // setUpdateSoundEnabled,
   setUserDataInState,
 } from '../../../../../redux/slices/auth/user-credentials';
 import { DecodedToken } from '../../../../../models/users/user';
@@ -60,7 +60,6 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   // Manejo del dropdown de agentes
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
-
   const handleNavUserDropdown = () => {
     setIsComponentVisible(!isComponentVisible);
   };
@@ -75,9 +74,11 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
+  // const { generalConfigurationData } = useAppSelector(
+  //   (state) => state.configurationInfo,
+  // );
 
   // Manejo de semaforo
-
   const chatNeutro = chatsOnConversation?.filter(
     (item) => item.trafficLight === ITrafficLight.NEUTRO,
   ).length;
@@ -100,7 +101,8 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
     setStatusChecked(arg);
     setActivoChecked(index);
     try {
-      await changeStatus({ status: data as StatusAgent });
+      const response = await changeStatus({ status: data as StatusAgent });
+      dispatch(setUserDataInState(response as DecodedToken));
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -126,26 +128,26 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
     }
   }, [decodedToken]);
 
-  const handleSoundEnabled = async () => {
-    try {
-      const response = await enabledUserSound();
-      if (response.success === false) {
-        showAlert?.addToast({
-          alert: Toast.ERROR,
-          title: '¡Upps!',
-          message: `Ocurrio un error al activar el sonido`,
-        });
-      } else {
-        dispatch(setUpdateSoundEnabled(response));
-      }
-    } catch (err) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: '¡Upps!',
-        message: `${err}`,
-      });
-    }
-  };
+  // const handleSoundEnabled = async () => {
+  //   try {
+  //     const response = await enabledUserSound();
+  //     if (response.success === false) {
+  //       showAlert?.addToast({
+  //         alert: Toast.ERROR,
+  //         title: '¡Upps!',
+  //         message: `Ocurrio un error al activar el sonido`,
+  //       });
+  //     } else {
+  //       dispatch(setUpdateSoundEnabled(response));
+  //     }
+  //   } catch (err) {
+  //     showAlert?.addToast({
+  //       alert: Toast.ERROR,
+  //       title: '¡Upps!',
+  //       message: `${err}`,
+  //     });
+  //   }
+  // };
 
   const profilePicture =
     userDataInState?.urlAvatar && userDataInState?.urlAvatar !== undefined
@@ -196,7 +198,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
         : 0;
     setStatusChecked(statusAgent);
     setActivoChecked(numberStatus);
-  }, [userDataInState.status]);
+  }, [userDataInState, decodedToken]);
 
   useEffect(() => {
     if (!localStorage.getItem('AccessToken')) {
@@ -212,9 +214,9 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
     dispatch(getGeneralConfigurationData());
   }, [dispatch]);
 
-  const { generalConfigurationData } = useAppSelector(
-    (state) => state.configurationInfo,
-  );
+  // const { generalConfigurationData } = useAppSelector(
+  //   (state) => state.configurationInfo,
+  // );
 
   return (
     <>
@@ -237,7 +239,6 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                   {elipsis && elipsis()}
                 </BadgeMolecule>
               </button> */}
-
             <ButtonSelectedComponent
               isFocus={componentsSection === 'Contactos'}
               onClick={() => handleComponentsSection('Contactos')}>
@@ -245,6 +246,13 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                 <Text>Contactos</Text>
               </BadgeMolecule>
             </ButtonSelectedComponent>
+            {/* <ButtonSelectedComponent
+              isFocus={componentsSection === 'Biblioteca'}
+              onClick={() => handleComponentsSection('Biblioteca')}>
+              <BadgeMolecule>
+                <Text>Biblioteca</Text>
+              </BadgeMolecule>
+            </ButtonSelectedComponent> */}
           </Letter>
         </Wrapper>
         <Wrapper>
@@ -287,7 +295,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                 src="https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=6"
                 controls
               /> */}
-              {generalConfigurationData.notificationSounds?.isActive &&
+              {/* {generalConfigurationData.notificationSounds?.isActive &&
                 (userDataInState && userDataInState?.soundEnabled ? (
                   <button type="button" onClick={handleSoundEnabled}>
                     <SVGIcon iconFile="/icons/bell-sound-dark.svg" />
@@ -296,7 +304,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                   <button type="button" onClick={handleSoundEnabled}>
                     <FaBellSlash />
                   </button>
-                ))}
+                ))} */}
             </div>
             <DropdownStatus
               statusChecked={statusChecked}

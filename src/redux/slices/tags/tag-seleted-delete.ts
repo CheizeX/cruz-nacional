@@ -13,7 +13,10 @@ export const tagsSeletedDelete = createSlice({
   name: 'tagDeleteByIdState',
   initialState,
   reducers: {
-    setTagByIdDelete: (state, action: PayloadAction<string>) => {
+    setTagByIdDelete: (
+      state: { tagDeleteById: string },
+      action: PayloadAction<string>,
+    ) => {
       state.tagDeleteById = action.payload;
     },
   },

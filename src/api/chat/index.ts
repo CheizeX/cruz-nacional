@@ -5,8 +5,11 @@ import { baseRestApi } from '../base';
 export const createChat = (chatData: Omit<Chat, '_id'>) => {
   return baseRestApi.post<Chat>('/chats', chatData);
 };
+export const readChat = (id: string) => {
+  return baseRestApi.get<Chat>(`/chats/${id}`);
+};
 
-export const readChat = (status: string) => {
+export const getChatByStatus = (status: string) => {
   return baseRestApi.get<Chat[]>(`/chats/status/${status}`);
 };
 

@@ -25,8 +25,21 @@ export const useAuth = () => {
         email,
         password,
       });
-
-      setAccessToken(response.accessToken);
+      if (response.errorMessage === 'User not found') {
+        toasts?.addToast({
+          alert: Toast.ERROR,
+          title: 'Error!',
+          message: `El usuario no se encuentra registrado.`,
+        });
+      } else if (response.errorMessage === 'Wrong email or password') {
+        toasts?.addToast({
+          alert: Toast.ERROR,
+          title: 'Error!',
+          message: `El usuario o constraseña ingresados son incorrectos.`,
+        });
+      } else {
+        setAccessToken(response.accessToken);
+      }
       // toasts?.addToast({
       //   alert: Toast.SUCCESS,
       //   title: 'Bienvenido !',

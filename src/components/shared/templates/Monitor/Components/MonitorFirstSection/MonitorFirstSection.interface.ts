@@ -16,19 +16,18 @@ export interface IFirstSetionProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   dateAgent?: User[];
   chats?: Chat[];
-  filterStatus: (arg: number) => void;
-  filterChannels: (arg: number) => void;
+  filterStatus: (arg: string) => void;
+  filterChannels: (arg: string) => void;
   filterAgents: (arg: string) => void;
-  statusAgent: number[];
-  byChannels: number[];
+  statusAgent: string[];
+  byChannels: string[];
   IDAgents: string[];
   orderByInteraction: boolean;
-  onHandleToggle: () => void | Promise<void>;
   resetHandle: () => void | Promise<void>;
   setFilterChat: React.Dispatch<React.SetStateAction<string>>;
   handleSearchChatToday: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setOrderByInteraction: React.Dispatch<React.SetStateAction<boolean>>;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setClientIdConversation: React.Dispatch<React.SetStateAction<string>>;
+  setOptionFilter: React.Dispatch<React.SetStateAction<boolean>>;
   totalChats: number;
 }

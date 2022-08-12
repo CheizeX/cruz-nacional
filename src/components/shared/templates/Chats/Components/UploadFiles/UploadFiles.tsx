@@ -1,9 +1,14 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { FC, useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { baseRestApi } from '../../../../../../api/base';
 import { Channels } from '../../../../../../models/chat/chat';
-import { useAppSelector } from '../../../../../../redux/hook/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../redux/hook/hooks';
+import { setOneChatOnConversation } from '../../../../../../redux/slices/live-chat/on-conversation-chats';
 import {
   ButtonMolecule,
   ButtonState,
@@ -37,6 +42,7 @@ export const UploadFiles: FC<
   UploadableFile & DropZoneDisplayedProps & SelectedUserProps
 > = ({ setDropZoneDisplayed, userSelected }) => {
   const showAlert = useToastContext();
+  const dispatch = useAppDispatch();
 
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
@@ -90,42 +96,20 @@ export const UploadFiles: FC<
   const handleAdjuntarClick = async () => {
     try {
       setUploading(true);
-      if (chatToTalkWithUser?.channel === 'WhatsApp') {
-        await baseRestApi.postMultipart(
-          `/whatsapp360/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          formData,
-        );
+      const response = await baseRestApi.postMultipart(
+        `${
+          chatToTalkWithUser?.channel === Channels.WHATSAPP
+            ? `/whatsapp360/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+            : chatToTalkWithUser?.channel === Channels.WEBCHAT
+            ? `/webchat/sendFiles/${chatToTalkWithUserId}?from=AGENT&companyId=${userDataInState.companyId}`
+            : `/messenger/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+        }`,
+        formData,
+      );
+      if (response.messages.length > 0) {
+        dispatch(setOneChatOnConversation(response));
       }
-      if (chatToTalkWithUser?.channel === 'Messenger') {
-        await baseRestApi.postMultipart(
-          `/messenger/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          formData,
-        );
-      }
-      if (chatToTalkWithUser?.channel === 'Instagram') {
-        await baseRestApi.postMultipart(
-          `/messenger/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          formData,
-        );
-      }
-      if (chatToTalkWithUser?.channel === 'Webchat') {
-        await baseRestApi.postMultipart(
-          `/webchat/sendFiles/${chatToTalkWithUserId}?from=AGENT&companyId=${userDataInState.companyId}`,
-          formData,
-        );
-      }
-      if (chatToTalkWithUser?.channel === 'Wassenger') {
-        await baseRestApi.postMultipart(
-          `/wassenger/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          formData,
-        );
-      }
-      if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
-        await baseRestApi.postMultipart(
-          `/chatapi/sendFilesToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          formData,
-        );
-      }
+
       setUploading(false);
     } catch (error) {
       showAlert?.addToast({

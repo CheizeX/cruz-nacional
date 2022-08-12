@@ -8,7 +8,7 @@ export const ContainerTags = styled.div`
 export const ContainerChecked = styled.div<IContainerTagsFilterProps>`
   width: 280px;
   height: 42px;
-  ${({ color }) => color && `background-color: ${color}`};
+  // ${({ color }) => color && `background-color: ${color}`};
   padding: 20px;
   display: flex;
   align-items: center;

@@ -11,3 +11,9 @@ export type ISounds = {
 export interface IPropsSound {
   notificationSounds: ISounds;
 }
+
+export interface IPropsPredefinedResponse {
+  _id: string;
+  title: string;
+  content: string;
+}

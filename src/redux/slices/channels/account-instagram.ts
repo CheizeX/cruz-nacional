@@ -25,7 +25,10 @@ export const accountInstagramStore = createSlice({
   name: 'chatContainerAccountInstagramState',
   initialState,
   reducers: {
-    setAccountInstagram: (state, action: PayloadAction<IPropsInstagram>) => {
+    setAccountInstagram: (
+      state: { dataInfoInstagram: IPropsInstagram },
+      action: PayloadAction<IPropsInstagram>,
+    ) => {
       state.dataInfoInstagram = action.payload;
     },
   },

@@ -22,13 +22,19 @@ export const integrationQRStore = createSlice({
   name: 'chatIntegrationQRState',
   initialState,
   reducers: {
-    setIntegrationQRWhatsApp: (state, action: PayloadAction<IInstanceQR[]>) => {
+    setIntegrationQRWhatsApp: (
+      state: { dataInfoQR: IInstanceQR[] },
+      action: PayloadAction<IInstanceQR[]>,
+    ) => {
       state.dataInfoQR = action.payload;
     },
-    setImageQR: (state, action: PayloadAction<any>) => {
+    setImageQR: (state: { imageQR: string }, action: PayloadAction<string>) => {
       state.imageQR = action.payload;
     },
-    setQrCodeChatApi: (state, action: PayloadAction<string>) => {
+    setQrCodeChatApi: (
+      state: { qrCodeChatApi: string },
+      action: PayloadAction<string>,
+    ) => {
       state.qrCodeChatApi = action.payload;
     },
   },

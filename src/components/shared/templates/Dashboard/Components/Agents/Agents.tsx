@@ -51,6 +51,10 @@ export const Agents: FC<IPropsAgents & IContainerReview> = ({
   const containerAgent = usersData.filter(
     (item) => item.role === UserRole.AGENT,
   );
+  const { tagFilter } = useAppSelector(
+    (state) => state.userAuthCredentials.userDataInState,
+  );
+
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
 
@@ -82,8 +86,10 @@ export const Agents: FC<IPropsAgents & IContainerReview> = ({
   }, [dispatch]);
 
   useEffect(() => {
-    dataApi();
-  }, [dataApi]);
+    if (typeof tagFilter === 'string') {
+      dataApi();
+    }
+  }, [dataApi, tagFilter]);
 
   return (
     <StyledWrapperAgent>

@@ -12,7 +12,7 @@ import {
   setFinishedTodayChats,
   setPendingTodayChats,
   setOnConversationTodayChats,
-  setTodayAllChats,
+  setUpdateChatDashboard,
   getTodayChats,
   getChatsByPeriod,
 } from '../../../../../../redux/slices/dashboard/dashboard-chats-filter';
@@ -88,72 +88,50 @@ export const DashTotalChatsByState: FC = () => {
   const { todayChats } = useAppSelector(
     (state) => state.dashboardFilterChatsByDate,
   );
+  const { tagFilter } = useAppSelector(
+    (state) => state.userAuthCredentials.userDataInState,
+  );
 
   const getNewChatEvent = React.useCallback(async () => {
-    await socket?.on('newChatEvent', (data: Chat[]) => {
+    await socket?.on('newChatEvent', (data: Chat) => {
+      dispatch(setUpdateChatDashboard(data));
       dispatch(
         setFinishedTodayChats(
-          data.filter((chat: Chat) => chat.status === ChatStatus.FINISHED),
+          todayChats.filter(
+            (chat: Chat) => chat.status === ChatStatus.FINISHED,
+          ),
         ),
       );
       dispatch(
         setPendingTodayChats(
-          data.filter(
+          todayChats.filter(
             (chat: Chat) => chat.status === ChatStatus.ASSIGNMENT_PENDING,
           ),
         ),
       );
       dispatch(
         setOnConversationTodayChats(
-          data.filter(
+          todayChats.filter(
             (chat: Chat) => chat.status === ChatStatus.ON_CONVERSATION,
           ),
         ),
       );
-
-      dispatch(setTodayAllChats(data));
       dispatch(getChatsByPeriod('0/today'));
     });
   }, [socket]);
 
   React.useEffect(() => {
-    dispatch(getChatsByPeriod('0/today'));
-    dispatch(getTodayChats());
-    getNewChatEvent();
-  }, [dispatch, getNewChatEvent]);
+    if (typeof tagFilter === 'string') {
+      dispatch(getChatsByPeriod('0/today'));
+      dispatch(getTodayChats());
+      getNewChatEvent();
+    }
+  }, [dispatch, getNewChatEvent, tagFilter]);
 
   return (
     <StyledTotalChatsByState>
       <StyledModalHeader>
         <Text>Total chats por estado</Text>
-        {/* <Dropdown
-          onClick={() => setClose(false)}
-          triggerElement={() => (
-            <BadgeMolecule
-              leftIcon={() => <SVGIcon iconFile="/icons/candelar_alt.svg" />}
-              rightIcon={() => (
-                <SVGIcon iconFile="/icons/chevron-square-down.svg" />
-              )}>
-              <Text>Hoy</Text>
-            </BadgeMolecule>
-          )}>
-          <FilterDateDashboard
-            setDatePicker={setDatePicker}
-            datePicker={datePicker}
-            setClose={setClose}
-          /> */}
-        {/* <div
-            style={{
-              visibility: datePicker === true ? 'visible' : 'hidden',
-            }}>
-            <FIlterByPeriod
-              setDatePicker={setDatePicker}
-              datePicker={datePicker}
-              setClose={setClose}
-              close={close}
-            />
-          </div> */}
-        {/* </Dropdown> */}
       </StyledModalHeader>
       <StyledModalBody>
         <ChatsStateGraph />
@@ -165,7 +143,8 @@ export const DashTotalChatsByState: FC = () => {
               todayChats.length > 0
                 ? todayChats
                     ?.filter(
-                      (chat) => chat.status === ChatStatus.ASSIGNMENT_PENDING,
+                      (chat: Chat) =>
+                        chat.status === ChatStatus.ASSIGNMENT_PENDING,
                     )
                     .length.toString()
                 : '0'
@@ -180,7 +159,7 @@ export const DashTotalChatsByState: FC = () => {
               todayChats.length > 0
                 ? todayChats
                     ?.filter(
-                      (chat) =>
+                      (chat: Chat) =>
                         chat.status === ChatStatus.ON_CONVERSATION &&
                         chat.isPaused === false,
                     )
@@ -197,7 +176,7 @@ export const DashTotalChatsByState: FC = () => {
               todayChats.length > 0
                 ? todayChats
                     ?.filter(
-                      (chat) =>
+                      (chat: Chat) =>
                         chat.status === ChatStatus.ON_CONVERSATION &&
                         chat.isPaused === true,
                     )
@@ -213,7 +192,9 @@ export const DashTotalChatsByState: FC = () => {
             number={
               todayChats.length > 0
                 ? todayChats
-                    ?.filter((chat) => chat.status === ChatStatus.FINISHED)
+                    ?.filter(
+                      (chat: Chat) => chat.status === ChatStatus.FINISHED,
+                    )
                     .length.toString()
                 : '0'
             }

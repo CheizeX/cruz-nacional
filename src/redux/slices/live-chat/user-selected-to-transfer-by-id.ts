@@ -13,7 +13,10 @@ export const userToTransferById = createSlice({
   name: 'userToTransferById',
   initialState,
   reducers: {
-    setUserToTransferById: (state, action: PayloadAction<string>) => {
+    setUserToTransferById: (
+      state: { userToTransferById: string },
+      action: PayloadAction<string>,
+    ) => {
       state.userToTransferById = action.payload;
     },
   },

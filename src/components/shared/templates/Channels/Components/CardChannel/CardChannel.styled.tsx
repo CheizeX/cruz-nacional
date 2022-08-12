@@ -124,17 +124,18 @@ export const StyledPicture = styled.div`
     & > div {
       width: 100%;
       height: 100%;
-      background-color: ${({ theme }) => theme.Colors.grays[9]};
+      /* background-color: ${({ theme }) => theme.Colors.grays[9]}; */
+      border: 2px dashed ${({ theme }) => theme.Colors.grays[9]};
       border-radius: 50%;
       & * {
         display: flex;
         justify-content: center;
         align-items: center;
         & > svg {
-          width: 46px;
-          height: 46px;
+          width: 40px;
+          height: 40px;
           & > path {
-            fill: ${({ theme }) => theme.Colors.grays[7]};
+            background-color: ${({ theme }) => theme.Colors.grays[9]};
           }
         }
       }

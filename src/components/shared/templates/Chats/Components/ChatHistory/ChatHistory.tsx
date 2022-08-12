@@ -345,7 +345,7 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
           <SectionAgentsContainer>
             {chatHistory?.map((element, index) => (
               <StyledCardAgents
-                key={index.toString()}
+                key={element.client.clientId}
                 onClick={() => setSelected(index)}
                 focusedChats={index === selected}>
                 <span>
@@ -396,9 +396,9 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
               .map(
                 (chat: Chat) =>
                   chat.messages && (
-                    <SectionContainerChats key={chat._id}>
+                    <SectionContainerChats key={chat._id + String(new Date())}>
                       {chat.messages.map((element: Message, index) => (
-                        <div id={element._id}>
+                        <div id={element.mid}>
                           {element.contentType === ContentType.TEXT &&
                             handleWord(element.content)}
                           {element.from !== 'AGENT' ? (
@@ -472,7 +472,13 @@ export const ChatsHistory: FC<IChatHistoryProps> = ({
                                             <div>
                                               {element.content.action.map(
                                                 (act: string) => (
-                                                  <div key={act}>{act}</div>
+                                                  <div
+                                                    key={
+                                                      act +
+                                                      String(Date.now() + index)
+                                                    }>
+                                                    {act}
+                                                  </div>
                                                 ),
                                               )}
                                             </div>

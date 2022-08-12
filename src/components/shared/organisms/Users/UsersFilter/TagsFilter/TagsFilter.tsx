@@ -80,7 +80,6 @@ export const TagsFilter: FC<FilterChannel> = ({
         {dataFilterTags?.map(({ name, color, _id }: any) => (
           <ContainerChecked key={_id} color={color}>
             <Checkbox
-              isTransparent
               checked={checkedTags?.indexOf(name) !== -1}
               onClick={() => handleTagsFilter(name)}
             />

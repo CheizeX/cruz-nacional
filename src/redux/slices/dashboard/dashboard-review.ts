@@ -22,13 +22,22 @@ export const chatContainerReviewStore = createSlice({
   name: 'chatContainerReviewState',
   initialState,
   reducers: {
-    setReviewChatsFinished: (state, action: PayloadAction<Review[]>) => {
+    setReviewChatsFinished: (
+      state: { reviewChats: Review[] },
+      action: PayloadAction<Review[]>,
+    ) => {
       state.reviewChats = action.payload;
     },
-    setReviewByAgent: (state, action: PayloadAction<string>) => {
+    setReviewByAgent: (
+      state: { reviewByAgent: string },
+      action: PayloadAction<string>,
+    ) => {
       state.reviewByAgent = action.payload;
     },
-    setReviewDatePicker: (state, action: PayloadAction<string>) => {
+    setReviewDatePicker: (
+      state: { datePicker: string },
+      action: PayloadAction<string>,
+    ) => {
       state.datePicker = action.payload;
     },
   },

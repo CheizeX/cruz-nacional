@@ -17,12 +17,15 @@ export const chatToSetOnConversationToStateId = createSlice({
   initialState,
   reducers: {
     setChatToSetOnConversationInStateId: (
-      state,
+      state: { chatToSetOnConversationInStateId: string },
       action: PayloadAction<string>,
     ) => {
       state.chatToSetOnConversationInStateId = action.payload;
     },
-    setChatByInactivity: (state, action: PayloadAction<Chat>) => {
+    setChatByInactivity: (
+      state: { chatByInactivity: Chat },
+      action: PayloadAction<Chat>,
+    ) => {
       state.chatByInactivity = action.payload;
     },
   },

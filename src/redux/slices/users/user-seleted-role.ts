@@ -13,7 +13,10 @@ export const userSeletedRoleStore = createSlice({
   name: 'currentByUserRoleState',
   initialState,
   reducers: {
-    setByUserSeletedRole: (state, action: PayloadAction<string>) => {
+    setByUserSeletedRole: (
+      state: { currentByUserRole: string },
+      action: PayloadAction<string>,
+    ) => {
       state.currentByUserRole = action.payload;
     },
   },

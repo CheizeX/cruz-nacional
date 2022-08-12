@@ -11,7 +11,7 @@ export interface IConvertsationHistory {
   selModalPreviewIamge: React.Dispatch<React.SetStateAction<boolean>>;
   handleAttachmentAgent: (content: string) => JSX.Element;
   handleAttachmentUser: (content: string, channel: string) => JSX.Element;
-  chatConversationView: Chat[];
+  chatConversationView: Chat;
 }
 
 export interface IWrapperConversation {

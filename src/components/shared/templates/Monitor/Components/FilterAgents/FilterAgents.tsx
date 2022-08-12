@@ -26,19 +26,15 @@ export const FilterAgents: FC<IFilterAgentsProps & IFilterContainer> = ({
   filterByAgents,
   filterByState,
   handleChange,
-  handleClear,
   handleStateAgents,
+  clearSecondSection,
 }) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
 
   const handleOnReset = () => {
-    const longByAgent = byAgentAvailable.length;
-    const longState = stateByAgent.length;
-    byAgentAvailable.splice(0, longByAgent);
-    stateByAgent.splice(0, longState);
+    clearSecondSection();
     setIsComponentVisible(false);
-    handleClear();
   };
   const handleClickAgent = () => {
     setIsComponentVisible(false);

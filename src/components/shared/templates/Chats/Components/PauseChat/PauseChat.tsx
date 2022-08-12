@@ -1,7 +1,11 @@
 import { FC, useCallback } from 'react';
 import { baseRestApi } from '../../../../../../api/base';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
-import { useAppSelector } from '../../../../../../redux/hook/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../redux/hook/hooks';
+import { setOneChatOnConversation } from '../../../../../../redux/slices/live-chat/on-conversation-chats';
 import {
   ButtonMolecule,
   ButtonVariant,
@@ -22,18 +26,21 @@ import {
 export const PauseChat: FC<ILiveChatModalProps> = ({ setLiveChatModal }) => {
   const [accessToken] = useLocalStorage('AccessToken', '');
   const showAlert = useToastContext();
+  const dispatch = useAppDispatch();
+
   const { chatToSetOnConversationInStateId } = useAppSelector(
     (state) => state.liveChat.chatToSetOnConversationIdToState,
   );
 
   const handlePauseClick = useCallback(async () => {
     try {
-      await baseRestApi.patch(
+      const response = await baseRestApi.patch(
         `/chats/pauseConversation/${chatToSetOnConversationInStateId}`,
         {
           accessToken,
         },
       );
+      dispatch(setOneChatOnConversation(response));
       setLiveChatModal(false);
     } catch (error) {
       showAlert?.addToast({
@@ -47,6 +54,7 @@ export const PauseChat: FC<ILiveChatModalProps> = ({ setLiveChatModal }) => {
     setLiveChatModal,
     showAlert,
     accessToken,
+    dispatch,
   ]);
 
   return (

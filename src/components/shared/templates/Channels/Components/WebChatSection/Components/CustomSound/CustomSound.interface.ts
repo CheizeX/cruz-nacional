@@ -1,4 +1,4 @@
-import { IListSounds } from '../../../../../Configuration/Components/ChatsConfig/PredefinedSounds/PredefinedSounds.interface';
+import { IListSounds } from '../../../../../Configuration/Components/ChatsConfig/AgentChatsConfig/PredefinedSounds/PredefinedSounds.interface';
 
 export interface ICustomSound {
   soundList: IListSounds;

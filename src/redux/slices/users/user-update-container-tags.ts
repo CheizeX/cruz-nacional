@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tag } from '../../../models/tags/tag';
@@ -20,12 +21,15 @@ export const updateContainerTagStore = createSlice({
   name: 'updateContainerTagState',
   initialState,
   reducers: {
-    setUpdateContainerTag: (state, action: PayloadAction<Tag[]>) => {
+    setUpdateContainerTag: (
+      state: { updateContainerTags: Tag[] },
+      action: PayloadAction<Tag[]>,
+    ) => {
       state.updateContainerTags = action.payload;
     },
-    setNewtagsContainer: (state, action: PayloadAction<Tag>) => {
+    setNewtagsContainer: (state: any, action: PayloadAction<Tag>) => {
       const duplicated = state.updateContainerTags.find(
-        (item) => item._id === action.payload._id,
+        (item: Tag) => item._id === action.payload._id,
       );
       if (!duplicated) {
         return {
@@ -35,12 +39,15 @@ export const updateContainerTagStore = createSlice({
       }
       return { ...state };
     },
-    setObserveChange: (state, action: PayloadAction<Tag[]>) => {
+    setObserveChange: (
+      state: { observeChange: Tag[] },
+      action: PayloadAction<Tag[]>,
+    ) => {
       state.observeChange = action.payload;
     },
-    setDeleteTagContainer: (state, action: PayloadAction<string>) => {
+    setDeleteTagContainer: (state: any, action: PayloadAction<string>) => {
       const updateContainerTag = state.updateContainerTags.filter(
-        (item) => item._id !== action.payload,
+        (item: { _id: string }) => item._id !== action.payload,
       );
       return { ...state, updateContainerTags: [...updateContainerTag] };
     },

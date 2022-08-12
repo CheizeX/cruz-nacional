@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from 'next/dist/client/router';
 import { useCallback, useEffect, useRef } from 'react';
 import { useMutation } from 'react-query';

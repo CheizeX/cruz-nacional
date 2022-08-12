@@ -39,13 +39,6 @@ export const ChatTransfer: FC<IChatTransfer> = ({
 }) => {
   const dispatch = useAppDispatch();
   const toasts = useToastContext();
-  const { userDataInState }: any = useAppSelector(
-    (state) => state.userAuthCredentials,
-  );
-  const { usersData } = useAppSelector((state) => state.users.useQueryState);
-  const { chatsTransfer } = useAppSelector(
-    (state) => state.liveChat.chatsTodayTransferState,
-  );
 
   const [searchAgent, setSearchAgent] = useState<string>('');
   const [agentToTransfer, setAgentToTransfer] = useState<string>('');
@@ -89,6 +82,21 @@ export const ChatTransfer: FC<IChatTransfer> = ({
     getChatsToday();
   }, [getAgentAvailable, getChatsToday]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getAgentAvailable();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const { userDataInState }: any = useAppSelector(
+    (state) => state.userAuthCredentials,
+  );
+  const { usersData } = useAppSelector((state) => state.users.useQueryState);
+  const { chatsTransfer } = useAppSelector(
+    (state) => state.liveChat.chatsTodayTransferState,
+  );
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchAgent(event.target.value);
   };
@@ -106,11 +114,16 @@ export const ChatTransfer: FC<IChatTransfer> = ({
     dispatch(setUserToTransferById(id));
   };
 
+  const handleClose = () => {
+    setLiveChatModal(false);
+    setLiveChatPage('');
+  };
+
   return (
     <StyledChatTransfer>
       <StyledChatTransferHeader>
         <Text>Transferir chat</Text>
-        <button type="button" onClick={() => setLiveChatModal(false)}>
+        <button type="button" onClick={handleClose}>
           <SVGIcon iconFile="/icons/times.svg" />
         </button>
       </StyledChatTransferHeader>
@@ -154,7 +167,7 @@ export const ChatTransfer: FC<IChatTransfer> = ({
                     (chat: Chat) =>
                       chat.status === ChatStatus.ON_CONVERSATION &&
                       chat.assignedAgent &&
-                      chat.assignedAgent._id === _id,
+                      chat.assignedAgent?._id === _id,
                   ).length ?? 0
                 }
                 isPause={
@@ -163,7 +176,7 @@ export const ChatTransfer: FC<IChatTransfer> = ({
                       chat.status === ChatStatus.ON_CONVERSATION &&
                       chat.isPaused === true &&
                       chat.assignedAgent &&
-                      chat.assignedAgent._id === _id,
+                      chat.assignedAgent?._id === _id,
                   ).length ?? 0
                 }
                 isTransfer={
@@ -171,7 +184,7 @@ export const ChatTransfer: FC<IChatTransfer> = ({
                     (chat: Chat) =>
                       chat.isTransfer === true &&
                       chat.assignedAgent &&
-                      chat.assignedAgent._id === _id,
+                      chat.assignedAgent?._id === _id,
                   ).length ?? 0
                 }
                 isAverages={
@@ -179,8 +192,8 @@ export const ChatTransfer: FC<IChatTransfer> = ({
                     ? (chatsTransfer.filter(
                         (chat) =>
                           chat.status === ChatStatus.FINISHED &&
-                          chat.assignedAgent._id &&
-                          chat.assignedAgent._id === _id,
+                          chat.assignedAgent?._id &&
+                          chat.assignedAgent?._id === _id,
                       ).length === 0
                         ? 0
                         : chatsTransfer
@@ -188,7 +201,7 @@ export const ChatTransfer: FC<IChatTransfer> = ({
                               (chat: any) =>
                                 chat.status === ChatStatus.FINISHED &&
                                 chat.assignedAgent &&
-                                chat.assignedAgent._id === _id &&
+                                chat.assignedAgent?._id === _id &&
                                 chat,
                             )
                             .map(
@@ -205,7 +218,7 @@ export const ChatTransfer: FC<IChatTransfer> = ({
                           chatsTransfer.filter(
                             (item: any) =>
                               item.assignedAgent &&
-                              item.assignedAgent._id === _id,
+                              item.assignedAgent?._id === _id,
                           ).length
                       ).toFixed(0) ?? 0
                     : 0
@@ -219,7 +232,7 @@ export const ChatTransfer: FC<IChatTransfer> = ({
           text="Cancelar"
           size={Size.MEDIUM}
           variant={ButtonVariant.OUTLINED}
-          onClick={() => setLiveChatModal(false)}
+          onClick={handleClose}
         />
         <ButtonMolecule
           text="Transferir"

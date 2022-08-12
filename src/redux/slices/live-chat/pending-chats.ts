@@ -14,22 +14,54 @@ export const chatsPendingsToState = createSlice({
   name: 'chatsPendingsToState',
   initialState,
   reducers: {
-    setChatsPendings: (state, action: PayloadAction<Chat[]>) => {
+    setChatsPendings: (
+      state: { chatsPendings: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.chatsPendings = action.payload;
     },
-    setSortedByFirstDate: (state) => {
-      state.chatsPendings = state.chatsPendings.sort((a, b) =>
-        a.createdAt > b.createdAt ? 1 : -1,
+    setOneChatPending: (
+      state: { chatsPendings: Chat[] },
+      action: PayloadAction<Chat>,
+    ) => {
+      if (
+        state?.chatsPendings?.find((chat) => chat._id === action.payload._id)
+      ) {
+        state.chatsPendings = state.chatsPendings.filter(
+          (chat) => chat._id !== action.payload._id,
+        );
+        state.chatsPendings = [
+          (state.chatsPendings[
+            state.chatsPendings.findIndex(
+              (chat) => chat._id === action.payload._id,
+            )
+          ] = action.payload),
+          ...state.chatsPendings,
+        ];
+      } else {
+        state.chatsPendings = [action.payload, ...state.chatsPendings];
+      }
+    },
+    setSortedByFirstDate: (state: { chatsPendings: any[] }) => {
+      state.chatsPendings = state.chatsPendings.sort(
+        (a: { createdAt: number }, b: { createdAt: number }) =>
+          a.createdAt > b.createdAt ? 1 : -1,
       );
     },
-    setSortedByLastDate: (state) => {
-      state.chatsPendings = state.chatsPendings.sort((a, b) =>
-        a.createdAt < b.createdAt ? 1 : -1,
+    setSortedByLastDate: (state: { chatsPendings: any[] }) => {
+      state.chatsPendings = state.chatsPendings.sort(
+        (a: { createdAt: number }, b: { createdAt: number }) =>
+          a.createdAt < b.createdAt ? 1 : -1,
       );
     },
   },
 });
 
-export const { setChatsPendings, setSortedByFirstDate, setSortedByLastDate } =
-  chatsPendingsToState.actions;
+export const {
+  setChatsPendings,
+  setOneChatPending,
+  // removeChatPending,
+  setSortedByFirstDate,
+  setSortedByLastDate,
+} = chatsPendingsToState.actions;
 export default chatsPendingsToState.reducer;

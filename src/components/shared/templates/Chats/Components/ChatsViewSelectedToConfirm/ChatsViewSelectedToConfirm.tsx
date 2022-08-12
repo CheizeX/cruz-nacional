@@ -1,11 +1,10 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { FC, useCallback, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { FC, useCallback, useRef, useState } from 'react';
 import { CgClipboard } from 'react-icons/cg';
 import { Text } from '../../../../atoms/Text/Text';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
-import { ButtonMolecule } from '../../../../atoms/Button/Button';
+import { ButtonMolecule, ButtonState } from '../../../../atoms/Button/Button';
 import {
   IconButtonMolecule,
   IconButtonState,
@@ -55,7 +54,6 @@ import useLocalStorage from '../../../../../../hooks/use-local-storage';
 import { setChatsToSendId } from '../../../../../../redux/slices/live-chat/chat-selected-to-send-id';
 import { setChatToTransferById } from '../../../../../../redux/slices/live-chat/chat-selected-to-transfer-by-id';
 import { setChatToSetOnConversationInStateId } from '../../../../../../redux/slices/live-chat/chatset-on-conversation';
-import { RootState } from '../../../../../../redux';
 import { readHistoryChat } from '../../../../../../api/chat';
 import { setChatsHistory } from '../../../../../../redux/slices/live-chat/chat-history';
 import {
@@ -66,6 +64,7 @@ import { Tooltip } from '../../../../atoms/Tooltip/Tooltip';
 import { TooltipPosition } from '../../../../atoms/Tooltip/tooltip.interface';
 import { PredefinedMessage } from '../PredefinedMessage/PredefinedMessage';
 import { Textarea } from '../../../../atoms/Textarea/Textarea';
+import { setOneChatOnConversation } from '../../../../../../redux/slices/live-chat/on-conversation-chats';
 
 export const ChatsViewSelectedToConfirm: FC<
   SelectedUserProps &
@@ -111,26 +110,26 @@ export const ChatsViewSelectedToConfirm: FC<
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
-
-  const { idClient, idChannel } = useSelector(
-    (state: RootState) => state.liveChat.chatsHistoryState,
+  const { idClient, idChannel } = useAppSelector(
+    (state) => state.liveChat.chatsHistoryState,
   );
 
-  const [sendingMessage, setSendingMessage] = React.useState<boolean>(false);
-  const [sectionNext, setIsSecionNext] = React.useState<boolean>(false);
+  const [initingConversation, setInitingConversation] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState<boolean>(false);
+  const [sectionNext, setIsSecionNext] = useState<boolean>(false);
   const [accessToken] = useLocalStorage('AccessToken', '');
 
   const chatToSetInConversation = chatsPendings?.find(
-    (chat) => chat.client.clientId === userSelected,
+    (chat) => chat.client?.clientId === userSelected,
   );
 
   const chatToSetInConversationId = chatToSetInConversation?._id;
   const chatToTalkWithUser = chatsOnConversation?.find(
-    (chat) => chat.client.clientId === userSelected,
+    (chat) => chat.client?.clientId === userSelected,
   );
 
   const chatToTalkWithUserId = chatToTalkWithUser?._id;
-  const chatToTalkWithUserNumber = chatToTalkWithUser?.client.clientId;
+  const chatToTalkWithUserNumber = chatToTalkWithUser?.client?.clientId;
 
   const handleCopyTextToClipboard = useCallback(
     (arg: string) => {
@@ -145,8 +144,8 @@ export const ChatsViewSelectedToConfirm: FC<
   );
 
   const handleSetUserToOnConversation = async () => {
-    // if (chatsOnConversation?.length < userDataInState?.maxChatsOnConversation) {
     try {
+      setInitingConversation(true);
       const result = await baseRestApi.patch(
         `/chats/initConversation/${chatToSetInConversationId}`,
         {
@@ -173,6 +172,17 @@ export const ChatsViewSelectedToConfirm: FC<
         message: `INIT-CONVERSATION-ERROR ${error}`,
       });
     }
+    setInitingConversation(false);
+  };
+
+  const bodyObjectForEnterOrClick: Message = {
+    from: userDataInState.role,
+    content: chatInputDialogue,
+    contentType: ContentType.TEXT,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    isDeleted: false,
+    _id: chatToTalkWithUserId,
   };
 
   const handleEnterToSendMessage = async (
@@ -184,52 +194,21 @@ export const ChatsViewSelectedToConfirm: FC<
       chatInputDialogue.trim() !== ''
     ) {
       setChatInputDialogue('');
-      const bodyObject: Message = {
-        from: userDataInState.role,
-        content: chatInputDialogue,
-        contentType: ContentType.TEXT,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
       try {
-        if (chatToTalkWithUser?.channel === 'WhatsApp') {
-          await baseRestApi.patch(
-            `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-            bodyObject,
-          );
+        const response = await baseRestApi.patch(
+          `${
+            chatToTalkWithUser?.channel === Channels.WHATSAPP
+              ? `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+              : chatToTalkWithUser?.channel === Channels.WEBCHAT
+              ? `/webchat/sendMessageToUser/${chatToTalkWithUserId}`
+              : `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+          }`,
+          bodyObjectForEnterOrClick,
+        );
+        if (response.messages.length > 0) {
+          dispatch(setOneChatOnConversation(response));
+          setChatInputDialogue('');
         }
-        if (chatToTalkWithUser?.channel === 'Messenger') {
-          await baseRestApi.patch(
-            `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-            bodyObject,
-          );
-        }
-        if (chatToTalkWithUser?.channel === 'Instagram') {
-          await baseRestApi.patch(
-            `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-            bodyObject,
-          );
-        }
-        if (chatToTalkWithUser?.channel === 'Webchat') {
-          await baseRestApi.patch(
-            `/webchat/sendMessageToUser/${chatToTalkWithUserId}`,
-            bodyObject,
-          );
-        }
-        if (chatToTalkWithUser?.channel === 'Wassenger') {
-          await baseRestApi.patch(
-            `/wassenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-            bodyObject,
-          );
-        }
-        if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
-          await baseRestApi.patch(
-            `/chatapi/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-            bodyObject,
-          );
-        }
-
-        // https://rest-ailalia.ngrok.io/rest/v1/api/wassenger/sendMessageToUser/:chatId/:userId
       } catch (error) {
         showAlert?.addToast({
           alert: Toast.ERROR,
@@ -242,52 +221,21 @@ export const ChatsViewSelectedToConfirm: FC<
 
   const handleClickToSendMessage = async () => {
     setChatInputDialogue('');
-    const bodyObject: Message = {
-      from: userDataInState.role,
-      content: chatInputDialogue || '',
-      contentType: ContentType.TEXT,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
     try {
       setSendingMessage(true);
-      if (chatToTalkWithUser?.channel === 'WhatsApp') {
-        await baseRestApi.patch(
-          `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
+      const response = await baseRestApi.patch(
+        `${
+          chatToTalkWithUser?.channel === Channels.WHATSAPP
+            ? `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+            : chatToTalkWithUser?.channel === Channels.WEBCHAT
+            ? `/webchat/sendMessageToUser/${chatToTalkWithUserId}`
+            : `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+        }`,
+        bodyObjectForEnterOrClick,
+      );
+      if (response.messages) {
+        dispatch(setOneChatOnConversation(response));
       }
-      if (chatToTalkWithUser?.channel === 'Messenger') {
-        await baseRestApi.patch(
-          `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === 'Instagram') {
-        await baseRestApi.patch(
-          `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === 'Webchat') {
-        await baseRestApi.patch(
-          `/webchat/sendMessageToUser/${chatToTalkWithUserId}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === 'Wassenger') {
-        await baseRestApi.patch(
-          `/wassenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
-        await baseRestApi.patch(
-          `/chatapi/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      setSendingMessage(false);
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -295,6 +243,7 @@ export const ChatsViewSelectedToConfirm: FC<
         message: `INIT-CONVERSATION-ERROR ${error}`,
       });
     }
+    setSendingMessage(false);
   };
 
   const handleClickToSendPredefinidedTexts = async (message: string) => {
@@ -305,43 +254,21 @@ export const ChatsViewSelectedToConfirm: FC<
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
     try {
       setShowPredefinedTexts(false);
-      if (chatToTalkWithUser?.channel === Channels.WHATSAPP) {
-        await baseRestApi.patch(
-          `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === Channels.MESSENGER) {
-        await baseRestApi.patch(
-          `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === Channels.INSTAGRAM) {
-        await baseRestApi.patch(
-          `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === Channels.WEBCHAT) {
-        await baseRestApi.patch(
-          `/webchat/sendMessageToUser/${chatToTalkWithUserId}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === Channels.WASSENGER) {
-        await baseRestApi.patch(
-          `/wassenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
-      }
-      if (chatToTalkWithUser?.channel === Channels.CHAT_API) {
-        await baseRestApi.patch(
-          `/chatapi/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`,
-          bodyObject,
-        );
+      const response = await baseRestApi.patch(
+        `${
+          chatToTalkWithUser?.channel === Channels.WHATSAPP
+            ? `/whatsapp360/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+            : chatToTalkWithUser?.channel === Channels.WEBCHAT
+            ? `/webchat/sendMessageToUser/${chatToTalkWithUserId}`
+            : `/messenger/sendMessageToUser/${chatToTalkWithUserId}/${chatToTalkWithUserNumber}`
+        }`,
+        bodyObject,
+      );
+      if (response.messages) {
+        dispatch(setOneChatOnConversation(response));
       }
     } catch (error) {
       showAlert?.addToast({
@@ -407,6 +334,7 @@ export const ChatsViewSelectedToConfirm: FC<
     setIsSecionNext(false);
     setShowPredefinedTexts(!showPredefinedTexts);
   };
+
   const handleDropZoneDisplayed = () => {
     setDropZoneDisplayed(true);
     setEmojisDisplayed(false);
@@ -427,13 +355,13 @@ export const ChatsViewSelectedToConfirm: FC<
       <StyledHeaderChatsViewSelectedToConfirm>
         <div>
           {chatsOnConversation?.find(
-            (chat) => chat.client.clientId === userSelected?.toString(),
-          )?.client.profilePic ? (
+            (chat) => chat.client?.clientId === userSelected?.toString(),
+          )?.client?.profilePic ? (
             <img
               src={
                 chatsOnConversation?.find(
-                  (chat) => chat.client.clientId === userSelected?.toString(),
-                )?.client.profilePic
+                  (chat) => chat.client?.clientId === userSelected?.toString(),
+                )?.client?.profilePic
               }
               alt="profile"
             />
@@ -445,9 +373,9 @@ export const ChatsViewSelectedToConfirm: FC<
               Cliente
               {chatsOnConversation?.find(
                 (chat) =>
-                  chat.client.clientId === userSelected &&
+                  chat.client?.clientId === userSelected &&
                   chat.channel === Channels.CHAT_API,
-              )?.client.clientId && !liveChatModal ? (
+              )?.client?.clientId && !liveChatModal ? (
                 <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
                   <StyledCopyToClipboardUser
                     onClick={() =>
@@ -459,9 +387,9 @@ export const ChatsViewSelectedToConfirm: FC<
               ) : null}
               {chatsOnConversation?.find(
                 (chat) =>
-                  chat.client.clientId === userSelected &&
+                  chat.client?.clientId === userSelected &&
                   chat.channel === Channels.WEBCHAT,
-              )?.client.clientId && !liveChatModal ? (
+              )?.client?.clientId && !liveChatModal ? (
                 <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
                   <StyledCopyToClipboardUser
                     onClick={() =>
@@ -473,9 +401,9 @@ export const ChatsViewSelectedToConfirm: FC<
               ) : null}
               {chatsOnConversation?.find(
                 (chat) =>
-                  chat.client.clientId === userSelected &&
+                  chat.client?.clientId === userSelected &&
                   chat.channel === Channels.WHATSAPP,
-              )?.client.clientId && liveChatModal ? (
+              )?.client?.clientId && liveChatModal ? (
                 <Tooltip text="Copiar teléfono" position={TooltipPosition.top}>
                   <StyledCopyToClipboardUser
                     onClick={() =>
@@ -487,48 +415,48 @@ export const ChatsViewSelectedToConfirm: FC<
               ) : null}
             </Text>
             {chatsOnConversation?.find(
-              (chat) => chat.client.clientId === userSelected?.toString(),
+              (chat) => chat.client?.clientId === userSelected?.toString(),
             ) && (
               <Text>
                 {chatsOnConversation?.find(
-                  (chat) => chat.client.clientId === userSelected,
-                )?.client.name || userSelected}{' '}
+                  (chat) => chat.client?.clientId === userSelected,
+                )?.client?.name || userSelected}{' '}
                 <StyledNameAndContactSeparator />{' '}
                 {
                   chatsOnConversation?.find(
                     (chat) =>
-                      chat.client.clientId === userSelected &&
+                      chat.client?.clientId === userSelected &&
                       chat.channel === Channels.WEBCHAT,
-                  )?.client.clientId
+                  )?.client?.clientId
                 }
                 {
                   chatsOnConversation?.find(
                     (chat) =>
-                      chat.client.clientId === userSelected &&
+                      chat.client?.clientId === userSelected &&
                       chat.channel === Channels.WHATSAPP,
-                  )?.client.clientId
+                  )?.client?.clientId
                 }
                 {
                   chatsOnConversation?.find(
                     (chat) =>
-                      chat.client.clientId === userSelected &&
+                      chat.client?.clientId === userSelected &&
                       chat.channel === Channels.CHAT_API,
-                  )?.client.clientId
+                  )?.client?.clientId
                 }
               </Text>
             )}
             {chatsPendings?.find(
-              (chat) => chat.client.clientId === userSelected?.toString(),
+              (chat) => chat.client?.clientId === userSelected?.toString(),
             ) && (
               <Text>
                 {chatsPendings?.find(
-                  (chat) => chat.client.clientId === userSelected,
-                )?.client.name || userSelected}
+                  (chat) => chat.client?.clientId === userSelected,
+                )?.client?.name || userSelected}
               </Text>
             )}
           </span>
           {chatsOnConversation?.find(
-            (user) => user.client.clientId === userSelected,
+            (user) => user.client?.clientId === userSelected,
           )?.hasHistory &&
             liveChatModal === false && (
               // <Tooltip text="Historial" position={TooltipPosition.right}>
@@ -542,7 +470,8 @@ export const ChatsViewSelectedToConfirm: FC<
         </div>
         {chatsOnConversation?.find(
           (user) =>
-            user.client.clientId === userSelected?.toString() && !user.isPaused,
+            user.client?.clientId === userSelected?.toString() &&
+            !user.isPaused,
         ) && (
           <span>
             {/* este span es para que no se rompa cuando le saco el buscar mensaje */}
@@ -602,6 +531,9 @@ export const ChatsViewSelectedToConfirm: FC<
           <ButtonMolecule
             text="Iniciar conversación"
             onClick={handleSetUserToOnConversation}
+            state={
+              initingConversation ? ButtonState.DISABLED : ButtonState.NORMAL
+            }
           />
         </StyledFooterButtonsSelectedToConfirm>
       )}
@@ -722,7 +654,7 @@ export const ChatsViewSelectedToConfirm: FC<
       {chatsOnConversation &&
         chatsOnConversation?.find(
           (user) =>
-            user.client.clientId.toString() === userSelected?.toString() &&
+            user.client?.clientId.toString() === userSelected?.toString() &&
             user.isPaused === true,
         ) && (
           <StyledFooterToChat

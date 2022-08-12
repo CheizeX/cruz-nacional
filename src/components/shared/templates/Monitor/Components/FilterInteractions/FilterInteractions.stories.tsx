@@ -11,6 +11,7 @@ storiesOf('Ailalia/Organisms/Monitor/FilterInteractions', module).add(
   () => {
     return (
       <FilterInteractions
+        setOptionFilter={() => null}
         onChange={() => null}
         dateAgent={[]}
         byChannels={[]}
@@ -19,8 +20,8 @@ storiesOf('Ailalia/Organisms/Monitor/FilterInteractions', module).add(
         filterStatus={() => {}}
         filterAgents={() => {}}
         filterChannels={() => {}}
-        onHandleToggle={() => {}}
         resetHandle={() => {}}
+        setFilterChat={() => {}}
       />
     );
   },

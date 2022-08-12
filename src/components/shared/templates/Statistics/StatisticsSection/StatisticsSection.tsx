@@ -30,6 +30,9 @@ import { ICustomRange } from '../Components/UserAndAgentInteraction/UserAndAgent
 import { IStatistics } from '../../../../../models/statistics/statistics';
 
 export const StatisticsSection: FC = () => {
+  const { tagFilter } = useAppSelector(
+    (state) => state.userAuthCredentials.userDataInState,
+  );
   const dispatch = useAppDispatch();
   const showAlert = useToastContext();
   const [interactionFilterDay, setInteractioFilterDay] =
@@ -114,7 +117,7 @@ export const StatisticsSection: FC = () => {
     }
   };
 
-  const handleStatisticsByDay = async () => {
+  const handleStatisticsByDay = useCallback(async () => {
     try {
       setIsLoandingDay(true);
       if (graphFilterDay) {
@@ -135,7 +138,7 @@ export const StatisticsSection: FC = () => {
         message: `${err}`,
       });
     }
-  };
+  }, []);
 
   const handleListChat = useCallback(async () => {
     try {
@@ -207,11 +210,19 @@ export const StatisticsSection: FC = () => {
   }, [agentInteractionStatistics, informationByAgent]);
 
   useEffect(() => {
-    handleInteractionAgent();
-    handleListChat();
-    readStatitiscsChart();
-    dataApi();
-  }, [handleInteractionAgent, dataApi, handleListChat, readStatitiscsChart]);
+    if (typeof tagFilter === 'string') {
+      handleInteractionAgent();
+      handleListChat();
+      readStatitiscsChart();
+      dataApi();
+    }
+  }, [
+    handleInteractionAgent,
+    dataApi,
+    handleListChat,
+    readStatitiscsChart,
+    tagFilter,
+  ]);
 
   return (
     <StyledSectionStatistics>

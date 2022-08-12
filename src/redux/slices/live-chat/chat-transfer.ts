@@ -19,7 +19,10 @@ export const chatsTransferStore = createSlice({
 
   initialState,
   reducers: {
-    setChatsTransfer: (state, action: PayloadAction<Chat[]>) => {
+    setChatsTransfer: (
+      state: { chatsTransfer: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.chatsTransfer = action.payload;
     },
   },

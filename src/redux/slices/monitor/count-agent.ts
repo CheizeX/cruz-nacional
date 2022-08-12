@@ -13,7 +13,10 @@ export const monitorCountAgentStore = createSlice({
   name: 'monitorCountAgentsAvailableState',
   initialState,
   reducers: {
-    setCountAgentsAvailable: (state, action: PayloadAction<number>) => {
+    setCountAgentsAvailable: (
+      state: { countAgent: number },
+      action: PayloadAction<number>,
+    ) => {
       state.countAgent = action.payload;
     },
   },

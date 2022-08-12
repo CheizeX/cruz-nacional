@@ -10,13 +10,13 @@ const mySelector = (
 export const StyledSearchForChats = styled.div`
   max-height: 551px;
   & > :nth-child(2) {
-    overflow: scroll;
-    max-height: 551px;
     & > div {
-      & > svg {
-        width: 60px;
-        margin: auto;
-        display: flex;
+      & > div {
+        & > svg {
+          width: 60px;
+          margin: auto;
+          display: flex;
+        }
       }
     }
     &::-webkit-scrollbar {

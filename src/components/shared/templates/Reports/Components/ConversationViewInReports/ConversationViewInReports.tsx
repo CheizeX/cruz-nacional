@@ -8,6 +8,7 @@ import {
   StyledUserConversationInReports,
   StyledAgentConversationInReports,
   StyledAvatarCoversation,
+  WrapperConversationView,
 } from './ConversationVIewInReports.styled';
 import { Text } from '../../../../atoms/Text/Text';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
@@ -15,10 +16,7 @@ import {
   WrapperSearchHistory,
   StyledSearchHistory,
 } from '../../../Chats/Components/ChatHistory/ChatHistory.styled';
-import {
-  SectionContainerConversationView,
-  StyledCardAgentConversation,
-} from '../../../Monitor/Components/ConversationHistory/ConversationView.styled';
+import { SectionContainerConversationView } from '../../../Monitor/Components/ConversationHistory/ConversationView.styled';
 import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
 import {
   Chat,
@@ -26,6 +24,7 @@ import {
   ContentType,
 } from '../../../../../../models/chat/chat';
 import { UserRole } from '../../../../../../models/users/role';
+import { Tag } from '../../../../../../models/tags/tag';
 
 export const CoversationViewInReports: FC<IConversationInReports> = ({
   dataFilterReports,
@@ -182,7 +181,7 @@ export const CoversationViewInReports: FC<IConversationInReports> = ({
           <StyledContainerLeft>
             {dataFilterReports &&
               dataFilterReports.map((item, index) => (
-                <StyledCardAgentConversation
+                <WrapperConversationView
                   onClick={() => setSelectedChatReport(index)}
                   focusedChats={index === seletedChatReport}>
                   <div>
@@ -215,12 +214,20 @@ export const CoversationViewInReports: FC<IConversationInReports> = ({
                       </Text>
                     </BadgeMolecule>
                   </div>
-                </StyledCardAgentConversation>
+                  <div>
+                    {item.tags &&
+                      item.tags.map((e: Tag) => (
+                        <BadgeMolecule key={e._id} bgColor={e.color}>
+                          <Text>{e.name}</Text>
+                        </BadgeMolecule>
+                      ))}
+                  </div>
+                </WrapperConversationView>
               ))}
           </StyledContainerLeft>
         </div>
         <div>
-          <Text>Chats</Text>
+          <Text>Mensajes</Text>
           <div>
             <div>
               {dataFilterReports &&

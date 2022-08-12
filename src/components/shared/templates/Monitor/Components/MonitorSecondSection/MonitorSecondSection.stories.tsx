@@ -6,6 +6,7 @@ storiesOf('Ailalia/Templates/Monitor/MonitorSecondSection', module).add(
   () => {
     return (
       <MonitorSecondSection
+        setOptionFilterSecond={() => {}}
         onChange={() => null}
         countAgent={0}
         dateAgent={[]}
@@ -16,8 +17,9 @@ storiesOf('Ailalia/Templates/Monitor/MonitorSecondSection', module).add(
         filterByAgents={() => {}}
         byAgentAvailable={[]}
         handleChange={() => {}}
-        handleClear={() => {}}
         handleStateAgents={() => {}}
+        clearSecondSection={() => {}}
+        setSectionAgent={() => null}
       />
     );
   },

@@ -20,10 +20,13 @@ export const tagsManagementStore = createSlice({
   name: 'tagsQueryState',
   initialState,
   reducers: {
-    setDataTag: (state, action: PayloadAction<Tag[]>) => {
+    setDataTag: (state: { tagsData: Tag[] }, action: PayloadAction<Tag[]>) => {
       state.tagsData = action.payload;
     },
-    setTagColors: (state, action: PayloadAction<ITagColor[]>) => {
+    setTagColors: (
+      state: { tagColors: ITagColor[] },
+      action: PayloadAction<ITagColor[]>,
+    ) => {
       state.tagColors = action.payload;
     },
   },

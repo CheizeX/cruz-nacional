@@ -111,9 +111,9 @@ export const RightPanelReports: FC<IPropsRightReport> = ({
       </StyledHeaderRightPanel>
       {datsReports.length > 0 ? (
         <SearchForChats
+          setSkip={setSkip}
           datsReports={datsReports}
           isHasMore={isHasMore}
-          setSkip={setSkip}
           setClientIdInReports={setClientIdInReports}
           setIsModalConversationInReports={setIsModalConversationInReports}
         />

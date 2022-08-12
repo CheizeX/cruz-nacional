@@ -7,7 +7,7 @@ import { useToastContext } from '../../../../../../molecules/Toast/useToast';
 import {
   ToogleComponentForMappedRestrictions,
   ToogleComponentForMappedRestrictionsNoSel,
-} from '../../../../../Configuration/Components/ChatsConfig/PredefinedSounds/PreddefinedSound.styled';
+} from '../../../../../Configuration/Components/ChatsConfig/AgentChatsConfig/PredefinedSounds/PreddefinedSound.styled';
 import { ICustomSound } from './CustomSound.interface';
 import { WrapperCustomSound } from './CustomSound.styled';
 

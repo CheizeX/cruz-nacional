@@ -67,7 +67,7 @@ export const subscriptionsDataToState = createSlice({
   initialState,
   reducers: {
     setSubscriptionsData: (
-      state,
+      state: { subscriptionsData: SubscriptionDataProps },
       action: PayloadAction<SubscriptionDataProps>,
     ) => {
       state.subscriptionsData = action.payload;

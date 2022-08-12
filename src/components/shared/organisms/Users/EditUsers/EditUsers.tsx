@@ -45,7 +45,6 @@ export const EditUsers: FC<IEditUsersProps> = ({
   setUserModal,
   setUserActive,
   setOpenNewSection,
-  setCheckedModifyUser,
 }) => {
   const showAlert = useToastContext();
   const dispatch = useAppDispatch();
@@ -162,7 +161,6 @@ export const EditUsers: FC<IEditUsersProps> = ({
 
   const handleClickUserTags = (arg: boolean) => {
     setUserModal(arg);
-    setCheckedModifyUser([]);
     setUserActive(0);
   };
 

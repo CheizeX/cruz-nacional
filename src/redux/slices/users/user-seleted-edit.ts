@@ -12,7 +12,10 @@ export const userSeletedEdit = createSlice({
   name: 'userByIdEditState',
   initialState,
   reducers: {
-    setUserByIdEdit: (state, action: PayloadAction<string>) => {
+    setUserByIdEdit: (
+      state: { userByIdEdit: string },
+      action: PayloadAction<string>,
+    ) => {
       state.userByIdEdit = action.payload;
     },
   },

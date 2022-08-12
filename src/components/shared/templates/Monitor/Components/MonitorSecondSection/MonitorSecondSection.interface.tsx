@@ -7,12 +7,14 @@ export interface IMonitorSecondSection {
   allAgent?: User[];
   chats?: Chat[];
   countAgent: number;
-  stateByAgent: number[];
+  stateByAgent: string[];
   byAgentAvailable: string[];
   handleChange: () => void | Promise<void>;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   filterByAgents: (arg: string) => void;
-  filterByState: (arg: number) => void;
-  handleClear: () => void | Promise<void>;
+  filterByState: (arg: string) => void;
   handleStateAgents: () => void | Promise<void>;
+  clearSecondSection: () => void;
+  setSectionAgent: React.Dispatch<React.SetStateAction<string>>;
+  setOptionFilterSecond: React.Dispatch<React.SetStateAction<number>>;
 }

@@ -1,9 +1,10 @@
 import { NextPage } from 'next';
-import React, { useEffect } from 'react';
-import { websocketContext } from '../../chat';
+import React from 'react';
+// import { useJwt } from 'react-jwt';
+// import { websocketContext } from '../../chat';
 import { LiveChatsPage } from '../../components/shared/pages/LiveChatsPage/LiveChatsPage';
 import { UploadableFile } from '../../components/shared/templates/Chats/Components/UploadFiles/UploadFiles.interface';
-import { useAppSelector } from '../../redux/hook/hooks';
+// import { useAppSelector } from '../../redux/hook/hooks';
 import { IBackOfficeProps } from '../../components/shared/organisms/NavBar/BackOffice/NavBarBackOffice.interface';
 import {
   FilterChannelsProps,
@@ -21,17 +22,21 @@ const LiveChatPage: NextPage<
   setCheckedTags,
   setMyAccount,
 }) => {
-  const socket: any = React.useContext(websocketContext);
+  // const socket: any = React.useContext(websocketContext);
 
-  const { userDataInState } = useAppSelector(
-    (state) => state.userAuthCredentials,
-  );
-  useEffect(() => {
-    socket?.emit('joinAgentRooms', {
-      userId: userDataInState?._id,
-      companyId: userDataInState?.companyId,
-    });
-  }, [socket, userDataInState]);
+  // const { userDataInState } = useAppSelector(
+  //   (state) => state.userAuthCredentials,
+  // );
+
+  // useEffect(() => {
+  //   if (decodedToken) {
+  //     console.log(decodedToken._id, 'id', decodedToken.companyId, 'company');
+  //     socket?.emit('joinAgentRooms', {
+  //       userId: decodedToken._id,
+  //       companyId: decodedToken.companyId,
+  //     });
+  //   }
+  // }, [socket]);
 
   return (
     <>

@@ -27,15 +27,21 @@ export const userStatisticsStore = createSlice({
   initialState,
   reducers: {
     setAgentInteractionStatistics: (
-      state,
+      state: { agentInteractionStatistics: IStatistics[] },
       action: PayloadAction<IStatistics[]>,
     ) => {
       state.agentInteractionStatistics = action.payload;
     },
-    setUserList: (state, action: PayloadAction<IUserList[]>) => {
+    setUserList: (
+      state: { userList: IUserList[] },
+      action: PayloadAction<IUserList[]>,
+    ) => {
       state.userList = action.payload;
     },
-    setHoursChart: (state, action: PayloadAction<IHoursChart[]>) => {
+    setHoursChart: (
+      state: { dataHoursChart: IHoursChart[] },
+      action: PayloadAction<IHoursChart[]>,
+    ) => {
       state.dataHoursChart = action.payload;
     },
   },

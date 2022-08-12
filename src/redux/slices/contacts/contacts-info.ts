@@ -25,13 +25,22 @@ export const ContactsInfoStore = createSlice({
   name: 'contactsInfoState',
   initialState,
   reducers: {
-    setInfoContacts: (state, action: PayloadAction<IPropsContacts[]>) => {
+    setInfoContacts: (
+      state: { dataContacts: IPropsContacts[] },
+      action: PayloadAction<IPropsContacts[]>,
+    ) => {
       state.dataContacts = action.payload;
     },
-    setUpdateContacts: (state, action: PayloadAction<IContactInfo>) => {
+    setUpdateContacts: (
+      state: { updateContact: IContactInfo },
+      action: PayloadAction<IContactInfo>,
+    ) => {
       state.updateContact = action.payload;
     },
-    setContactById: (state, action: PayloadAction<string>) => {
+    setContactById: (
+      state: { contactById: string },
+      action: PayloadAction<string>,
+    ) => {
       state.contactById = action.payload;
     },
   },

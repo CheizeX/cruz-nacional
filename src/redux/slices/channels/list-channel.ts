@@ -27,19 +27,34 @@ export const listChannelStore = createSlice({
   name: 'listChannelState',
   initialState,
   reducers: {
-    setlistChannel: (state, action: PayloadAction<ListChannel>) => {
+    setlistChannel: (
+      state: { listChannel: ListChannel },
+      action: PayloadAction<ListChannel>,
+    ) => {
       state.listChannel = action.payload;
     },
-    setIdChannel: (state, action: PayloadAction<string>) => {
+    setIdChannel: (
+      state: { idChannel: string },
+      action: PayloadAction<string>,
+    ) => {
       state.idChannel = action.payload;
     },
-    setScript: (state, action: PayloadAction<IPropsScripts>) => {
+    setScript: (
+      state: { scriptsBuilder: IPropsScripts },
+      action: PayloadAction<IPropsScripts>,
+    ) => {
       state.scriptsBuilder = action.payload;
     },
-    setStatusChannel: (state, action: PayloadAction<boolean>) => {
+    setStatusChannel: (
+      state: { statusChannel: boolean },
+      action: PayloadAction<boolean>,
+    ) => {
       state.statusChannel = action.payload;
     },
-    setIdActiveChannel: (state, action: PayloadAction<string>) => {
+    setIdActiveChannel: (
+      state: { idActiveChannel: string },
+      action: PayloadAction<string>,
+    ) => {
       state.idActiveChannel = action.payload;
     },
   },

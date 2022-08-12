@@ -113,8 +113,8 @@ export const EndChat: FC<IEndChatProps & SelectedUserProps> = ({
   };
 
   const handleFinishedChat = useCallback(async () => {
+    setIsLoanding(true);
     try {
-      setIsLoanding(true);
       const response = await endChat(chatSelectedToSendId, {
         finishedStatus: realInputValue as ChatFinishedStatus,
         feedback: isComment,
@@ -151,7 +151,6 @@ export const EndChat: FC<IEndChatProps & SelectedUserProps> = ({
           message: 'Lo sentimos no pudimos finalizar el chat',
         });
       }
-      setIsLoanding(false);
     } catch (err) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -159,6 +158,7 @@ export const EndChat: FC<IEndChatProps & SelectedUserProps> = ({
         message: `${err}`,
       });
     }
+    setIsLoanding(false);
   }, [
     chatSelectedToSendId,
     chatsOnConversation,

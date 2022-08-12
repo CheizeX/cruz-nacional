@@ -60,32 +60,31 @@ export const StyledWrapperContatsHeader = styled.div`
         }
       }
     }
-      & > :nth-child(2) {
-        & > div {
-          background-color: ${({ theme }) => theme.Colors.grays[9]};
-          & > span {
-            width: 100%;
-            color: ${({ theme }) => theme.Colors.grays[3]};
-            font-size: ${({ theme }) => theme.fontSize[12]};
-            font-weight: ${({ theme }) => theme.fontWeight[600]};
-            line-height: 14px;
-          }
-        } 
+    & > :nth-child(2) {
+      & > div {
+        background-color: ${({ theme }) => theme.Colors.grays[9]};
+        & > span {
+          width: 100%;
+          color: ${({ theme }) => theme.Colors.grays[3]};
+          font-size: ${({ theme }) => theme.fontSize[12]};
+          font-weight: ${({ theme }) => theme.fontWeight[600]};
+          line-height: 14px;
+        }
       }
-      & > :nth-child(4) {
-        border-left: 1px solid ${({ theme }) => theme.Colors.grays[8]};
-        & > button {
-          background-color: ${({ theme }) => theme.Colors.grays[5]};
-          width: 140px;
-          & > span {
-            color: ${({ theme }) => theme.Colors.grays[10]};
-            font-size: ${({ theme }) => theme.fontSize[12]};
-            font-weight: ${({ theme }) => theme.fontWeight[600]};
-            line-height: 14px;
-            display: flex;
-            width: 100%;
-            min-width: 94px;
-          }
+    }
+    & > :nth-child(4) {
+      border-left: 1px solid ${({ theme }) => theme.Colors.grays[8]};
+      & > button {
+        background-color: ${({ theme }) => theme.Colors.grays[5]};
+        width: 140px;
+        & > span {
+          color: ${({ theme }) => theme.Colors.grays[10]};
+          font-size: ${({ theme }) => theme.fontSize[12]};
+          font-weight: ${({ theme }) => theme.fontWeight[600]};
+          line-height: 14px;
+          display: flex;
+          width: 100%;
+          min-width: 94px;
         }
       }
     }

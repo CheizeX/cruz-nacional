@@ -11,12 +11,8 @@ import {
   WrapperFirtSectionCard,
   WrapperSecondSectionAgent,
   StyledAgentActive,
-  TooltipBoxEmail,
-  StyledToolTipCardEmail,
-  TooltipTextEmail,
-  StyledToolTipCardName,
-  TooltipTextName,
-  TooltipBoxName,
+  StyledTextName,
+  StyledTextEmail,
 } from './MonitorSecondSection.styled';
 import { ChatsCardMonitor } from '../ChatsCardMonitor/ChatsCardMonitor';
 import { IMonitorSecondSection } from './MonitorSecondSection.interface';
@@ -38,49 +34,29 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
   filterByAgents,
   filterByState,
   handleChange,
-  handleClear,
   handleStateAgents,
+  clearSecondSection,
+  setSectionAgent,
+  setOptionFilterSecond,
 }) => {
   const [accessToken] = useLocalStorage('AccessToken', '');
-
-  const handleLetterLimitName = (name: string) => {
-    if (name.length > 21) {
-      return `${name.slice(0, 21)}...`;
-    }
-    return name;
-  };
-  const handleLetterLimitEmail = (email: string) => {
-    if (email.length > 26) {
-      return `${email.slice(0, 26)}...`;
-    }
-    return email;
-  };
-  const handleTooltipName = (name: string) => {
-    if (name.length > 21) {
-      return <TooltipBoxName>{name}</TooltipBoxName>;
-    }
-    return null;
-  };
-
-  const handleTooltipEmail = (email: string) => {
-    if (email.length > 26) {
-      return <TooltipBoxEmail>{email}</TooltipBoxEmail>;
-    }
-    return null;
-  };
-
   const handleTag = (tags: Tag[]) => {
     if (tags && tags.length > 1) {
       return tags.length.toString();
     }
-    return tags && tags[0].name;
+    return tags && tags[0]?.name;
   };
   const handleLetterTag = (tags: Tag[]) => {
     if (tags && tags.length > 1) {
       const str = tags.map((item) => item.name);
       return str.toString();
     }
-    return tags && tags[0].name;
+    return tags && tags[0]?.name;
+  };
+
+  const handleCard = (arg: string) => {
+    setSectionAgent(arg);
+    setOptionFilterSecond(0);
   };
 
   return (
@@ -96,7 +72,7 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
           filterByAgents={filterByAgents}
           filterByState={filterByState}
           handleChange={handleChange}
-          handleClear={handleClear}
+          clearSecondSection={clearSecondSection}
         />
       </StyledHeaderFirstSection>
       <WrapperFirtSectionCard>
@@ -105,14 +81,14 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
           number={countAgent}
           position="AVAILABLE"
           icon="/icons/user_Accept.svg"
-          setFilterChat={() => null}
+          setFilterChat={handleCard}
         />
         <ChatsCardMonitor
           name="En Pausa"
           number={agentNotAvailable && agentNotAvailable.length}
           position="BATHROOM"
           icon="/icons/user_watch.svg"
-          setFilterChat={() => null}
+          setFilterChat={handleCard}
         />
       </WrapperFirtSectionCard>
       <ContainerInput
@@ -132,13 +108,6 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
                     alt={name.slice(0, 7)}
                   />
                 ) : (
-                  // <img
-                  //   src={`${urlAvatar}?token=${accessToken}`}
-                  //   // onLoad={imageOnLoadHandler}
-                  //   onError={imageOnErrorHandler}
-                  //   alt="www.kindacode.com" laboraorio mundo spec imunospect
-                  // />
-                  // <StyledMyAccountAvatar src="/icons/user.svg" />
                   <SVGIcon iconFile="/icons/unknown_user.svg" />
                 )}
                 <div>
@@ -147,18 +116,12 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
                       <StyledAgentActive />
                     ) : null}
                   </span>
-                  <StyledToolTipCardName>
-                    <TooltipTextName>
-                      {handleLetterLimitName(name)}
-                    </TooltipTextName>
-                    {handleTooltipName(name)}
-                  </StyledToolTipCardName>
-                  <StyledToolTipCardEmail>
-                    <TooltipTextEmail>
-                      {handleLetterLimitEmail(email)}
-                    </TooltipTextEmail>
-                    {handleTooltipEmail(email)}
-                  </StyledToolTipCardEmail>
+                  <Tooltip position={TooltipPosition.top} text={name}>
+                    <StyledTextName>{name}</StyledTextName>
+                  </Tooltip>
+                  <Tooltip position={TooltipPosition.top} text={email}>
+                    <StyledTextEmail>{email}</StyledTextEmail>
+                  </Tooltip>
                 </div>
               </div>
               <span>
@@ -172,7 +135,7 @@ export const MonitorSecondSection: FC<IMonitorSecondSection> = ({
                         rightIcon={() => (
                           <SVGIcon iconFile="/icons/etiqueta.svg" />
                         )}>
-                        <Text>{handleTag(tags).slice(0, 1)}</Text>
+                        <Text>{handleTag(tags)?.slice(0, 1)}</Text>
                       </BadgeMolecule>
                     </Tooltip>
                   )}

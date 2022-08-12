@@ -52,7 +52,7 @@ export const TagsConfiguration: FC = () => {
       <StyledTagsConfigurationHeader>
         <Text>Restricciones a través de Etiquetas</Text>
         <Tooltip
-          text="Los SUPERVISORES tienen acceso a diferentes secciones ( Monitor - Dashboard - Estadísticas - Reportes ). Cuando uno de ellos se encuentra vinculado a una Etiqueta, se puede elegir que su acceso se vea limitado por las mismas, o bien que pueda acceder a todo el contenido sin ninguna restricción."
+          text="Los SUPERVISORES tienen acceso a diferentes secciones ( Monitor - Dashboard - Estadísticas - Reportes ). Cuando uno de ellos se encuentra vinculado a una Etiqueta, se puede elegir que su acceso se vea limitado por la misma, o bien que pueda acceder a todo el contenido sin ninguna restricción."
           position={TooltipPosition.bottom}>
           <TooltipTarget>
             <FaInfoCircle />

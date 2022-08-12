@@ -29,8 +29,9 @@ export const FilterInteractions: FC<IFilterStatus> = ({
   statusAgent,
   byChannels,
   IDAgents,
-  onHandleToggle,
   resetHandle,
+  setOptionFilter,
+  setFilterChat,
 }) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
@@ -43,11 +44,13 @@ export const FilterInteractions: FC<IFilterStatus> = ({
     IDAgents?.splice(0, longAgents);
     byChannels?.splice(0, longChannels);
     setIsComponentVisible(false);
+    setOptionFilter(false);
     resetHandle();
+    setFilterChat('');
   };
   const handleToggle = () => {
     setIsComponentVisible(false);
-    onHandleToggle();
+    setOptionFilter(true);
   };
 
   return (

@@ -1,11 +1,17 @@
 import { FC, useState } from 'react';
-import { MaxConversations } from './MaxConversations/MaxConversations';
-import { ChatsAlertsByTime } from './ChatsRestrictions/ChatsAlertsByTime/ChatsAlertsByTime';
-import { CloseChatsByInactivity } from './ChatsRestrictions/ChatsAlertsByTime copy/CloseChatsByInactivity';
-import { PredefinedAgentMessages } from './PredefinedAgentMessages/PredefinedAgentMessages';
-import { PredefinedSounds } from './PredefinedSounds/PredefinedSounds';
-import { IListSounds } from './PredefinedSounds/PredefinedSounds.interface';
-import { StyledChatsConfigSection } from './ChatsConfig.styled';
+import { ChatsAlertsByTime } from './AgentChatsConfig/ChatsRestrictions/ChatsAlertsByTime/ChatsAlertsByTime';
+import { CloseChatsByInactivity } from './AgentChatsConfig/ChatsRestrictions/CloseChatsByInactivity/CloseChatsByInactivity';
+import {
+  StyledChatsConfigSection,
+  HeaderChatConfig,
+} from './ChatsConfig.styled';
+import { Tabs } from '../../../../organisms/Tabs/Tabs';
+import { MaxConversations } from './AgentChatsConfig/MaxConversations/MaxConversations';
+import { PredefinedAgentMessages } from './AgentChatsConfig/PredefinedAgentMessages/PredefinedAgentMessages';
+import { PredefinedSounds } from './AgentChatsConfig/PredefinedSounds/PredefinedSounds';
+// import { PredefinedInteractionsMesssages } from './AgentChatsConfig/PredefinedInteractionsMessages/PredefinedInteractionsMessages';
+import { IListSounds } from './AgentChatsConfig/PredefinedSounds/PredefinedSounds.interface';
+// import { TimeOutClientWithoutAsignation } from './ClientChatsConfig/TimeOutClientWithoutAsignation/TimeOutClientWithoutAsignation';
 
 export const ChatsConfig: FC = () => {
   const [soundList] = useState<IListSounds>({
@@ -39,12 +45,22 @@ export const ChatsConfig: FC = () => {
   });
 
   return (
-    <StyledChatsConfigSection>
-      <MaxConversations />
-      <CloseChatsByInactivity />
-      <ChatsAlertsByTime />
-      <PredefinedAgentMessages />
-      <PredefinedSounds soundList={soundList} />
-    </StyledChatsConfigSection>
+    <HeaderChatConfig>
+      <Tabs activeByDefault={0}>
+        <div title="Agente">
+          <StyledChatsConfigSection>
+            <MaxConversations />
+            <CloseChatsByInactivity />
+            <ChatsAlertsByTime />
+            <PredefinedAgentMessages />
+            <PredefinedSounds soundList={soundList} />
+            {/* <PredefinedInteractionsMesssages /> */}
+          </StyledChatsConfigSection>
+        </div>
+        {/* <div title="Cliente">
+          <TimeOutClientWithoutAsignation />
+        </div> */}
+      </Tabs>
+    </HeaderChatConfig>
   );
 };

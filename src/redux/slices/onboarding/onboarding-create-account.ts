@@ -13,7 +13,10 @@ export const createAccountStore = createSlice({
   name: 'createAccountState',
   initialState,
   reducers: {
-    setByUserIdOnboarding: (state, action: PayloadAction<string>) => {
+    setByUserIdOnboarding: (
+      state: { currentIdUserAccount: string },
+      action: PayloadAction<string>,
+    ) => {
       state.currentIdUserAccount = action.payload;
     },
   },

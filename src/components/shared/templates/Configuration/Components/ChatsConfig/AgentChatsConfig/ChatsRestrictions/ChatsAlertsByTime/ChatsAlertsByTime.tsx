@@ -1,32 +1,33 @@
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react';
 import { FaInfoCircle } from 'react-icons/fa';
-import {
-  ButtonMolecule,
-  ButtonState,
-} from '../../../../../../atoms/Button/Button';
-import { Text } from '../../../../../../atoms/Text/Text';
-import { baseRestApi } from '../../../../../../../../api/base';
+
+import { Text } from '../../../../../../../atoms/Text/Text';
+import { baseRestApi } from '../../../../../../../../../api/base';
 import {
   StyledInputTypeNumber,
   StyledChatsAlertsByTime,
   StyledChatsAlertsByTimeBody,
   StyledChatsAlertsByTimeHeader,
 } from './ChatsAlertsByTime.styled';
-import { useToastContext } from '../../../../../../molecules/Toast/useToast';
-import { Toast } from '../../../../../../molecules/Toast/Toast.interface';
+import { useToastContext } from '../../../../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../../../../molecules/Toast/Toast.interface';
 import {
   useAppDispatch,
   useAppSelector,
-} from '../../../../../../../../redux/hook/hooks';
-import { getGeneralConfigurationData } from '../../../../../../../../redux/slices/configuration/configuration-info';
-import { TooltipTarget } from '../../../../../../atoms/Tooltip/tooltip.styled';
-import { TooltipPosition } from '../../../../../../atoms/Tooltip/tooltip.interface';
-import { Tooltip } from '../../../../../../atoms/Tooltip/Tooltip';
+} from '../../../../../../../../../redux/hook/hooks';
+import { getGeneralConfigurationData } from '../../../../../../../../../redux/slices/configuration/configuration-info';
+import { TooltipTarget } from '../../../../../../../atoms/Tooltip/tooltip.styled';
+import { TooltipPosition } from '../../../../../../../atoms/Tooltip/tooltip.interface';
+import { Tooltip } from '../../../../../../../atoms/Tooltip/Tooltip';
 import {
   ToogleComponentForMappedRestrictions,
   ToogleComponentForMappedRestrictionsNoSel,
-} from '../../../../../Channels/Components/CardChannel/CardChannel.styled';
+} from '../../../../../../Channels/Components/CardChannel/CardChannel.styled';
+import {
+  ButtonMolecule,
+  ButtonState,
+} from '../../../../../../../atoms/Button/Button';
 
 export const ChatsAlertsByTime: FC = () => {
   const dispatch = useAppDispatch();
@@ -104,7 +105,7 @@ export const ChatsAlertsByTime: FC = () => {
   return (
     <StyledChatsAlertsByTime>
       <StyledChatsAlertsByTimeHeader>
-        <Text>Alertas por inactividad</Text>
+        <Text>Alertas por demora de atención</Text>
         <Tooltip
           text={`Las alertas pueden activarse para ayudar a los agentes a mantener una conversación activa.
           En caso de estar activadas, deberán definirse los minutos transcurridos desde la última interacción con el agente. 

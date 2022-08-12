@@ -47,6 +47,7 @@ export const UsersFilter: FC<IUserFilterProps & IPropsAsignamentTags> = ({
     setIsComponentVisible(false);
     handleReset();
     setCheckedAsignationTags([]);
+    setFilterRole('TODOS');
   };
 
   return (
@@ -54,13 +55,6 @@ export const UsersFilter: FC<IUserFilterProps & IPropsAsignamentTags> = ({
       <button type="button" onClick={() => setIsComponentVisible(true)}>
         <SVGIcon iconFile="/icons/filter.svg" />
       </button>
-      {/* <Dropdown
-        onClick={() => handleIsClose(false)}
-        triggerElement={() => (
-          <StyledOpen>
-            <SVGIcon iconFile="/icons/filter.svg" />
-          </StyledOpen>
-        )}> */}
       {isComponentVisible && (
         <StyledUserFilter ref={ref}>
           <StyledUserHeader>
@@ -131,7 +125,6 @@ export const UsersFilter: FC<IUserFilterProps & IPropsAsignamentTags> = ({
           </StyledFooter>
         </StyledUserFilter>
       )}
-      {/* </Dropdown> */}
     </StyledWrapperFilterUser>
   );
 };

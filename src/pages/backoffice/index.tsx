@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NextPage } from 'next';
 import { CollapseSidebar } from '../../components/shared/organisms/BackofficeLayout/BackofficeLayout.interface';
 import { IBackOfficeProps } from '../../components/shared/organisms/NavBar/BackOffice/NavBarBackOffice.interface';
 import { IPropsAgents } from '../../components/shared/templates/Dashboard/Components/Agents/Agents.interface';
 import { FilterChannel } from '../../components/shared/templates/Chats/Components/ChatsFilter/ChatFilter/ChatFilter.interface';
 import { BackofficeLayout } from '../../components/shared/organisms/BackofficeLayout/BackofficeLayout';
-import { websocketContext } from '../../chat';
-import { useAppSelector } from '../../redux/hook/hooks';
+// import { websocketContext } from '../../chat';
+// import { useAppSelector } from '../../redux/hook/hooks';
 
 const BackofficePage: NextPage<
   IBackOfficeProps & CollapseSidebar & IPropsAgents & FilterChannel
@@ -23,18 +23,18 @@ const BackofficePage: NextPage<
   checkedTags,
   setCheckedTags,
 }) => {
-  const socket: any = React.useContext(websocketContext);
+  // const socket: any = React.useContext(websocketContext);
 
-  const { _id: userId, companyId } = useAppSelector(
-    (state) => state?.userAuthCredentials.userDataInState,
-  );
+  // const { _id: userId, companyId } = useAppSelector(
+  //   (state) => state?.userAuthCredentials.userDataInState,
+  // );
 
-  useEffect(() => {
-    socket?.emit('joinBackofficeRooms', {
-      companyId,
-      userId,
-    });
-  }, [companyId, userId]);
+  // useEffect(() => {
+  //   socket?.emit('joinBackofficeRooms', {
+  //     companyId,
+  //     userId,
+  //   });
+  // }, [companyId, userId]);
 
   return (
     <BackofficeLayout

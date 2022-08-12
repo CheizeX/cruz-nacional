@@ -13,6 +13,7 @@ import {
   ISearchByAsignation,
 } from './SearchByAsignation.interface';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
+import { UserRole } from '../../../../../../models/users/role';
 
 export const SearchByAsignation: FC<
   IPropsSearchAsignation & ISearchByAsignation
@@ -23,9 +24,11 @@ export const SearchByAsignation: FC<
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchAgent(event.target.value);
   };
-  const { datsAgents } = useAppSelector(
-    (state) => state.reports.reportsAgentsQueryState,
+  const { allUser } = useAppSelector(
+    (state) => state.monitor.monitorAllUserState,
   );
+
+  const datsAgents = allUser?.filter((item) => item.role === UserRole.AGENT);
 
   const dateFilterAgent = useMemo(() => {
     if (!searchAgent) return datsAgents;
@@ -33,6 +36,7 @@ export const SearchByAsignation: FC<
       agent.name.toLowerCase().includes(searchAgent.toLowerCase()),
     );
   }, [datsAgents, searchAgent]);
+
   return (
     <StyledWrapperAsignation>
       <ContainerInput

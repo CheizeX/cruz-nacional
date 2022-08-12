@@ -13,7 +13,10 @@ export const chatToTransferById = createSlice({
   name: 'chatToTransferById',
   initialState,
   reducers: {
-    setChatToTransferById: (state, action: PayloadAction<string>) => {
+    setChatToTransferById: (
+      state: { chatToTransferById: string },
+      action: PayloadAction<string>,
+    ) => {
       state.chatToTransferById = action.payload;
     },
   },

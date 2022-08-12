@@ -13,7 +13,10 @@ export const userSeletedDelete = createSlice({
   name: 'userByIdDeleteState',
   initialState,
   reducers: {
-    setUserByIdDelete: (state, action: PayloadAction<string>) => {
+    setUserByIdDelete: (
+      state: { userByIdDelete: string },
+      action: PayloadAction<string>,
+    ) => {
       state.userByIdDelete = action.payload;
     },
   },

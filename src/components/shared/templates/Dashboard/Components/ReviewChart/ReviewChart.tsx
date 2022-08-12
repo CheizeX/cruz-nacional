@@ -38,6 +38,10 @@ export const ReviewChart: FC<IPropsReview> = ({
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
 
+  const { tagFilter } = useAppSelector(
+    (state) => state.userAuthCredentials.userDataInState,
+  );
+
   const { reviewChats, datePicker } = useAppSelector(
     (state) => state.review.chatContainerReviewState,
   );
@@ -64,9 +68,12 @@ export const ReviewChart: FC<IPropsReview> = ({
       });
     }
   }, [dispatch]);
+
   useEffect(() => {
-    readReview();
-  }, [readReview]);
+    if (typeof tagFilter === 'string') {
+      readReview();
+    }
+  }, [readReview, tagFilter]);
 
   const weekdays = [
     { id: 2, day: 'Lunes', position: 0 },

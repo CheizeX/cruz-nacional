@@ -139,13 +139,11 @@ export const PendingsChatItem: FC<
                   <Text>
                     {chat.messages &&
                       chat.messages[chat.messages.length - 1].contentType ===
-                        ContentType.TEXT &&
-                      chat.messages[
-                        chat.messages.length - 1
-                      ].content?.substring(0, 14)}
+                        ContentType.INTERACTIVE_BUTTON &&
+                      chat.messages[chat.messages.length - 1].content.body}
                     {chat.messages &&
                       chat.messages[chat.messages.length - 1].contentType ===
-                        ContentType.INTERACTIVE_BUTTON &&
+                        ContentType.INTERACTIVE_LIST &&
                       chat.messages[chat.messages.length - 1].content.body}
                     {chat.messages &&
                       chat.messages[chat.messages.length - 1].contentType ===

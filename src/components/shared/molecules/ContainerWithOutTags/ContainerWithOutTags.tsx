@@ -36,16 +36,22 @@ export const StyledContainerWithOutTags = styled.div`
 
 export interface IContainerWithOutTags {
   firstName?: string;
+  text?: string;
+  icon?: string;
 }
 export const ContainerWithOutTags: FC<IContainerWithOutTags> = ({
+  text,
   firstName,
+  icon,
 }) => {
   return (
     <StyledContainerWithOutTags>
       <span>
-        <SVGIcon iconFile="/icons/icon_with_out_tags.svg" />
+        <SVGIcon
+          iconFile={`/icons/${!icon ? 'icon_with_out_tags.svg' : icon}`}
+        />
         <Text>
-          No se han asignados etiquetas{' '}
+          {!text ? ' No se han asignados etiquetas' : text}
           {firstName && firstName.length > 1 ? `a ${firstName}` : ''}
         </Text>
       </span>

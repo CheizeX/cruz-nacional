@@ -142,10 +142,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                     {message.contentType === 'ATTACHMENT' && (
                       <>
                         <Text>
-                          {message.content.substring(
-                            message.content.length - 3,
-                            message.content.length,
-                          ) === ('png' || 'jpg') && (
+                          {message.content
+                            .substring(
+                              message.content.length - 3,
+                              message.content.length,
+                            )
+                            .toLowerCase() === ('png' || 'jpg') && (
                             <>
                               <div>
                                 <button
@@ -200,10 +202,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             </>
                           )}
 
-                          {message.content.substring(
-                            message.content.length - 3,
-                            message.content.length,
-                          ) === 'jpg' && (
+                          {message.content
+                            .substring(
+                              message.content.length - 3,
+                              message.content.length,
+                            )
+                            .toLowerCase() === 'jpg' && (
                             <>
                               <div>
                                 <button
@@ -258,10 +262,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             </>
                           )}
 
-                          {message.content.substring(
-                            message.content.length - 4,
-                            message.content.length,
-                          ) === 'jpeg' && (
+                          {message.content
+                            .substring(
+                              message.content.length - 4,
+                              message.content.length,
+                            )
+                            .toLowerCase() === 'jpeg' && (
                             <>
                               <div>
                                 <button
@@ -316,10 +322,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             </>
                           )}
 
-                          {message.content.substring(
-                            message.content.length - 3,
-                            message.content.length,
-                          ) === 'pdf' && (
+                          {message.content
+                            .substring(
+                              message.content.length - 3,
+                              message.content.length,
+                            )
+                            .toLowerCase() === 'pdf' && (
                             <>
                               <div>
                                 <button
@@ -435,6 +443,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                     {message.content.footer}
                                   </StyledInteractiveButtonFooter>
                                 )}
+                                <StyledInteractiveActionTitle>
+                                  {message.content.action_title || ''}
+                                </StyledInteractiveActionTitle>
                                 <StyledInteractiveButtonActions>
                                   {message.content.action.map((act: string) => (
                                     <div key={act}>{act}</div>
@@ -467,10 +478,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                     {message.contentType === 'ATTACHMENT' && (
                       <>
                         <Text>
-                          {message.content.substring(
-                            message.content.length - 3,
-                            message.content.length,
-                          ) === 'pdf' && (
+                          {message.content
+                            .substring(
+                              message.content.length - 3,
+                              message.content.length,
+                            )
+                            .toLowerCase() === 'pdf' && (
                             <>
                               <div>
                                 <button
@@ -532,10 +545,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                           )}
 
                           {message.contentType === 'ATTACHMENT' &&
-                            message.content.substring(
-                              message.content.length - 3,
-                              message.content.length,
-                            ) === 'png' && (
+                            message.content
+                              .substring(
+                                message.content.length - 3,
+                                message.content.length,
+                              )
+                              .toLowerCase() === 'png' && (
                               <>
                                 <div>
                                   <button
@@ -586,10 +601,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             )}
 
                           {message.contentType === 'ATTACHMENT' &&
-                            message.content.substring(
-                              message.content.length - 3,
-                              message.content.length,
-                            ) === 'jpg' && (
+                            message.content
+                              .substring(
+                                message.content.length - 3,
+                                message.content.length,
+                              )
+                              .toLowerCase() === 'jpg' && (
                               <>
                                 <div>
                                   <button
@@ -640,10 +657,12 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                             )}
 
                           {message.contentType === 'ATTACHMENT' &&
-                            message.content.substring(
-                              message.content.length - 4,
-                              message.content.length,
-                            ) === 'jpeg' && (
+                            message.content
+                              .substring(
+                                message.content.length - 4,
+                                message.content.length,
+                              )
+                              .toLowerCase() === 'jpeg' && (
                               <>
                                 <div>
                                   <button
@@ -759,7 +778,7 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                   </StyledInteractiveButtonFooter>
                                 )}
                                 <StyledInteractiveActionTitle>
-                                  {message.content.actionTitle || ''}
+                                  {message.content.action_title || ''}
                                 </StyledInteractiveActionTitle>
                                 <StyledInteractiveButtonActions>
                                   {message.content.action.map((act: string) => (
@@ -817,37 +836,45 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                   <div>
                     <Text>
                       {message.contentType === 'ATTACHMENT' &&
-                        message.content.substring(
-                          message.content.length - 3,
-                          message.content.length,
-                        ) === 'png' && (
+                        message.content
+                          .substring(
+                            message.content.length - 3,
+                            message.content.length,
+                          )
+                          .toLowerCase() === 'png' && (
                           <button type="button">
                             <SVGIcon iconFile="/icons/image-icon.svg" />
                           </button>
                         )}
                       {message.contentType === 'ATTACHMENT' &&
-                        message.content.substring(
-                          message.content.length - 3,
-                          message.content.length,
-                        ) === 'pdf' && (
+                        message.content
+                          .substring(
+                            message.content.length - 3,
+                            message.content.length,
+                          )
+                          .toLowerCase() === 'pdf' && (
                           <button type="button">
                             <SVGIcon iconFile="/icons/pdf-icon.svg" />
                           </button>
                         )}
                       {message.contentType === 'ATTACHMENT' &&
-                        message.content.substring(
-                          message.content.length - 3,
-                          message.content.length,
-                        ) === 'jpg' && (
+                        message.content
+                          .substring(
+                            message.content.length - 3,
+                            message.content.length,
+                          )
+                          .toLowerCase() === 'jpg' && (
                           <button type="button">
                             <SVGIcon iconFile="/icons/image-icon.svg" />
                           </button>
                         )}
                       {message.contentType === 'ATTACHMENT' &&
-                        message.content.substring(
-                          message.content.length - 4,
-                          message.content.length,
-                        ) === 'jpeg' && (
+                        message.content
+                          .substring(
+                            message.content.length - 4,
+                            message.content.length,
+                          )
+                          .toLowerCase() === 'jpeg' && (
                           <button type="button">
                             <SVGIcon iconFile="/icons/image-icon.svg" />
                           </button>
@@ -894,6 +921,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                       {message.content.footer}
                                     </StyledInteractiveButtonFooter>
                                   )}
+                                  <StyledInteractiveActionTitle>
+                                    {message.content.action_title || ''}
+                                  </StyledInteractiveActionTitle>
                                   <StyledInteractiveButtonActions>
                                     {message.content.action.map(
                                       (act: string) => (
@@ -964,6 +994,9 @@ export const DialoguesBox: FC<SelectedUserProps & ModalBackgroundProps> = ({
                                     {message.content.footer}
                                   </StyledInteractiveButtonFooter>
                                 )}
+                                <StyledInteractiveActionTitle>
+                                  {message.content.action_title || ''}
+                                </StyledInteractiveActionTitle>
                                 <StyledInteractiveButtonActions>
                                   {message.content.action.map((act: string) => (
                                     <div key={act}>{act}</div>

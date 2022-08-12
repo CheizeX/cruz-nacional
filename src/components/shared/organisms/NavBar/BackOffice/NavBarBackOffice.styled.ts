@@ -54,13 +54,14 @@ export const StyledAdminTagsFilterSelector = styled.div<ITagsProps>`
     z-index: 1;
     margin-left: -4px;
     padding-left: 3px;
-    border-bottom: 5px solid ${({ theme }) => theme && theme.Colors.grays[9]};
+    /* border-bottom: 5px solid ${({ theme }) =>
+      theme && theme.Colors.grays[9]}; */
     ${({ openAdminTag }) =>
       openAdminTag &&
       css`
         border-bottom-left-radius: 0px;
         border-bottom-right-radius: 0px;
-        border-bottom: 5px dashed
+        border-bottom: 5px solid
           ${({ theme }) => theme && theme.Colors.grays[9]};
       `}
     &:hover {
@@ -85,9 +86,9 @@ export const StyledAdminTagsFilterSelector = styled.div<ITagsProps>`
       text-transform: uppercase;
       width: fit-content;
       margin-right: 2px;
+      overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      overflow: hidden;
       padding: 0 10px;
     }
   }
@@ -96,7 +97,7 @@ export const StyledAdminTagsFilterSelector = styled.div<ITagsProps>`
 export const StyledAdminTagsFilterSelectorDropdown = styled.div<ITagsProps>`
   padding: 20px 0;
   width: 100%;
-  min-height: 200px;
+  min-height: 50px;
   position: absolute;
   top: 58px;
   left: -4px;
@@ -108,7 +109,6 @@ export const StyledAdminTagsFilterSelectorDropdown = styled.div<ITagsProps>`
   & > div {
     border-radius: 10px;
     background-color: ${({ colorTag }) => colorTag};
-    z-index: 2;
     width: fit-content;
     min-width: 180px;
     height: fit-content;

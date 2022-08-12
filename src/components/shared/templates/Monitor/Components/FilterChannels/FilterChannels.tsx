@@ -4,26 +4,31 @@ import { FilterChannel, FilterChannelsProps } from './FilterChannels.interface';
 import { Checkbox } from '../../../../atoms/Checkbox/Checkbox';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
+import { Channels } from '../../../../../../models/chat/chat';
 
-export const Channels = [
+export const DataChannel = [
   {
     id: 11,
     name: 'WhatsApp',
+    idChannel: Channels.WHATSAPP,
     icon: 'whatsapp',
   },
   {
     id: 22,
     name: 'Messenger',
+    idChannel: Channels.MESSENGER,
     icon: 'messenger',
   },
   {
     id: 33,
     name: 'Instagram',
+    idChannel: Channels.INSTAGRAM,
     icon: 'instagram',
   },
   {
     id: 44,
     name: 'WebChat',
+    idChannel: Channels.WEBCHAT,
     icon: 'webchat',
   },
 ];
@@ -34,11 +39,13 @@ export const FilterChannels: FC<FilterChannelsProps & FilterChannel> = ({
 }) => {
   return (
     <>
-      {Channels?.map(({ id, name, icon }) => (
-        <StyledWrapperChecked checked={channel.indexOf(id) !== -1} key={id}>
+      {DataChannel?.map(({ id, name, icon, idChannel }) => (
+        <StyledWrapperChecked
+          checked={channel.indexOf(idChannel) !== -1}
+          key={id}>
           <Checkbox
-            checked={channel.indexOf(id) !== -1}
-            onClick={() => handleFilterChannels(id)}
+            checked={channel.indexOf(idChannel) !== -1}
+            onClick={() => handleFilterChannels(idChannel)}
           />
           <SVGIcon iconFile={`/icons/${icon.toLocaleLowerCase()}.svg`} />
           <Text color="black">{name}</Text>

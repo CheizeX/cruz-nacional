@@ -13,7 +13,10 @@ export const activeTabInState = createSlice({
   name: 'activeTabInState',
   initialState,
   reducers: {
-    setActiveTabInState: (state, action: PayloadAction<string>) => {
+    setActiveTabInState: (
+      state: { activeTabInState: string },
+      action: PayloadAction<string>,
+    ) => {
       state.activeTabInState = action.payload;
     },
   },

@@ -66,6 +66,7 @@ import { readTags } from '../../../../../api/tags';
 import { setDataTag } from '../../../../../redux/slices/tags/tag-management';
 import { Tag } from '../../../../../models/tags/tag';
 import { baseRestApi } from '../../../../../api/base';
+import { setDataUser } from '../../../../../redux/slices/users/user-management';
 
 export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const socket: any = useContext(websocketContext);
@@ -77,10 +78,15 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const [accessToken] = useLocalStorage('AccessToken', '');
   const { decodedToken }: any = useJwt(accessToken);
 
-  const { userDataInState } = useAppSelector(
-    (state) => state.userAuthCredentials,
-  );
-  const { currentTagFilter } = useAppSelector(
+  const {
+    tagFilter,
+    role,
+    urlAvatar,
+    name: userName,
+    _id: userId,
+    companyId,
+  } = useAppSelector((state) => state.userAuthCredentials.userDataInState);
+  const { filterEnabled: filterEn } = useAppSelector(
     (state) => state.configurationInfo.generalConfigurationData,
   );
   const { configurationData, loadingConfigData } = useAppSelector(
@@ -101,11 +107,12 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [selectedUsersBuffer, setSelectedUsersBuffer] = useState<string[]>([]);
-  const [adminTagName, setAdminTagName] = useState<any>('TODOS');
-  const [adminTagColor, setAdminTagColor] = useState<any>('#2A2A2A');
+  const [adminTagName, setAdminTagName] = useState<any>('');
+  const [adminTagColor, setAdminTagColor] = useState<any>('');
   const [openAdminTag, setOpenAdminTag] = useState<boolean>(false);
   const [loadingChangeAdminTag, setLoadingChangeAdminTag] =
     useState<boolean>(false);
+  const [filterEnabled, setFilterEnabled] = useState<boolean>(filterEn);
 
   const validateIfAllAgentsAreSelected =
     selectedUsers.length === rest.persistentAgentsCount;
@@ -119,58 +126,37 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
     }
   };
 
-  const handleChangeAdminTag = async (name: string, color: string) => {
-    setLoadingChangeAdminTag(true);
-    setAdminTagName(name === 'TODOS' ? 'ALL' : name);
-    setAdminTagColor(color);
-    setOpenAdminTag(false);
-    try {
-      await baseRestApi.patch(
-        `${process.env.NEXT_PUBLIC_REST_API_URL}/settings/setCurrentTagFilter`,
-        {
-          newFilter: name === 'TODOS' ? 'ALL' : name,
-        },
-      );
-    } catch (error) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `Error al cambiar filtro por etiqueta`,
-      });
-    }
-    setLoadingChangeAdminTag(false);
-  };
-
   const dataApi = useCallback(async () => {
     try {
       const data = await readingUsers(UserStatus.ALL);
       if (data.success === false) {
         setUsers([]);
+        dispatch(setDataUser([]));
       } else {
         setUsers(data);
+        dispatch(setDataUser(data));
+        setSelectedUsers(
+          data
+            ?.filter(
+              (user: User) =>
+                user.role === UserRole.AGENT && user.persistent === true,
+            )
+            .map((user: User) => user._id),
+        );
+        setSelectedUsersBuffer(
+          data
+            ?.filter(
+              (user: User) =>
+                user.role === UserRole.AGENT && user.persistent === true,
+            )
+            .map((user: User) => user._id),
+        );
       }
-
-      setSelectedUsers(
-        data
-          ?.filter(
-            (user: User) =>
-              user.role === UserRole.AGENT && user.persistent === true,
-          )
-          .map((user: User) => user._id),
-      );
-      setSelectedUsersBuffer(
-        data
-          ?.filter(
-            (user: User) =>
-              user.role === UserRole.AGENT && user.persistent === true,
-          )
-          .map((user: User) => user._id),
-      );
     } catch (err) {
       showAlert?.addToast({
         alert: Toast.ERROR,
         title: 'ERROR',
-        message: `${err}`,
+        message: `Error usuarios`,
       });
     }
   }, [dispatch, showAlert]);
@@ -187,7 +173,6 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   const getDataTag = async () => {
     try {
       const response = await readTags();
-
       if (response.success === false) {
         dispatch(setDataTag([]));
       } else {
@@ -234,9 +219,7 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
     }
   }, []);
 
-  const profilePicture = userDataInState.urlAvatar
-    ? `${userDataInState.urlAvatar}?token=${accessToken}`
-    : '';
+  const profilePicture = urlAvatar ? `${urlAvatar}?token=${accessToken}` : '';
 
   const readByAdmin = async () => {
     try {
@@ -254,13 +237,44 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
     }
   };
 
+  const handleChangeAdminTag = async (name: string, color: string) => {
+    setLoadingChangeAdminTag(true);
+    setAdminTagName(name === 'TODOS' ? 'ALL' : name);
+    setAdminTagColor(color);
+    setOpenAdminTag(false);
+    try {
+      const response = await baseRestApi.patch(
+        `${process.env.NEXT_PUBLIC_REST_API_URL}/settings/setCurrentTagFilter`,
+        {
+          newFilter: name === 'TODOS' ? 'ALL' : name,
+        },
+      );
+      socket?.emit('leaveOldRoom', {
+        oldTag: adminTagName === 'TODOS' ? 'ALL' : adminTagName,
+        userId,
+      });
+      socket?.emit('joinBackofficeRooms', {
+        companyId,
+        userId,
+      });
+      setAdminTagName(response);
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `Error al cambiar filtro por etiqueta`,
+      });
+    }
+    setLoadingChangeAdminTag(false);
+  };
+
   useEffect(() => {
     dataApi();
-  }, [dataApi]);
+  }, [adminTagName]);
 
   useEffect(() => {
     readByAdmin();
-  }, [decodedToken, dispatch]);
+  }, [decodedToken, adminTagName]);
 
   useEffect(() => {
     dispatch(getConfigurationData());
@@ -282,7 +296,7 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   }, []);
 
   useEffect(() => {
-    socket.on('webchatScriptDone', (script: IPropsScripts) => {
+    socket?.on('webchatScriptDone', (script: IPropsScripts) => {
       dispatch(setConstructingWebchat(false));
       dispatch(setScript(script));
       dispatch(getGeneralConfigurationData());
@@ -290,21 +304,25 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   }, [dispatch, socket]);
 
   useEffect(() => {
-    if (decodedToken?.role === UserRole.ADMIN) {
-      getDataTag();
-    }
-  }, [decodedToken]);
+    socket?.on('newFilterEnabledValue', (value: boolean) => {
+      setFilterEnabled(value);
+    });
+  }, [socket]);
 
   useEffect(() => {
-    if (typeof currentTagFilter === 'string' && tagsData.length > 0) {
-      setAdminTagName(currentTagFilter === 'ALL' ? 'TODOS' : currentTagFilter);
+    getDataTag();
+  }, []);
+
+  useEffect(() => {
+    if (typeof tagFilter === 'string' && tagsData.length > 0) {
+      setAdminTagName(tagFilter === 'ALL' ? 'TODOS' : tagFilter);
       setAdminTagColor(
-        currentTagFilter === 'ALL'
+        tagFilter === 'ALL'
           ? '#2A2A2A'
-          : tagsData.find((tag) => tag.name === currentTagFilter)?.color,
+          : tagsData.find((tag) => tag.name === tagFilter)?.color,
       );
     }
-  }, [currentTagFilter, tagsData]);
+  }, [tagFilter, tagsData]);
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
@@ -316,60 +334,62 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
   return (
     <>
       <StyledNavBarBackOffice>
-        <StyledAdminTagsFilterSelector
-          colorTag={adminTagColor}
-          openAdminTag={openAdminTag}>
-          <Text color="#2A2A2A" size="18px" weight="600">
-            {text}
-          </Text>
-          {userDataInState?.role === UserRole.ADMIN && (
-            <>
-              <button
-                type="button"
-                onClick={() => setOpenAdminTag(!openAdminTag)}>
-                {openAdminTag ? <ImMenu4 size={24} /> : <ImMenu3 size={24} />}
-                {loadingChangeAdminTag ? (
-                  <SpinnerDotted color="#fafafa" size="20px" />
-                ) : (
-                  <Text color="#2A2A2A" size="18px" weight="600">
-                    {adminTagName}
-                  </Text>
-                )}
-              </button>
-              {openAdminTag && (
-                <StyledAdminTagsFilterSelectorDropdown
-                  ref={refTags}
-                  colorTag={adminTagColor}>
-                  <div>
-                    {adminTagName !== 'TODOS' && (
-                      <StyledTagToFilter
-                        key="TODOS"
-                        colorTag="#2A2A2A"
-                        onClick={() => {
-                          handleChangeAdminTag('TODOS', '#2A2A2A');
-                        }}>
-                        TODOS
-                      </StyledTagToFilter>
-                    )}
-                    {tagsData
-                      ?.filter((item: Tag) => item.name !== adminTagName)
-                      .map((tag: Tag) => (
+        {adminTagName !== '' && (
+          <StyledAdminTagsFilterSelector
+            colorTag={adminTagColor}
+            openAdminTag={openAdminTag}>
+            <Text color="#2A2A2A" size="18px" weight="600">
+              {text}
+            </Text>
+            {(role === UserRole.ADMIN ||
+              (role === UserRole.SUPERVISOR && !filterEnabled)) && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setOpenAdminTag(!openAdminTag)}>
+                  {openAdminTag ? <ImMenu4 size={24} /> : <ImMenu3 size={24} />}
+                  {loadingChangeAdminTag ? (
+                    <SpinnerDotted color="#fafafa" size="20px" />
+                  ) : (
+                    <Text color="#2A2A2A" size="18px" weight="600">
+                      {adminTagName === 'ALL' ? 'TODOS' : adminTagName}
+                    </Text>
+                  )}
+                </button>
+                {openAdminTag && (
+                  <StyledAdminTagsFilterSelectorDropdown
+                    ref={refTags}
+                    colorTag={adminTagColor}>
+                    <div>
+                      {adminTagName !== 'TODOS' && (
                         <StyledTagToFilter
-                          key={tag._id}
-                          colorTag={tag.color}
+                          key="TODOS"
+                          colorTag="#2A2A2A"
                           onClick={() => {
-                            handleChangeAdminTag(tag.name, tag.color);
+                            handleChangeAdminTag('TODOS', '#2A2A2A');
                           }}>
-                          {tag.name}
+                          TODOS
                         </StyledTagToFilter>
-                      ))}
-                  </div>
-                </StyledAdminTagsFilterSelectorDropdown>
-              )}
-            </>
-          )}
-        </StyledAdminTagsFilterSelector>
-
+                      )}
+                      {tagsData
+                        ?.filter((item: Tag) => item.name !== adminTagName)
+                        .map((tag: Tag) => (
+                          <StyledTagToFilter
+                            key={tag._id}
+                            colorTag={tag.color}
+                            onClick={() => {
+                              handleChangeAdminTag(tag.name, tag.color);
+                            }}>
+                            {tag.name}
+                          </StyledTagToFilter>
+                        ))}
+                    </div>
+                  </StyledAdminTagsFilterSelectorDropdown>
+                )}
+              </>
+            )}
+          </StyledAdminTagsFilterSelector>
+        )}
         {rest.persistentAgentsCount > 0 &&
           generalPlan.agentes_registrados > rest.persistentAgentsCount && (
             <DowngradeAlert
@@ -381,7 +401,7 @@ export const BackOffice: FC<IBackOfficeProps> = ({ text }) => {
           <TriggerElement>
             <StyledAvatar>
               {profilePicture !== '' ? (
-                <img src={profilePicture} alt={userDataInState.name} />
+                <img src={profilePicture} alt={userName} />
               ) : (
                 <SVGIcon iconFile="/icons/unknown_user.svg" />
               )}

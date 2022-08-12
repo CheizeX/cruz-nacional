@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
+import { MdSupportAgent } from 'react-icons/md';
 import {
   StyledConversationHistory,
   StyledHeaderConversationHistory,
@@ -21,11 +22,8 @@ import {
 import { IConvertsationHistory } from './ConversationView.interface';
 import { UserRole } from '../../../../../../models/users/role';
 import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
-import {
-  Chat,
-  ChatStatus,
-  ContentType,
-} from '../../../../../../models/chat/chat';
+import { ChatStatus, ContentType } from '../../../../../../models/chat/chat';
+import { Tag } from '../../../../../../models/tags/tag';
 
 export const ConversationView: FC<IConvertsationHistory> = ({
   setIsOpenModal,
@@ -36,9 +34,7 @@ export const ConversationView: FC<IConvertsationHistory> = ({
   handleAttachmentUser,
   chatConversationView,
 }) => {
-  const [selectedChat, setSelectedChat] = useState<number>(0);
   const [searchByWords, setSearchByWords] = useState<string>('');
-  // const [selectedWord, setSelectedWord] = useState<number>(0);
 
   const wordRef = useRef<Array<HTMLSpanElement | null>>([]);
 
@@ -81,13 +77,12 @@ export const ConversationView: FC<IConvertsationHistory> = ({
     return res;
   };
   // array de palabras que contienen los indices que coorresponden.
-  const allIdSelected = chatConversationView
-    ?.map((ele) => ele.messages)[0]
-    ?.map((v) => v)
-    ?.map(
-      (e) =>
-        e.contentType === 'TEXT' &&
-        e.content
+  const allIdSelected =
+    chatConversationView &&
+    chatConversationView?.messages?.map(
+      (v) =>
+        v?.contentType === 'TEXT' &&
+        v?.content
           .toLocaleLowerCase()
           .includes(searchByWords.toLocaleLowerCase()),
     );
@@ -138,6 +133,11 @@ export const ConversationView: FC<IConvertsationHistory> = ({
     selModalPreviewIamge(true);
     setInfoImage({ content, channel });
   };
+
+  const handleClose = () => {
+    setIsOpenModal(false);
+    setSearchByWords('');
+  };
   useEffect(scrollInnerText, [
     scrollInnerText,
     searchByWords,
@@ -156,6 +156,7 @@ export const ConversationView: FC<IConvertsationHistory> = ({
                 onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) =>
                   handleKeyBoardEvent(e)
                 }
+                value={searchByWords}
                 onChange={onChange}
               />
               <button type="button">
@@ -179,7 +180,7 @@ export const ConversationView: FC<IConvertsationHistory> = ({
               </button>
             </div>
           </div>
-          <button type="button" onClick={() => setIsOpenModal(false)}>
+          <button type="button" onClick={handleClose}>
             <SVGIcon iconFile="/icons/times.svg" />
           </button>
         </div>
@@ -191,63 +192,60 @@ export const ConversationView: FC<IConvertsationHistory> = ({
           </span>
           <SectionContainerLeft>
             <div>
-              {chatConversationView &&
-                chatConversationView.map((item, index) => (
-                  <StyledCardAgentConversation
-                    key={item._id}
-                    onClick={() => setSelectedChat(index)}
-                    focusedChats={index === selectedChat}>
-                    <div>
-                      <SVGIcon iconFile="/icons/candelar_alt.svg" />
-                      <Text>{handleDate(item.createdAt)}</Text>
-                    </div>
-                    <div>
-                      <BadgeMolecule
-                        leftIcon={() => (
-                          <SVGIcon iconFile="/icons/watch.svg" />
-                        )}>
-                        <Text>
-                          {new Date(item.createdAt).toLocaleTimeString(
-                            'en-US',
-                            {
-                              hour: 'numeric',
-                              minute: 'numeric',
-                              hour12: false,
-                            },
-                          )}
-                        </Text>
+              <StyledCardAgentConversation>
+                <div>
+                  <MdSupportAgent />
+                  <Text>
+                    {chatConversationView.assignedAgent
+                      ? chatConversationView.assignedAgent.name
+                      : 'Sin asignación'}
+                  </Text>
+                </div>
+                <div>
+                  <SVGIcon iconFile="/icons/candelar_alt.svg" />
+                  <Text>{handleDate(chatConversationView.createdAt)}</Text>
+                </div>
+                <div>
+                  <BadgeMolecule
+                    leftIcon={() => <SVGIcon iconFile="/icons/watch.svg" />}>
+                    <Text>
+                      {new Date(
+                        chatConversationView.createdAt,
+                      ).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false,
+                      })}
+                    </Text>
+                  </BadgeMolecule>
+                  <div>- - -</div>
+                  <BadgeMolecule
+                    leftIcon={() => (
+                      <SVGIcon iconFile="/icons/thumbs-up.svg" />
+                    )}>
+                    <Text>
+                      {chatConversationView?.status ===
+                      ChatStatus.ASSIGNMENT_PENDING
+                        ? '--:--'
+                        : new Date(
+                            chatConversationView?.updatedAt,
+                          ).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: false,
+                          })}
+                    </Text>
+                  </BadgeMolecule>
+                </div>
+                <div>
+                  {chatConversationView &&
+                    chatConversationView?.tags?.map((e: Tag) => (
+                      <BadgeMolecule key={e._id} bgColor={e.color}>
+                        <Text>{e.name}</Text>
                       </BadgeMolecule>
-                      <div>- - -</div>
-                      <BadgeMolecule
-                        leftIcon={() => (
-                          <SVGIcon iconFile="/icons/thumbs-up.svg" />
-                        )}>
-                        <Text>
-                          {item.status === ChatStatus.ASSIGNMENT_PENDING
-                            ? '--:--'
-                            : new Date(item.updatedAt).toLocaleTimeString(
-                                'en-US',
-                                {
-                                  hour: 'numeric',
-                                  minute: 'numeric',
-                                  hour12: false,
-                                },
-                              )}
-                        </Text>
-                      </BadgeMolecule>
-                    </div>
-                    <div>
-                      <SVGIcon iconFile="/icons/unknown_user.svg" />
-                      <span>
-                        {' '}
-                        {item.assignedAgent
-                          ? item.assignedAgent.name &&
-                            item.assignedAgent.name.slice(0, 18)
-                          : 'Sin Asignación'}
-                      </span>
-                    </div>
-                  </StyledCardAgentConversation>
-                ))}
+                    ))}
+                </div>
+              </StyledCardAgentConversation>
             </div>
           </SectionContainerLeft>
         </div>
@@ -255,160 +253,155 @@ export const ConversationView: FC<IConvertsationHistory> = ({
           <Text>Mensajes</Text>
           <div>
             <div>
-              {chatConversationView &&
-                chatConversationView
-                  .filter((_, index) => index === selectedChat)
-                  .map((chat: Chat) => (
-                    <SectionContainerConversationView key={chat._id}>
-                      {chat.messages.map((item, index) => (
-                        <div key={item._id}>
-                          {item.contentType === ContentType.TEXT &&
-                            handleWord(item.content)}
-                          {item.from !== UserRole.AGENT ? (
-                            <StyledUserConversationView
-                              isFocusWord={
-                                item.contentType === ContentType.TEXT &&
-                                handleWord(item.content)
-                              }>
-                              <div>
-                                <Text
-                                  ref={(ref) => {
-                                    wordRef.current[index] = ref;
-                                  }}>
+              <SectionContainerConversationView>
+                {chatConversationView &&
+                  chatConversationView.messages?.map((item, index) => (
+                    <div key={index.toString()}>
+                      {item.contentType === ContentType.TEXT &&
+                        handleWord(item.content)}
+                      {item.from !== UserRole.AGENT ? (
+                        <StyledUserConversationView
+                          isFocusWord={
+                            item.contentType === ContentType.TEXT &&
+                            handleWord(item.content)
+                          }>
+                          <div>
+                            <Text
+                              ref={(ref) => {
+                                wordRef.current[index] = ref;
+                              }}>
+                              <>
+                                {item.contentType === 'ATTACHMENT' && (
                                   <>
-                                    {item.contentType === 'ATTACHMENT' && (
-                                      <>
-                                        <div>
-                                          <button
-                                            type="button"
-                                            onClick={() =>
-                                              handleDataImage(
-                                                item.content,
-                                                chat.channel,
-                                                'USER',
-                                              )
-                                            }>
-                                            <SVGIcon
-                                              iconFile="/icons/maximize.svg"
-                                              color="white"
-                                            />
-                                          </button>
-                                        </div>
-                                        {handleAttachmentUser(
-                                          item.content,
-                                          chat.channel,
-                                        )}
-                                      </>
+                                    <div>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleDataImage(
+                                            item.content,
+                                            chatConversationView?.channel,
+                                            'USER',
+                                          )
+                                        }>
+                                        <SVGIcon
+                                          iconFile="/icons/maximize.svg"
+                                          color="white"
+                                        />
+                                      </button>
+                                    </div>
+                                    {handleAttachmentUser(
+                                      item.content,
+                                      chatConversationView?.channel,
                                     )}
                                   </>
-                                  <>
-                                    {item.contentType === ContentType.TEXT
-                                      ? item.content
-                                      : (item.contentType ===
-                                          ContentType.INTERACTIVE_BUTTON ||
-                                          item.contentType ===
-                                            ContentType.INTERACTIVE_LIST) && (
+                                )}
+                              </>
+                              <>
+                                {item.contentType === ContentType.TEXT
+                                  ? item.content
+                                  : (item.contentType ===
+                                      ContentType.INTERACTIVE_BUTTON ||
+                                      item.contentType ===
+                                        ContentType.INTERACTIVE_LIST) && (
+                                      <div>
+                                        {item.content.header && (
                                           <div>
-                                            {item.content.header && (
-                                              <div>
-                                                {item.content.header.type ===
-                                                'text' ? (
-                                                  item.content.header.body
-                                                ) : (
-                                                  <img
-                                                    src={
-                                                      item.content.header.body
-                                                    }
-                                                    width="100px"
-                                                    height="100px"
-                                                    alt="message.content"
-                                                  />
-                                                )}
-                                              </div>
+                                            {item.content.header.type ===
+                                            'text' ? (
+                                              item.content.header.body
+                                            ) : (
+                                              <img
+                                                src={item.content.header.body}
+                                                width="100px"
+                                                height="100px"
+                                                alt="message.content"
+                                              />
                                             )}
-                                            <div>{item.content.body}</div>
-                                            {item.content.footer && (
-                                              <div>{item.content.footer}</div>
-                                            )}
-                                            <div>
-                                              {item.content.action.map(
-                                                (act: string) => (
-                                                  <div key={act}>{act}</div>
-                                                ),
-                                              )}
-                                            </div>
                                           </div>
                                         )}
-                                  </>
-                                </Text>
-                                <Text>
-                                  {new Date(item.createdAt).toLocaleTimeString(
-                                    'en-US',
-                                    {
-                                      hour: 'numeric',
-                                      minute: 'numeric',
-                                      hour12: false,
-                                    },
-                                  )}
-                                </Text>
-                              </div>
-                            </StyledUserConversationView>
-                          ) : null}
-                          {item.from === UserRole.AGENT ? (
-                            <StyledAgentConversationView
-                              isFocusWord={handleWord(item.content)}>
-                              <div>
-                                <div>
-                                  <Text
-                                    ref={(ref) => {
-                                      wordRef.current[index] = ref;
-                                    }}>
+                                        <div>{item.content.body}</div>
+                                        {item.content.footer && (
+                                          <div>{item.content.footer}</div>
+                                        )}
+                                        <div>
+                                          {item.content.action.map(
+                                            (act: string) => (
+                                              <div key={act}>{act}</div>
+                                            ),
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+                              </>
+                            </Text>
+                            <Text>
+                              {new Date(item.createdAt).toLocaleTimeString(
+                                'en-US',
+                                {
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                  hour12: false,
+                                },
+                              )}
+                            </Text>
+                          </div>
+                        </StyledUserConversationView>
+                      ) : null}
+                      {item.from === UserRole.AGENT ? (
+                        <StyledAgentConversationView
+                          isFocusWord={handleWord(item.content)}>
+                          <div>
+                            <div>
+                              <Text
+                                ref={(ref) => {
+                                  wordRef.current[index] = ref;
+                                }}>
+                                <>
+                                  {item.contentType === 'ATTACHMENT' && (
                                     <>
-                                      {item.contentType === 'ATTACHMENT' && (
-                                        <>
-                                          <div>
-                                            <button
-                                              type="button"
-                                              onClick={() =>
-                                                handleDataImage(
-                                                  item.content,
-                                                  chat.channel,
-                                                  UserRole.AGENT,
-                                                )
-                                              }>
-                                              <SVGIcon
-                                                iconFile="/icons/maximize.svg"
-                                                color="white"
-                                              />
-                                            </button>
-                                          </div>
-                                          {handleAttachmentAgent(item.content)}
-                                        </>
-                                      )}
+                                      <div>
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            handleDataImage(
+                                              item.content,
+                                              chatConversationView?.channel,
+                                              UserRole.AGENT,
+                                            )
+                                          }>
+                                          <SVGIcon
+                                            iconFile="/icons/maximize.svg"
+                                            color="white"
+                                          />
+                                        </button>
+                                      </div>
+                                      {handleAttachmentAgent(item.content)}
                                     </>
-                                    {item.contentType === ContentType.TEXT &&
-                                      item.content}
-                                  </Text>
-                                  <Text>
-                                    {new Date(
-                                      item.createdAt,
-                                    ).toLocaleTimeString('en-US', {
-                                      hour: 'numeric',
-                                      minute: 'numeric',
-                                      hour12: false,
-                                    })}
-                                  </Text>
-                                </div>
-                                <StyledAvatarConversationView>
-                                  <SVGIcon iconFile="/icons/user.svg" />
-                                </StyledAvatarConversationView>
-                              </div>
-                            </StyledAgentConversationView>
-                          ) : null}
-                        </div>
-                      ))}
-                    </SectionContainerConversationView>
+                                  )}
+                                </>
+                                {item.contentType === ContentType.TEXT &&
+                                  item.content}
+                              </Text>
+                              <Text>
+                                {new Date(item.createdAt).toLocaleTimeString(
+                                  'en-US',
+                                  {
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    hour12: false,
+                                  },
+                                )}
+                              </Text>
+                            </div>
+                            <StyledAvatarConversationView>
+                              <SVGIcon iconFile="/icons/user.svg" />
+                            </StyledAvatarConversationView>
+                          </div>
+                        </StyledAgentConversationView>
+                      ) : null}
+                    </div>
                   ))}
+              </SectionContainerConversationView>
             </div>
           </div>
         </div>

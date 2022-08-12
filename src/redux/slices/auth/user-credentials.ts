@@ -14,13 +14,22 @@ export const userDataInState = createSlice({
   name: 'userDataInState',
   initialState,
   reducers: {
-    setUserDataInState: (state, action: PayloadAction<DecodedToken>) => {
+    setUserDataInState: (
+      state: { userDataInState: DecodedToken },
+      action: PayloadAction<DecodedToken>,
+    ) => {
       state.userDataInState = action.payload;
     },
-    setUpdateDataInState: (state, action: PayloadAction<string>) => {
+    setUpdateDataInState: (
+      state: { userDataInState: { urlAvatar: string } },
+      action: PayloadAction<string>,
+    ) => {
       state.userDataInState.urlAvatar = action.payload;
     },
-    setUpdateSoundEnabled: (state, action: PayloadAction<boolean>) => {
+    setUpdateSoundEnabled: (
+      state: { userDataInState: { soundEnabled: boolean } },
+      action: PayloadAction<boolean>,
+    ) => {
       state.userDataInState.soundEnabled = action.payload;
     },
   },

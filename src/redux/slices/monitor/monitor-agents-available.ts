@@ -18,7 +18,10 @@ export const monitorAgentsAvailableStore = createSlice({
   name: 'monitorAgentsAvailableState',
   initialState,
   reducers: {
-    setAgentsAvailable: (state, action: PayloadAction<User[]>) => {
+    setAgentsAvailable: (
+      state: { agentsAvailable: User[] },
+      action: PayloadAction<User[]>,
+    ) => {
       state.agentsAvailable = action.payload;
     },
   },

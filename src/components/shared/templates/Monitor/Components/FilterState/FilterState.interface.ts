@@ -4,6 +4,6 @@ export interface IFilterStateProps {
 }
 
 export interface IFilterStateAgents {
-  handleFilterStatus: (arg: number) => void;
-  statusAgent: number[];
+  handleFilterStatus: (arg: string) => void;
+  statusAgent: string[];
 }

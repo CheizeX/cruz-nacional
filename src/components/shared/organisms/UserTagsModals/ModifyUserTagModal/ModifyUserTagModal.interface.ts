@@ -1,5 +1,8 @@
 import { FC } from 'react';
 
+export enum GenericTag {
+  GENERAL = 'GENERAL',
+}
 export interface StyledColorCheckboxProps {
   checked?: boolean;
   name?: string;
@@ -17,10 +20,6 @@ export interface StyledColorCheckboxProps {
   tags?: string;
   setContainerTags: React.Dispatch<React.SetStateAction<IPropsTags[]>>;
   containerTags: IPropsTags[];
-  handleChecked: (arg: string) => void;
-  arrayHelpers?: any;
-  checkedModifyUser: string[];
-  setCheckedModifyUser: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export interface IPropsTags {

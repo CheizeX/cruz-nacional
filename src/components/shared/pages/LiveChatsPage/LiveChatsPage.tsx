@@ -16,7 +16,8 @@ import useLocalStorage from '../../../../hooks/use-local-storage';
 import { UserRole } from '../../../../models/users/role';
 import { Loader } from '../../atoms/Loader/Loader';
 import { ContactsSetion } from '../../templates/Contacts/ContactsSection/ContactsSection';
-import { getGeneralConfigurationData } from '../../../../redux/slices/configuration/configuration-info';
+import { LibrarySection } from '../../templates/Library/LibrarySection/LibrarySection';
+// import { getGeneralConfigurationData } from '../../../../redux/slices/configuration/configuration-info';
 
 export const LiveChatsPage: FC<
   UploadableFile & FilterChannelsProps & FilterChannel & IBackOfficeProps
@@ -61,10 +62,6 @@ export const LiveChatsPage: FC<
     }
   }, [accessToken, decodedToken, dispatch, push]);
 
-  useEffect(() => {
-    dispatch(getGeneralConfigurationData());
-  }, []);
-
   return (
     <>
       {decodedToken && decodedToken.role === UserRole.AGENT ? (
@@ -75,7 +72,7 @@ export const LiveChatsPage: FC<
             bellIcon={() => <SVGIcon iconFile="/icons/bell.svg" />}
             componentsSection={componentsSection}
           />
-          {componentsSection === 'Chat' ? (
+          {componentsSection === 'Chat' && (
             <ChatsSection
               checkedTags={checkedTags}
               setCheckedTags={setCheckedTags}
@@ -94,15 +91,16 @@ export const LiveChatsPage: FC<
               errors={errors}
               setChatInputDialogue={() => {}}
             />
-          ) : null}
-          {componentsSection === 'Contactos' ? (
+          )}
+          {componentsSection === 'Contactos' && (
             <ContactsSetion
               setActiveByDefaultTab={setActiveByDefaultTab}
               activeByDefaultTab={activeByDefaultTab}
               setUserSelected={setUserSelected}
               userSelected={userSelected}
             />
-          ) : null}
+          )}
+          {componentsSection === 'Biblioteca' && <LibrarySection />}
         </StyledLiveChats>
       ) : (
         <Loader />

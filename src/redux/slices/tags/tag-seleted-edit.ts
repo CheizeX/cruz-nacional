@@ -17,13 +17,22 @@ export const tagsSeletedDelete = createSlice({
   name: 'tagEditByIdState',
   initialState,
   reducers: {
-    setTagByIdEdit: (state, action: PayloadAction<string>) => {
+    setTagByIdEdit: (
+      state: { tagEditById: string },
+      action: PayloadAction<string>,
+    ) => {
       state.tagEditById = action.payload;
     },
-    setValueTag: (state, action: PayloadAction<string>) => {
+    setValueTag: (
+      state: { valueTag: string },
+      action: PayloadAction<string>,
+    ) => {
       state.valueTag = action.payload;
     },
-    setValueColor: (state, action: PayloadAction<string>) => {
+    setValueColor: (
+      state: { valueColor: string },
+      action: PayloadAction<string>,
+    ) => {
       state.valueColor = action.payload;
     },
   },

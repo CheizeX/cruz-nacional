@@ -2,7 +2,7 @@ import { FC, useState, useCallback } from 'react';
 import { AiFillSound } from 'react-icons/ai';
 import { FaInfoCircle } from 'react-icons/fa';
 import { IPropsPredefinedSound } from './PredefinedSounds.interface';
-import { Text } from '../../../../../atoms/Text/Text';
+import { Text } from '../../../../../../atoms/Text/Text';
 import {
   StyledWrapperNotificationSounds,
   NotificationSoundsHeader,
@@ -13,23 +13,23 @@ import {
   StyledWrapperListSounds,
   StyledListSound,
 } from './PreddefinedSound.styled';
-import { Tooltip } from '../../../../../atoms/Tooltip/Tooltip';
-import { TooltipPosition } from '../../../../../atoms/Tooltip/tooltip.interface';
+import { Tooltip } from '../../../../../../atoms/Tooltip/Tooltip';
+import { TooltipPosition } from '../../../../../../atoms/Tooltip/tooltip.interface';
 import {
   ButtonMolecule,
   ButtonState,
   Size,
-} from '../../../../../atoms/Button/Button';
-import { setSounds, updateActiveSound } from '../../../../../../../api/chat';
+} from '../../../../../../atoms/Button/Button';
+import { setSounds, updateActiveSound } from '../../../../../../../../api/chat';
 import {
   useAppDispatch,
   useAppSelector,
-} from '../../../../../../../redux/hook/hooks';
-import { SVGIcon } from '../../../../../atoms/SVGIcon/SVGIcon';
-import { useToastContext } from '../../../../../molecules/Toast/useToast';
-import { Toast } from '../../../../../molecules/Toast/Toast.interface';
-import { Radio } from '../../../../../atoms/RadioButton/RadioButton';
-import { getGeneralConfigurationData } from '../../../../../../../redux/slices/configuration/configuration-info';
+} from '../../../../../../../../redux/hook/hooks';
+import { SVGIcon } from '../../../../../../atoms/SVGIcon/SVGIcon';
+import { useToastContext } from '../../../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../../../molecules/Toast/Toast.interface';
+import { Radio } from '../../../../../../atoms/RadioButton/RadioButton';
+import { getGeneralConfigurationData } from '../../../../../../../../redux/slices/configuration/configuration-info';
 
 export const PredefinedSounds: FC<IPropsPredefinedSound> = ({ soundList }) => {
   const showAlert = useToastContext();

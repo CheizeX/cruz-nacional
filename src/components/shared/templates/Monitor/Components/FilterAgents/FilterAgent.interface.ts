@@ -1,3 +1,4 @@
+import React from 'react';
 import { User } from '../../../../../../models/users/user';
 
 export interface IFilterContainer {
@@ -7,12 +8,12 @@ export interface IFilterContainer {
 }
 export interface IFilterAgentsProps {
   dateAgent: User[];
-  stateByAgent: number[];
+  stateByAgent: string[];
   byAgentAvailable: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   filterByAgents: (arg: string) => void;
-  filterByState: (arg: number) => void;
+  filterByState: (arg: string) => void;
   handleChange: () => void | Promise<void>;
-  handleClear: () => void | Promise<void>;
   handleStateAgents: () => void | Promise<void>;
+  clearSecondSection: () => void;
 }

@@ -18,7 +18,7 @@ export const allUserStore = createSlice({
   name: 'monitorAllUserState',
   initialState,
   reducers: {
-    setAllUser: (state, action: PayloadAction<User[]>) => {
+    setAllUser: (state: { allUser: User[] }, action: PayloadAction<User[]>) => {
       state.allUser = action.payload;
     },
   },

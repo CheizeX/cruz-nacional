@@ -18,7 +18,10 @@ export const userManagementStore = createSlice({
   name: 'useQueryState',
   initialState,
   reducers: {
-    setDataUser: (state, action: PayloadAction<User[]>) => {
+    setDataUser: (
+      state: { usersData: User[] },
+      action: PayloadAction<User[]>,
+    ) => {
       state.usersData = action.payload;
     },
   },

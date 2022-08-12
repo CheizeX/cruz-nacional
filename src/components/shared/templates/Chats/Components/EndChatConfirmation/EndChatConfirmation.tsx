@@ -41,7 +41,7 @@ export const EndChatConfirmation: FC<IEndChatConfirmationProps> = ({
         <ButtonMolecule
           text="Finalizar"
           size={Size.MEDIUM}
-          state={isLoanding ? ButtonState.LOADING : ButtonState.NORMAL}
+          state={isLoanding ? ButtonState.DISABLED : ButtonState.NORMAL}
           onClick={handleFinishedChat}
         />
       </StyledFooterEndChatConfirmation>

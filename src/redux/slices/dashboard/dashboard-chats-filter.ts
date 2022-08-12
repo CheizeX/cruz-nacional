@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { baseRestApi } from '../../../api/base';
@@ -57,28 +58,72 @@ export const dashboardFilterInState = createSlice({
   name: 'dashboardFilterInState',
   initialState,
   reducers: {
-    setDashboardFilterInState: (state, action: PayloadAction<string>) => {
+    setDashboardFilterInState: (
+      state: { dashboardFilterDate: string },
+      action: PayloadAction<string>,
+    ) => {
       state.dashboardFilterDate = action.payload;
     },
-    setTodayAllChats: (state, action: PayloadAction<Chat[]>) => {
+    setTodayAllChats: (
+      state: { todayChats: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.todayChats = action.payload;
     },
-    setChatsByPeriod: (state, action) => {
+    setUpdateChatDashboard: (state: any, action: PayloadAction<Chat>) => {
+      const chatExist = state.todayChats?.findIndex(
+        (item: Chat) => item._id === action.payload?._id,
+      );
+      if (chatExist !== -1) {
+        const cloneChats = [...state.todayChats];
+        cloneChats.splice(chatExist, 1, action.payload);
+        return {
+          ...state,
+          todayChats: cloneChats,
+        };
+      }
+      if (chatExist === -1) {
+        return {
+          ...state,
+          todayChats: [action.payload, ...state.todayChats],
+        };
+      }
+      return { ...state };
+    },
+    setChatsByPeriod: (
+      state: { chatsByPeriod: any },
+      action: { payload: any },
+    ) => {
       state.chatsByPeriod = action.payload;
     },
-    setFinishedTodayChats: (state, action: PayloadAction<Chat[]>) => {
+    setFinishedTodayChats: (
+      state: { todayFinishedChats: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.todayFinishedChats = action.payload;
     },
-    setFinishedChatsByPeriod: (state, action: PayloadAction<Chat[]>) => {
+    setFinishedChatsByPeriod: (
+      state: { chatsByPeriod: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.chatsByPeriod = action.payload;
     },
-    setPendingTodayChats: (state, action: PayloadAction<Chat[]>) => {
+    setPendingTodayChats: (
+      state: { todayPendingChats: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.todayPendingChats = action.payload;
     },
-    setOnConversationTodayChats: (state, action: PayloadAction<Chat[]>) => {
+    setOnConversationTodayChats: (
+      state: { todayOnConversationChats: Chat[] },
+      action: PayloadAction<Chat[]>,
+    ) => {
       state.todayOnConversationChats = action.payload;
     },
-    setNameOfSelectedDateToFilter: (state, action: PayloadAction<string>) => {
+    setNameOfSelectedDateToFilter: (
+      state: { dateName: string },
+      action: PayloadAction<string>,
+    ) => {
       state.dateName = action.payload;
     },
   },
@@ -116,6 +161,7 @@ export const {
   setPendingTodayChats,
   setOnConversationTodayChats,
   setTodayAllChats,
+  setUpdateChatDashboard,
   setFinishedChatsByPeriod,
   setChatsByPeriod,
   setNameOfSelectedDateToFilter,

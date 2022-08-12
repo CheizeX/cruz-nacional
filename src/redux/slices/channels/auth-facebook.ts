@@ -18,7 +18,10 @@ export const authFacebookStore = createSlice({
   name: 'chatContainerAuthFacebookState',
   initialState,
   reducers: {
-    setAuthFacebook: (state, action: PayloadAction<IReceiveAuthFacebook[]>) => {
+    setAuthFacebook: (
+      state: { dataInfoFacebook: IReceiveAuthFacebook[] },
+      action: PayloadAction<IReceiveAuthFacebook[]>,
+    ) => {
       state.dataInfoFacebook = action.payload;
     },
   },

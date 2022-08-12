@@ -129,22 +129,6 @@ export const StyledHeaderFirstSection = styled.div`
         }
       }
     }
-    /* & > button {
-      margin-top: 20px;
-      margin-right: 8px;
-      & :hover {
-        cursor: pointer;
-        & * {
-          fill: ${({ theme }) => theme.Colors.grays[5]};
-        }
-      }
-      & :active {
-        cursor: pointer;
-        & * {
-          fill: ${({ theme }) => theme.Colors.grays[6]};
-        }
-      }
-    } */
     & > :nth-child(3) {
       z-index: 2;
     }

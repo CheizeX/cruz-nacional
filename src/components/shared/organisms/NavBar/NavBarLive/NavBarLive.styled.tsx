@@ -323,7 +323,7 @@ export const StyledClose = styled.div`
     height: 20px;
     position: absolute;
     color: ${({ theme }) => theme.Colors.grays[10]};
-    top: -6px;
+    top: -4px;
     right: 8px;
     z-index: 1;
     display: flex;

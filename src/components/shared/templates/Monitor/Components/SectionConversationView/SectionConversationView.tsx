@@ -5,13 +5,12 @@ import { ConversationView } from '../ConversationHistory/ConversationView';
 import { StyledWrapperSectionChat } from './SectionConversationView.styled';
 import { IPropsSectionConversation } from './SectionConversationView.interface';
 import { UserRole } from '../../../../../../models/users/role';
+import { useAppSelector } from '../../../../../../redux/hook/hooks';
 
 export const SectionConversationView: FC<IPropsSectionConversation> = ({
   setIsOpenModal,
-  chatConversationView,
 }) => {
   const [modalPreviewImage, selModalPreviewIamge] = useState<boolean>(false);
-
   const [openModalId, setOpenModalId] = useState<string>('');
   const [infoImage, setInfoImage] = useState({
     content: '',
@@ -20,8 +19,15 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
   const [accessToken] = useLocalStorage('AccessToken', '');
   const tokenQueryParam = `?token=${accessToken}`;
 
+  const { infoByChat } = useAppSelector(
+    (state) => state.monitor.monitorTodayChatState,
+  );
+
   const handleAttachmentUser = (content: string, channel: string) => {
-    if (content.substring(content.length - 3, content.length) === 'jpg') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'jpg'
+    ) {
       return (
         <img
           src={`${
@@ -34,7 +40,10 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'png') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'png'
+    ) {
       return (
         <img
           src={`${
@@ -47,7 +56,10 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
         />
       );
     }
-    if (content.substring(content.length - 4, content.length) === 'jpeg') {
+    if (
+      content.substring(content.length - 4, content.length).toLowerCase() ===
+      'jpeg'
+    ) {
       return (
         <img
           src={`${
@@ -60,7 +72,10 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'pdf') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'pdf'
+    ) {
       return (
         <iframe
           src={`${
@@ -81,7 +96,10 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
     return <p>Esta imagen no se puede visualizar</p>;
   };
   const handleAttachmentAgent = (content: string) => {
-    if (content.substring(content.length - 3, content.length) === 'jpg') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'jpg'
+    ) {
       return (
         <img
           src={`${
@@ -94,7 +112,10 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'png') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'png'
+    ) {
       return (
         <img
           src={`${
@@ -107,7 +128,10 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
         />
       );
     }
-    if (content.substring(content.length - 4, content.length) === 'jpeg') {
+    if (
+      content.substring(content.length - 4, content.length).toLowerCase() ===
+      'jpeg'
+    ) {
       return (
         <img
           src={`${
@@ -120,7 +144,10 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
         />
       );
     }
-    if (content.substring(content.length - 3, content.length) === 'pdf') {
+    if (
+      content.substring(content.length - 3, content.length).toLowerCase() ===
+      'pdf'
+    ) {
       return (
         <iframe
           src={`${
@@ -162,7 +189,7 @@ export const SectionConversationView: FC<IPropsSectionConversation> = ({
           setInfoImage={setInfoImage}
           handleAttachmentAgent={handleAttachmentAgent}
           handleAttachmentUser={handleAttachmentUser}
-          chatConversationView={chatConversationView}
+          chatConversationView={infoByChat}
         />
       )}
     </>

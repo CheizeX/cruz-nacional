@@ -8,8 +8,12 @@ import { Text } from '../../../atoms/Text/Text';
 import { ContainerInput } from '../../../molecules/Input/ContainerInput';
 import { Checkbox } from '../../../atoms/Checkbox/Checkbox';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
-import { StyledColorCheckboxProps } from './ModifyUserTagModal.interface';
 import {
+  GenericTag,
+  StyledColorCheckboxProps,
+} from './ModifyUserTagModal.interface';
+import {
+  setDeleteTagContainer,
   setNewtagsContainer,
   setUpdateContainerTag,
 } from '../../../../../redux/slices/users/user-update-container-tags';
@@ -24,7 +28,6 @@ import {
   StyledModifyTagTriggerElement,
 } from './ModifyUserTagModal.styles';
 import { Tag } from '../../../../../models/tags/tag';
-import { readTags } from '../../../../../api/tags';
 import { setDataTag } from '../../../../../redux/slices/tags/tag-management';
 import { setTagByIdDelete } from '../../../../../redux/slices/tags/tag-seleted-delete';
 import {
@@ -33,17 +36,13 @@ import {
   setValueTag,
 } from '../../../../../redux/slices/tags/tag-seleted-edit';
 import { websocketContext } from '../../../../../chat';
-import { Toast } from '../../../molecules/Toast/Toast.interface';
-import { useToastContext } from '../../../molecules/Toast/useToast';
+import { SectionUser } from '../../AddedUsersSection/AddedUserSection.interface';
 
 export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
   setTagModal,
   setOpenNewTag,
   setTags,
   setContainerTags,
-  setCheckedModifyUser,
-  handleChecked,
-  checkedModifyUser,
   containerTags,
   tags,
   InconArrow,
@@ -51,33 +50,30 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
   users,
 }) => {
   const socket: any = useContext(websocketContext);
-  const showAlert = useToastContext();
   const dispatch = useAppDispatch();
   const { tagsData } = useSelector(
     (state: RootState) => state.tags.tagsQueryState,
   );
-
   const { updateContainerTags } = useSelector(
     (state: RootState) => state.users.updateContainerTagState,
   );
 
-  const getDataTag = async () => {
-    try {
-      const response = await readTags();
-      if (response.success === false) {
-        dispatch(setDataTag([]));
-      } else {
-        dispatch(setDataTag(response));
-      }
-    } catch (err) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `${err}`,
-      });
-    }
-  };
-  // queda pendiente si getData se pasa como dependencia
+  // const getDataTag = async () => {
+  //   try {
+  //     const response = await readTags();
+  //     if (response.success === false) {
+  //       dispatch(setDataTag([]));
+  //     } else {
+  //       dispatch(setDataTag(response));
+  //     }
+  //   } catch (err) {
+  //     showAlert?.addToast({
+  //       alert: Toast.ERROR,
+  //       title: 'ERROR',
+  //       message: `${err}`,
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     socket?.on('newTag', (data: Tag[]) => {
@@ -93,57 +89,62 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
 
   // filtro de búsqueda de etiquetas por nombre
   const [searchInputValue, setSearchInputValue] = useState('');
-  // const [duplicatedState, setDuplicatedState] = useState;
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(e.target.value);
   };
 
   // manejo de etiquetas seleccionadas
-  const [checkedState, setCheckedState] = useState(new Array(50).fill(false));
   const handleCheckboxChange = (
     position: number,
     argTag: string,
     colorTag: string,
     idUser: string,
   ) => {
-    handleChecked(idUser);
-    const updatedCheckedState = checkedState.map((item, index) =>
-      index === position ? !item : item,
-    );
+    const unCheckedUpdate =
+      updateContainerTags &&
+      updateContainerTags.some((tag: Tag) => tag._id.includes(idUser));
+    const unCheckedContainer =
+      containerTags &&
+      containerTags.some((tag: Tag) => tag._id.includes(idUser));
 
-    tagsData?.map((item) =>
-      item._id === idUser && users === 'Editar'
-        ? dispatch(
-            setNewtagsContainer({
-              _id: item._id,
-              name: argTag,
-              color: colorTag,
-            }),
-          )
-        : null,
-    );
+    !unCheckedUpdate
+      ? tagsData?.map((item: Tag) =>
+          item._id === idUser && users === SectionUser.EDITAR
+            ? dispatch(
+                setNewtagsContainer({
+                  _id: item._id,
+                  name: argTag,
+                  color: colorTag,
+                }),
+              )
+            : null,
+        )
+      : dispatch(setDeleteTagContainer(idUser));
 
-    tagsData?.map((_, index) =>
-      users === 'Crear Usuario'
-        ? setContainerTags([
-            ...containerTags,
-            {
-              _id: idUser,
-              name: argTag,
-              color: colorTag,
-              status: index === position,
-            },
-          ])
-        : null,
-    );
-    setCheckedState(updatedCheckedState);
+    !unCheckedContainer
+      ? tagsData?.map((_, index) =>
+          users === SectionUser.CREAR_USUARIO
+            ? setContainerTags([
+                ...containerTags,
+                {
+                  _id: idUser,
+                  name: argTag,
+                  color: colorTag,
+                  status: index === position,
+                },
+              ])
+            : null,
+        )
+      : setContainerTags((_containerTag) =>
+          _containerTag.filter((tag) => tag._id !== idUser),
+        );
   };
 
   // manejo de modales y actualización de etiquetas
   const handleClickCrear = (title: string, open: string) => {
     // getTags();
-    getDataTag();
+    // getDataTag();
     setTags(title);
     setOpenNewTag(open);
   };
@@ -166,27 +167,8 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
 
   const handleClickClose = () => {
     setTagModal(false);
-    setCheckedModifyUser([]);
     dispatch(setUpdateContainerTag([]));
   };
-
-  useEffect(() => {
-    if (users === 'Editar') {
-      updateContainerTags &&
-        updateContainerTags.map(
-          (tag: Tag) =>
-            tag._id &&
-            setCheckedModifyUser((prev) => prev.concat(tag._id ?? '')),
-        );
-      setCheckedModifyUser((_containerTags) =>
-        _containerTags.filter(
-          (valor, i) => _containerTags.indexOf(valor) === i,
-        ),
-      );
-    } else {
-      setCheckedModifyUser([]);
-    }
-  }, []);
 
   return (
     <StyledModalModifyUserTag>
@@ -223,9 +205,6 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
               .map((tag: any, index: number) => (
                 <StyledModifyTag
                   key={tag._id}
-                  setCheckedModifyUser={setCheckedModifyUser}
-                  checkedModifyUser={checkedModifyUser}
-                  handleChecked={handleChecked}
                   tags={tags}
                   setTags={setTags}
                   users={users}
@@ -238,8 +217,15 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
                   <div>
                     {text === 'Seleccionar Etiquetas' && (
                       <Checkbox
-                        // isTransparent
-                        checked={checkedModifyUser.indexOf(tag._id) !== -1}
+                        checked={
+                          users === SectionUser.EDITAR
+                            ? updateContainerTags.some((item) =>
+                                item._id.includes(tag._id),
+                              )
+                            : containerTags.some((item) =>
+                                item._id.includes(tag._id),
+                              )
+                        }
                         onClick={() =>
                           handleCheckboxChange(
                             index,
@@ -252,39 +238,43 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
                     )}
                     <Text size="12px">{tag.name}</Text>
                   </div>
-                  <Dropdown
-                    triggerElement={() => (
-                      <StyledModifyTagTriggerElement>
-                        <SVGIcon iconFile="/icons/user_options.svg" />
-                      </StyledModifyTagTriggerElement>
-                    )}>
-                    <ModifyTagsDropdownContainer>
-                      <BadgeMolecule
-                        bgColor="transparent"
-                        leftIcon={() => <SVGIcon iconFile="/icons/pen.svg" />}>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleClickEditar(`${text}`, 'editar', tag)
-                          }>
-                          <Text>Editar </Text>
-                        </button>
-                      </BadgeMolecule>
-                      <BadgeMolecule
-                        bgColor="transparent"
-                        leftIcon={() => (
-                          <SVGIcon iconFile="/icons/delete.svg" />
-                        )}>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleClickEliminar(`${text}`, 'eliminar', tag)
-                          }>
-                          <Text>Eliminar </Text>
-                        </button>
-                      </BadgeMolecule>
-                    </ModifyTagsDropdownContainer>
-                  </Dropdown>
+                  {tag.name !== GenericTag.GENERAL && (
+                    <Dropdown
+                      triggerElement={() => (
+                        <StyledModifyTagTriggerElement>
+                          <SVGIcon iconFile="/icons/user_options.svg" />
+                        </StyledModifyTagTriggerElement>
+                      )}>
+                      <ModifyTagsDropdownContainer>
+                        <BadgeMolecule
+                          bgColor="transparent"
+                          leftIcon={() => (
+                            <SVGIcon iconFile="/icons/pen.svg" />
+                          )}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleClickEditar(`${text}`, 'editar', tag)
+                            }>
+                            <Text>Editar </Text>
+                          </button>
+                        </BadgeMolecule>
+                        <BadgeMolecule
+                          bgColor="transparent"
+                          leftIcon={() => (
+                            <SVGIcon iconFile="/icons/delete.svg" />
+                          )}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleClickEliminar(`${text}`, 'eliminar', tag)
+                            }>
+                            <Text>Eliminar </Text>
+                          </button>
+                        </BadgeMolecule>
+                      </ModifyTagsDropdownContainer>
+                    </Dropdown>
+                  )}
                 </StyledModifyTag>
               ))}
         </StyledModalColorsModifyTags>
@@ -292,5 +282,3 @@ export const ModifyUserTagModal: FC<StyledColorCheckboxProps> = ({
     </StyledModalModifyUserTag>
   );
 };
-
-// TODO = Eliminar opción de eliminar y editar etiqueta general

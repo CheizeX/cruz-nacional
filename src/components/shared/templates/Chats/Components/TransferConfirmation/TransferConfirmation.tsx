@@ -1,9 +1,10 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Text } from '../../../../atoms/Text/Text';
 import {
   ButtonMolecule,
   Size,
   ButtonVariant,
+  ButtonState,
 } from '../../../../atoms/Button/Button';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import {
@@ -27,8 +28,9 @@ export const TransferConfirmation: FC<
   TranferConfirmationProps & SelectedUserProps
 > = ({ agent, setLiveChatPage, setLiveChatModal, setUserSelected }) => {
   const showAlert = useToastContext();
-
   const dispatch = useAppDispatch();
+
+  const [isLoandingTransfer, setIsLoandingTransfer] = useState<boolean>(false);
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
@@ -40,18 +42,30 @@ export const TransferConfirmation: FC<
   );
 
   const handleClickChatToTransfer = async () => {
+    setIsLoandingTransfer(true);
     try {
-      await transferConversation(chatToTransferById, userToTransferById);
-
-      setLiveChatModal(false);
-
-      dispatch(
-        setChatsOnConversation(
-          chatsOnConversation.filter((chat) => chat._id !== chatToTransferById),
-        ),
+      const response = await transferConversation(
+        chatToTransferById,
+        userToTransferById,
       );
 
-      setUserSelected('');
+      setLiveChatModal(false);
+      if (response.success === false) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `Disculpe presentamos problemas para transferir.`,
+        });
+      } else {
+        dispatch(
+          setChatsOnConversation(
+            chatsOnConversation.filter(
+              (chat) => chat._id !== chatToTransferById,
+            ),
+          ),
+        );
+        setUserSelected('');
+      }
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -59,6 +73,11 @@ export const TransferConfirmation: FC<
         message: `${error}`,
       });
     }
+    setIsLoandingTransfer(false);
+  };
+  const handleCancelTransfer = () => {
+    setLiveChatPage('ChatTransfer');
+    setIsLoandingTransfer(false);
   };
 
   return (
@@ -78,11 +97,12 @@ export const TransferConfirmation: FC<
           text="Cancelar"
           size={Size.MEDIUM}
           variant={ButtonVariant.OUTLINED}
-          onClick={() => setLiveChatPage('ChatTransfer')}
+          onClick={handleCancelTransfer}
         />
         <ButtonMolecule
           text="Transferir"
           size={Size.MEDIUM}
+          state={isLoandingTransfer ? ButtonState.DISABLED : ButtonState.NORMAL}
           onClick={() => handleClickChatToTransfer()}
         />
       </StyledFooterTransferConfirmation>

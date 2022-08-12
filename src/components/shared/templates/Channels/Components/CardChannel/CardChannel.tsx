@@ -51,7 +51,9 @@ export const CardChannel: FC<IPropsCardChannel> = ({
 
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
+
   const [scripts, setScripts] = useState<boolean>(false);
+  const [isError, setIsError] = useState<string[]>([]);
 
   const handleClick = () => {
     setIsComponentVisible(!isComponentVisible);
@@ -89,7 +91,6 @@ export const CardChannel: FC<IPropsCardChannel> = ({
     dispatch(setIdChannel(arg));
     setIsSectionWebChat(true);
   };
-
   return (
     <>
       <StyledCardChannel isNotAvailable={!isActive}>
@@ -103,15 +104,26 @@ export const CardChannel: FC<IPropsCardChannel> = ({
                 <SVGIcon iconFile={`/avatars/${image}.svg`} />
               ) : (
                 <div>
-                  {!image ? (
-                    <SVGIcon iconFile="/icons/user.svg" />
+                  {!image || isError.includes(image) ? (
+                    // <SVGIcon iconFile="/icons/user.svg" />
+                    <SVGIcon
+                      iconFile={`/icons/${icon.toLocaleLowerCase()}.svg`}
+                    />
                   ) : (
-                    <img src={image} alt="No se encontro la imagen" />
+                    <img
+                      src={image}
+                      alt="No se encontro la imagen"
+                      onError={() => {
+                        setIsError([...isError, image]);
+                      }}
+                    />
                   )}
                 </div>
               )}
             </div>
-            <SVGIcon iconFile={`/icons/${icon.toLocaleLowerCase()}.svg`} />
+            {!isError.includes(image) && (
+              <SVGIcon iconFile={`/icons/${icon.toLocaleLowerCase()}.svg`} />
+            )}
           </StyledPicture>
           <div>
             <span>{handleStatusChannel()}</span>

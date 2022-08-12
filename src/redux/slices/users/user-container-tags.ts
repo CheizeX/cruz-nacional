@@ -18,10 +18,16 @@ export const userContainerTagStore = createSlice({
   name: 'userContainerTagState',
   initialState,
   reducers: {
-    setLoanding: (state, { payload }: PayloadAction<boolean>) => {
+    setLoanding: (
+      state: { isLoanding: boolean },
+      { payload }: PayloadAction<boolean>,
+    ) => {
       state.isLoanding = payload;
     },
-    setDataInfoTag: (state, action: PayloadAction<Tag[]>) => {
+    setDataInfoTag: (
+      state: { usersContainerTag: Tag[] },
+      action: PayloadAction<Tag[]>,
+    ) => {
       state.usersContainerTag = action.payload;
     },
   },

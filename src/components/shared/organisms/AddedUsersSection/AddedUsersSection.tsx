@@ -1,7 +1,5 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable sonarjs/no-identical-functions */
 import React, { FC, useState, useContext, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { FaUserShield } from 'react-icons/fa';
@@ -41,7 +39,7 @@ import { useToastContext } from '../../molecules/Toast/useToast';
 import { Toast } from '../../molecules/Toast/Toast.interface';
 import { setDataUser } from '../../../../redux/slices/users/user-management';
 import { RootState } from '../../../../redux';
-import { IPropsTags } from './AddedUserSection.interface';
+import { IPropsTags, SectionUser } from './AddedUserSection.interface';
 import {
   setDataTag,
   setTagColors,
@@ -49,6 +47,8 @@ import {
 import { readTagColor, readTags } from '../../../../api/tags';
 import { NotificationUsers } from '../../atoms/NotificationUsers/NotificationUsers';
 import { getSubscriptionsData } from '../../../../redux/slices/subscriptions/subscriptions-info';
+import { Tooltip } from '../../atoms/Tooltip/Tooltip';
+import { TooltipPosition } from '../../atoms/Tooltip/tooltip.interface';
 
 export const AddedUsersSection: FC = () => {
   const dispatch = useAppDispatch();
@@ -56,7 +56,9 @@ export const AddedUsersSection: FC = () => {
   const { usersData } = useSelector(
     (state: RootState) => state.users.useQueryState,
   );
-
+  const { tagFilter } = useAppSelector(
+    (state) => state.userAuthCredentials.userDataInState,
+  );
   const { subscriptionsData } = useAppSelector(
     (state) => state.subscriptionsInfo,
   );
@@ -86,8 +88,6 @@ export const AddedUsersSection: FC = () => {
   const [checkedAsignationTags, setCheckedAsignationTags] = useState<
     Array<string>
   >([]);
-  // chacked para seleccionar tag que ya se encuentran seleccionadas
-  const [checkedModifyUser, setCheckedModifyUser] = useState<Array<string>>([]);
   const [filterRole, setFilterRole] = useState<string>('TODOS');
   const [createUserValues, setCreateUserValues] = useState({
     username: '' as string,
@@ -129,19 +129,8 @@ export const AddedUsersSection: FC = () => {
     setCheckedAsignationTags(newChecked);
   };
 
-  const handleCheckedModifyUser = (name: string) => {
-    const currentId = checkedModifyUser.indexOf(name);
-    const newChecked = [...checkedModifyUser];
-    if (currentId === -1) {
-      newChecked.push(name);
-    } else {
-      newChecked.splice(currentId, 1);
-    }
-    setCheckedModifyUser(newChecked);
-  };
-
   const handleBadgesClick = (arg: string) => {
-    if (arg === 'Crear Usuario') {
+    if (arg === SectionUser.CREAR_USUARIO) {
       if (
         subscriptionsData.generalPlan.invitaciones_disponibles_agente +
           subscriptionsData.generalPlan.invitaciones_disponibles_supervisor >
@@ -227,7 +216,6 @@ export const AddedUsersSection: FC = () => {
         );
         dispatch(setDataUser(result));
       }
-      setCheckedAsignationTags([]);
     } catch (err) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -238,9 +226,11 @@ export const AddedUsersSection: FC = () => {
   };
 
   useEffect(() => {
-    dataApi();
-    getFilterTag();
-  }, [dataApi, getFilterTag]);
+    if (typeof tagFilter === 'string') {
+      dataApi();
+      getFilterTag();
+    }
+  }, [dataApi, getFilterTag, tagFilter]);
 
   useEffect(() => {
     socket?.on('newRegisteredUser', (data: User[]) => {
@@ -291,7 +281,7 @@ export const AddedUsersSection: FC = () => {
                 </BadgeMolecule>
               </button>
               <ModalMolecule isModal={sectionModal} setModal={setSectionModal}>
-                {openNewSection === 'Crear Usuario' ? (
+                {openNewSection === SectionUser.CREAR_USUARIO ? (
                   <UserCreate
                     createUserValues={createUserValues}
                     setCreateUserValues={setCreateUserValues}
@@ -350,7 +340,6 @@ export const AddedUsersSection: FC = () => {
                 ) : null}{' '}
                 {openNewSection === 'Gestionar Etiquetas' ? (
                   <ModifyUserTagModal
-                    handleChecked={handleCheckedModifyUser}
                     text="Gestionar Etiquetas"
                     tagModal={sectionModal}
                     openNewTag={openNewSection}
@@ -361,8 +350,6 @@ export const AddedUsersSection: FC = () => {
                     setTags={setTags}
                     setContainerTags={setContainerTags}
                     containerTags={containerTags}
-                    checkedModifyUser={checkedModifyUser}
-                    setCheckedModifyUser={setCheckedModifyUser}
                   />
                 ) : null}
                 {openNewSection === 'Seleccionar Etiquetas' ? (
@@ -375,20 +362,16 @@ export const AddedUsersSection: FC = () => {
                     InconArrow={() => (
                       <SVGIcon iconFile="/icons/collapse-left.svg" />
                     )}
-                    handleChecked={handleCheckedModifyUser}
                     users={usersCreate}
                     tags={tags}
                     setTags={setTags}
                     setContainerTags={setContainerTags}
                     containerTags={containerTags}
-                    checkedModifyUser={checkedModifyUser}
-                    setCheckedModifyUser={setCheckedModifyUser}
                   />
                 ) : null}
-                {openNewSection === 'Editar' ? (
+                {openNewSection === SectionUser.EDITAR ? (
                   <EditUsers
                     firstName="Editar"
-                    setCheckedModifyUser={setCheckedModifyUser}
                     userModal={sectionModal}
                     setUserModal={setSectionModal}
                     openNewSection={openNewSection}
@@ -410,7 +393,7 @@ export const AddedUsersSection: FC = () => {
             <>
               <button
                 type="button"
-                onClick={() => handleBadgesClick('Crear Usuario')}>
+                onClick={() => handleBadgesClick(SectionUser.CREAR_USUARIO)}>
                 <BadgeMolecule
                   bgColor="gray"
                   leftIcon={() => <SVGIcon iconFile="/icons/user_plus.svg" />}>
@@ -423,25 +406,29 @@ export const AddedUsersSection: FC = () => {
       </StyledHeaderUsersSection>
       <StyledInfoUsersSection>
         <StyledInfoUsersBySupOrAgent>
-          <StyledInfoNameAndIcon>
-            <FaUserShield size={24} />
-          </StyledInfoNameAndIcon>
+          <Tooltip text="Supervisores" position={TooltipPosition.right}>
+            <StyledInfoNameAndIcon>
+              <FaUserShield size={24} />
+            </StyledInfoNameAndIcon>
+          </Tooltip>
           <StyledUsersAvailableInfo>
             <span>
               Creados
               <div>{invitaciones_enviadas_supervisor}</div>
             </span>
             <span>
-              Disponibles por crear{' '}
+              Disponibles por crear
               <div>{invitaciones_disponibles_supervisor}</div>
             </span>
           </StyledUsersAvailableInfo>
         </StyledInfoUsersBySupOrAgent>
 
         <StyledInfoUsersBySupOrAgent>
-          <StyledInfoNameAndIcon>
-            <MdSupportAgent size={26} />
-          </StyledInfoNameAndIcon>
+          <Tooltip text="Agentes" position={TooltipPosition.right}>
+            <StyledInfoNameAndIcon>
+              <MdSupportAgent size={26} />
+            </StyledInfoNameAndIcon>
+          </Tooltip>
           <StyledUsersAvailableInfo>
             <span>
               Creados

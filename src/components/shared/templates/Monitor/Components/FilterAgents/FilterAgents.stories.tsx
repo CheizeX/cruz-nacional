@@ -18,8 +18,8 @@ storiesOf('Ailalia/Organisms/Monitor/FilterAgents', module).add(
         filterByAgents={() => {}}
         byAgentAvailable={[]}
         handleChange={() => {}}
-        handleClear={() => {}}
         handleStateAgents={() => {}}
+        clearSecondSection={() => {}}
       />
     );
   },

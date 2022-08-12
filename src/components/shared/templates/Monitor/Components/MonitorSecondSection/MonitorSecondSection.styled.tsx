@@ -142,98 +142,6 @@ export const StyledAgentActive = styled.div`
   background-color: ${({ theme }) => theme.Colors.green[4]};
   border: 2px solid ${({ theme }) => theme.Colors.grays[10]};
 `;
-export const TooltipTextName = styled.span`
-  width: 100%;
-`;
-export const TooltipBoxName = styled.div`
-  position: absolute;
-  top: calc(100% + 15px);
-  visibility: hidden;
-  color: transparent;
-  background-color: transparent;
-  width: 100%;
-  min-width: max-content;
-  padding: 5px 5px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 12px;
-  transition: visibility 0.5s, color 0.5s, background-color 0.5s, width 0.5s,
-    padding 0.5s ease-in-out;
-  &:before {
-    content: '';
-    width: 0;
-    height: 0;
-    left: 40px;
-    top: -10px;
-    position: absolute;
-    border: 10px solid transparent;
-    transform: rotate(135deg);
-    transition: border 0.3s ease-in-out;
-  }
-`;
-
-export const StyledToolTipCardName = styled.span`
-  position: relative;
-  & ${TooltipTextName}:hover + ${TooltipBoxName} {
-    visibility: visible;
-    color: #fff;
-    background-color: ${({ theme }) => theme.Colors.purples[3]};
-    z-index: 1;
-    width: 100%;
-    padding: 8px 8px;
-    &:before {
-      border-color: transparent transparent
-        ${({ theme }) => theme.Colors.purples[3]}
-        ${({ theme }) => theme.Colors.purples[3]};
-    }
-  }
-`;
-export const TooltipTextEmail = styled.span`
-  width: 100%;
-`;
-export const TooltipBoxEmail = styled.div`
-  position: absolute;
-  top: calc(100% + 15px);
-  visibility: hidden;
-  color: transparent;
-  background-color: transparent;
-  width: 100%;
-  min-width: max-content;
-  padding: 5px 5px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 12px;
-  transition: visibility 0.5s, color 0.5s, background-color 0.5s, width 0.5s,
-    padding 0.5s ease-in-out;
-  &:before {
-    content: '';
-    width: 0;
-    height: 0;
-    left: 40px;
-    top: -10px;
-    position: absolute;
-    border: 10px solid transparent;
-    transform: rotate(135deg);
-    transition: border 0.3s ease-in-out;
-  }
-`;
-
-export const StyledToolTipCardEmail = styled.span`
-  position: relative;
-  & ${TooltipTextEmail}:hover + ${TooltipBoxEmail} {
-    visibility: visible;
-    color: #fff;
-    background-color: ${({ theme }) => theme.Colors.purples[3]};
-    z-index: 1;
-    width: 100%;
-    padding: 8px 8px;
-    &:before {
-      border-color: transparent transparent
-        ${({ theme }) => theme.Colors.purples[3]}
-        ${({ theme }) => theme.Colors.purples[3]};
-    }
-  }
-`;
 
 export const WrapperSecondSectionAgent = styled.div`
   width: 304px;
@@ -256,13 +164,14 @@ export const WrapperSecondSectionAgent = styled.div`
     & img {
       border-radius: 50%;
       object-fit: cover;
-      max-width: 42px;
-      max-height: 42px;
+      max-width: 52px;
+      max-height: 52px;
     }
     & > :nth-child(1) {
       display: flex;
       justify-content: flex-start;
-      align-items: flex-end;
+      align-items: start;
+      z-index: 2;
       & > :nth-child(1) {
         width: 50px;
         height: 50px;
@@ -277,32 +186,35 @@ export const WrapperSecondSectionAgent = styled.div`
       }
       & > :nth-child(2) {
         display: flex;
+        position: relative;
         flex-direction: column;
         width: 100%;
         justify-content: flex-end;
         margin-left: 17px;
         margin-bottom: 4px;
         padding: 0;
+        height: 50px;
         & > :nth-child(1) {
-          position: relative;
-          right: 28px;
-          top: 32px;
+          position: absolute;
+          left: -28px;
+          z-index: 1;
         }
         & > :nth-child(2) {
-          color: ${({ theme }) => theme.Colors.grays[3]};
-          font-weight: ${({ theme }) => theme.fontWeight[600]};
-          font-size: ${({ theme }) => theme.fontSize[14]};
-          line-height: 17px;
-          width: 100%;
+          & > div {
+            padding: 0 5px;
+            color: ${({ theme }) => theme.Colors.grays[3]};
+            font-weight: ${({ theme }) => theme.fontWeight[600]};
+            font-size: ${({ theme }) => theme.fontSize[16]};
+            line-height: 20px;
+            width: 100%;
+          }
         }
         & > :nth-child(3) {
-          & > span {
-            color: ${({ theme }) => theme.Colors.grays[3]};
-            font-weight: ${({ theme }) => theme.fontWeight[400]};
-            font-size: ${({ theme }) => theme.fontSize[12]};
-            line-height: 14px;
-            position: relative;
-          }
+          color: ${({ theme }) => theme.Colors.grays[3]};
+          font-weight: ${({ theme }) => theme.fontWeight[400]};
+          font-size: ${({ theme }) => theme.fontSize[12]};
+          line-height: 14px;
+          position: relative;
         }
       }
     }
@@ -375,4 +287,24 @@ export const StyledActive = styled.div`
   background-color: ${({ theme }) => theme.Colors.green[4]};
   margin-right: -17px;
   padding: 0;
+`;
+
+export const StyledTextName = styled.span`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  /* font-size: 16px;
+  line-height: 20px;
+  font-weight: ${({ theme }) => theme.fontWeight[600]}; */
+`;
+export const StyledTextEmail = styled.span`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  /* font-size: ${({ theme }) => theme.fontSize[12]};
+  font-weight: ${({ theme }) => theme.fontWeight[500]};
+  line-height: 14px;
+  color: ${({ theme }) => theme.Colors.grays[5]}; */
 `;

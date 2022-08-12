@@ -1,9 +1,6 @@
 import styled, { css } from 'styled-components';
 import { StyledClientAndAgentAvatars } from '../../../Chats/Components/PendingsChatItem/PendingsChatItem.styles';
-import {
-  IContainerWord,
-  IWrapperConversation,
-} from './ConversationView.interface';
+import { IContainerWord } from './ConversationView.interface';
 
 export const StyledConversationHistory = styled.div`
   width: 642px;
@@ -66,11 +63,6 @@ export const StyledHeaderConversationHistory = styled.div`
         }
       }
     }
-    /* & > :nth-child(2) {
-      width: 20px;
-      height: 20px;
-      background: green;
-    } */
     & > button {
       width: 20px;
       height: 20px;
@@ -161,15 +153,13 @@ export const SectionContainerLeft = styled.div`
   min-height: 390px;
   border-radius: 10px;
   margin-top: 6px;
-  overflow: scroll;
   & > div {
     background-color: ${({ theme }) => theme.Colors.grays[9]};
     height: 100%;
     border-radius: 10px;
-    padding: 12px;
-  }
-  &::-webkit-scrollbar {
-    display: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -196,7 +186,6 @@ export const StyledUserConversationView = styled.div<IContainerWord>`
       font-weight: 400;
       max-width: 270px;
       word-wrap: break-word;
-      display: flex;
       height: fit-content;
       flex-direction: row-reverse;
       text-align: initial;
@@ -281,11 +270,13 @@ export const StyledAgentConversationView = styled.div<IContainerWord>`
         font-size: 12px;
       }
       & > :first-child {
-        max-width: 260px;
+        max-width: 232px;
         border-radius: 10px 0px 10px 10px;
         background-color: ${({ theme }) => theme.Colors.purples[1]};
         justify-content: start;
-        display: flex;
+        display: block;
+        overflow: auto;
+        //display: flex;
         color: ${({ theme }) => theme.Colors.grays[10]};
         padding: 13px 15px;
         font-weight: ${({ theme }) => theme.fontWeight[600]};
@@ -354,64 +345,43 @@ export const StyledAvatarConversationView = styled(StyledClientAndAgentAvatars)`
   }
 `;
 
-export const StyledCardAgentConversation = styled.button<IWrapperConversation>`
-  min-width: 264px;
-  height: 120px;
+export const StyledCardAgentConversation = styled.div`
+  min-width: 250px;
+  height: 346px;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.Colors.grays[10]};
-  cursor: pointer;
-  margin-bottom: 10px;
-  padding-left: 16px;
-  ${({ focusedChats }) =>
-    focusedChats &&
-    css<IWrapperConversation>`
-      background-color: ${({ theme }) => theme.Colors.purples[1]};
-      color: ${({ theme }) => theme.Colors.grays[10]};
-    `};
-  :hover {
-    background-color: ${({ theme }) => theme.Colors.purples[1]};
-    color: ${({ theme }) => theme.Colors.grays[10]};
+  background-color: ${({ theme }) => theme.Colors.purples[2]};
+  & > :first-child {
+    height: 120px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 6px 0;
     & > :first-child {
-      & > span {
-        color: ${({ theme }) => theme.Colors.grays[10]};
-      }
+      width: 100%;
+      height: 60px;
+      fill: ${({ theme }) => theme.Colors.grays[9]};
     }
-    & > :nth-child(2) {
-      & > div:last-child {
-        background-color: ${({ theme }) => theme.Colors.grays[10]};
-        & > div {
-          & * {
-            & > svg {
-              & > path {
-                fill: ${({ theme }) => theme.Colors.purples[1]};
-              }
-            }
-          }
-        }
-        & > span {
-          color: ${({ theme }) => theme.Colors.purples[1]};
-        }
-      }
-    }
-    & > :nth-child(3) {
-      & > span {
-        color: ${({ theme }) => theme.Colors.grays[10]};
-      }
+    & > span {
+      font-size: ${({ theme }) => theme.fontSize[14]};
+      font-weight: ${({ theme }) => theme.fontWeight[600]};
+      color: ${({ theme }) => theme.Colors.grays[10]};
     }
   }
-  & > :first-child {
+  & > :nth-child(2) {
     display: flex;
-    justify-content: start;
+    justify-content: center;
     width: 100%;
-    max-height: 24px;
-    //align-items: start;
+    max-height: 40px;
     & > div {
       width: 30px;
-      height: 20px;
+      height: 24px;
       & * {
+        display: flex;
+        justify-content: start;
         & > svg {
-          width: 15px;
-          height: 15px;
+          width: 20px;
+          height: 20px;
           & > path {
             fill: #2aa6ee;
           }
@@ -419,19 +389,19 @@ export const StyledCardAgentConversation = styled.button<IWrapperConversation>`
       }
     }
     & > span {
-      color: ${({ theme, focusedChats }) =>
-        focusedChats === true ? theme.Colors.grays[10] : theme.Colors.grays[3]};
+      color: ${({ theme }) => theme.Colors.grays[10]};
       font-weight: ${({ theme }) => theme.fontWeight[600]};
-      font-size: ${({ theme }) => theme.fontSize[12]};
+      font-size: ${({ theme }) => theme.fontSize[14]};
       line-height: 14px;
       display: flex;
       align-items: center;
     }
   }
-  & > :nth-child(2) {
+  & > :nth-child(3) {
     display: flex;
     min-height: 44px;
     align-items: center;
+    justify-content: center;
     & > :first-child {
       background-color: ${({ theme }) => theme.Colors.orange[3]};
       & > div {
@@ -443,6 +413,7 @@ export const StyledCardAgentConversation = styled.button<IWrapperConversation>`
         & * {
           & > svg {
             height: 14px;
+            width: 14px;
             & > path {
               fill: ${({ theme }) => theme.Colors.grays[10]};
             }
@@ -465,9 +436,7 @@ export const StyledCardAgentConversation = styled.button<IWrapperConversation>`
       color: #24c3a7;
     }
     & > :nth-child(3) {
-      background-color: ${({ theme, focusedChats }) =>
-        focusedChats === true ? theme.Colors.grays[10] : theme.Colors.grays[6]};
-
+      background-color: ${({ theme }) => theme.Colors.grays[6]};
       & > div {
         display: flex;
         align-items: center;
@@ -479,17 +448,12 @@ export const StyledCardAgentConversation = styled.button<IWrapperConversation>`
             height: 12px;
             width: 12px;
             & > path {
-              fill: ${({ theme, focusedChats }) =>
-                focusedChats === true
-                  ? theme.Colors.purples[1]
-                  : theme.Colors.grays[10]};
+              fill: ${({ theme }) => theme.Colors.grays[10]};
             }
           }
         }
       }
       & > span {
-        color: ${({ theme, focusedChats }) =>
-          focusedChats === true ? theme.Colors.purples[1] : 'none'};
         font-size: ${({ theme }) => theme.fontSize[12]};
         line-height: 14px;
         font-weight: ${({ theme }) => theme.fontWeight[600]};
@@ -497,11 +461,9 @@ export const StyledCardAgentConversation = styled.button<IWrapperConversation>`
     }
   }
   & > :nth-child(3) {
-    max-height: 26px;
     display: flex;
+    justify-content: center;
     & > div {
-      width: 26px;
-      height: 26px;
       & * {
         & > svg {
           width: 24px;
@@ -511,13 +473,21 @@ export const StyledCardAgentConversation = styled.button<IWrapperConversation>`
     }
     & > span {
       display: flex;
-      align-items: center;
-      margin-left: 8px;
+      align-items: end;
+      margin-left: 24px;
       line-height: 14px;
-      color: ${({ theme, focusedChats }) =>
-        focusedChats === true ? theme.Colors.grays[10] : theme.Colors.grays[3]};
       font-weight: ${({ theme }) => theme.fontWeight[700]};
       font-size: ${({ theme }) => theme.fontSize[12]};
+    }
+  }
+  & > :nth-child(4) {
+    display: flex;
+    min-height: 40px;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    & > div {
+      margin: 0 6px;
     }
   }
 `;

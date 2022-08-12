@@ -13,7 +13,10 @@ export const userSeletedInfoEmailStore = createSlice({
   name: 'userByInfoEmailState',
   initialState,
   reducers: {
-    setUserByInfoEmail: (state, action: PayloadAction<string>) => {
+    setUserByInfoEmail: (
+      state: { userByInfoEmail: string },
+      action: PayloadAction<string>,
+    ) => {
       state.userByInfoEmail = action.payload;
     },
   },

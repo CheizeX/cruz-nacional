@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { IWrapperConversation } from '../../../Monitor/Components/ConversationHistory/ConversationView.interface';
 import { SectionContainerLeft } from '../../../Monitor/Components/ConversationHistory/ConversationView.styled';
 import { IContainerConversation } from './ConversationViewReports.interface';
 
@@ -154,8 +155,9 @@ export const StyledUserConversationInReports = styled.div<IContainerConversation
       padding: 13px 15px;
       font-weight: 400;
       max-width: 270px;
+      display: block;
       word-wrap: break-word;
-      display: flex;
+      // display: flex;
       height: fit-content;
       flex-direction: row-reverse;
       text-align: initial;
@@ -165,7 +167,6 @@ export const StyledUserConversationInReports = styled.div<IContainerConversation
           background-color: ${({ theme }) => theme.Colors.green[1]};
           color: ${({ theme }) => theme.Colors.grays[10]};
         `}
-
       & > div {
         margin-left: 12px;
         border-left: 2px dashed #dcdcdc;
@@ -240,11 +241,13 @@ export const StyledAgentConversationInReports = styled.div<IContainerConversatio
         font-size: 12px;
       }
       & > :first-child {
-        max-width: 260px;
+        max-width: 232px;
         border-radius: 10px 0px 10px 10px;
         background-color: ${({ theme }) => theme.Colors.purples[1]};
         justify-content: start;
-        display: flex;
+        overflow: auto;
+        display: block;
+        //display: flex;
         color: ${({ theme }) => theme.Colors.grays[10]};
         padding: 13px 15px;
         font-weight: ${({ theme }) => theme.fontWeight[600]};
@@ -305,9 +308,173 @@ export const StyledAvatarCoversation = styled.div`
       background-color: ${({ theme }) => theme.Colors.grays[8]};
       width: 30px;
       height: 30px;
+      border-radius: 50%;
       & * {
         fill: ${({ theme }) => theme.Colors.grays[7]};
       }
+    }
+  }
+`;
+export const WrapperConversationView = styled.button<IWrapperConversation>`
+  min-width: 264px;
+  height: 120px;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.Colors.grays[10]};
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding-left: 16px;
+  ${({ focusedChats }) =>
+    focusedChats &&
+    css<IWrapperConversation>`
+      background-color: ${({ theme }) => theme.Colors.purples[1]};
+      color: ${({ theme }) => theme.Colors.grays[10]};
+    `};
+  :hover {
+    background-color: ${({ theme }) => theme.Colors.purples[1]};
+    color: ${({ theme }) => theme.Colors.grays[10]};
+    & > :first-child {
+      & > span {
+        color: ${({ theme }) => theme.Colors.grays[10]};
+      }
+    }
+    & > :nth-child(2) {
+      & > div:last-child {
+        background-color: ${({ theme }) => theme.Colors.grays[10]};
+        & > div {
+          & * {
+            & > svg {
+              & > path {
+                fill: ${({ theme }) => theme.Colors.purples[1]};
+              }
+            }
+          }
+        }
+        & > span {
+          color: ${({ theme }) => theme.Colors.purples[1]};
+        }
+      }
+    }
+    & > :nth-child(3) {
+      & > span {
+        color: ${({ theme }) => theme.Colors.grays[10]};
+      }
+    }
+  }
+  & > :first-child {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+    max-height: 24px;
+    & > div {
+      width: 30px;
+      height: 20px;
+      & * {
+        & > svg {
+          width: 15px;
+          height: 15px;
+          & > path {
+            fill: #2aa6ee;
+          }
+        }
+      }
+    }
+    & > span {
+      color: ${({ theme, focusedChats }) =>
+        focusedChats === true ? theme.Colors.grays[10] : theme.Colors.grays[3]};
+      font-weight: ${({ theme }) => theme.fontWeight[600]};
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      line-height: 14px;
+      display: flex;
+      align-items: center;
+    }
+  }
+  & > :nth-child(2) {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    & > :first-child {
+      background-color: ${({ theme }) => theme.Colors.orange[3]};
+      & > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 14px;
+        top: -1px;
+        & * {
+          & > svg {
+            height: 14px;
+            & > path {
+              fill: ${({ theme }) => theme.Colors.grays[10]};
+            }
+          }
+        }
+      }
+      & > span {
+        font-size: ${({ theme }) => theme.fontSize[12]};
+        line-height: 14px;
+        font-weight: ${({ theme }) => theme.fontWeight[600]};
+      }
+    }
+    & > :nth-child(2) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 900;
+      font-size: ${({ theme }) => theme.fontSize[12]};
+      line-height: 14px;
+      color: #24c3a7;
+    }
+    & > :nth-child(3) {
+      background-color: ${({ theme, focusedChats }) =>
+        focusedChats === true ? theme.Colors.grays[10] : theme.Colors.grays[6]};
+
+      & > div {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        height: 14px;
+        top: -1px;
+        & * {
+          & > svg {
+            height: 12px;
+            width: 12px;
+            & > path {
+              fill: ${({ theme, focusedChats }) =>
+                focusedChats === true
+                  ? theme.Colors.purples[1]
+                  : theme.Colors.grays[10]};
+            }
+          }
+        }
+      }
+      & > span {
+        color: ${({ theme, focusedChats }) =>
+          focusedChats === true ? theme.Colors.purples[1] : 'none'};
+        font-size: ${({ theme }) => theme.fontSize[12]};
+        line-height: 14px;
+        font-weight: ${({ theme }) => theme.fontWeight[600]};
+      }
+    }
+  }
+  & > :nth-child(3) {
+    display: flex;
+    & > div {
+      & * {
+        & > svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+    & > span {
+      display: flex;
+      align-items: end;
+      margin-left: 24px;
+      line-height: 14px;
+      color: ${({ theme, focusedChats }) =>
+        focusedChats === true ? theme.Colors.grays[10] : theme.Colors.grays[3]};
+      font-weight: ${({ theme }) => theme.fontWeight[700]};
+      font-size: ${({ theme }) => theme.fontSize[12]};
     }
   }
 `;

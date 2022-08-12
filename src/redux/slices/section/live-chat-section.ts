@@ -17,7 +17,10 @@ export const componentsSectionStore = createSlice({
   name: 'componentsSectionState',
   initialState,
   reducers: {
-    setComponentSection: (state, action: PayloadAction<string>) => {
+    setComponentSection: (
+      state: { componentsSection: string },
+      action: PayloadAction<string>,
+    ) => {
       state.componentsSection = action.payload;
     },
   },

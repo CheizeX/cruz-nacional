@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
 import {
   createAsyncThunk,
@@ -95,19 +96,34 @@ export const configurationDataToState = createSlice({
   name: 'configurationDataInState',
   initialState,
   reducers: {
-    setconfigurationData: (state, action: PayloadAction<any[]>) => {
+    setconfigurationData: (
+      state: { configurationData: any[] },
+      action: PayloadAction<any[]>,
+    ) => {
       state.configurationData = action.payload;
     },
-    setGeneralConfigurationData: (state, action: PayloadAction<any[]>) => {
+    setGeneralConfigurationData: (
+      state: { generalConfigurationData: any[] },
+      action: PayloadAction<any[]>,
+    ) => {
       state.generalConfigurationData = action.payload;
     },
-    setBusinessHoursData: (state, action: PayloadAction<any[]>) => {
+    setBusinessHoursData: (
+      state: { businessHoursData: any[] },
+      action: PayloadAction<any[]>,
+    ) => {
       state.businessHoursData = action.payload;
     },
-    setListOfRestrictions: (state, action: PayloadAction<any[]>) => {
+    setListOfRestrictions: (
+      state: { listOfRestrictions: any[] },
+      action: PayloadAction<any[]>,
+    ) => {
       state.listOfRestrictions = action.payload;
     },
-    setConstructingWebchat: (state, action: PayloadAction<boolean>) => {
+    setConstructingWebchat: (
+      state: { constructingWebchat: boolean },
+      action: PayloadAction<boolean>,
+    ) => {
       state.constructingWebchat = action.payload;
     },
   },

@@ -18,7 +18,10 @@ export const infoByAgentsStore = createSlice({
   name: 'infoByAgentState',
   initialState,
   reducers: {
-    setInfoByAgent: (state, action: PayloadAction<User[]>) => {
+    setInfoByAgent: (
+      state: { infoByAgents: User[] },
+      action: PayloadAction<User[]>,
+    ) => {
       state.infoByAgents = action.payload;
     },
   },

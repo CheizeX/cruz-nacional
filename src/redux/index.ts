@@ -26,8 +26,6 @@ import dashboardFilterChatsByDate from './slices/dashboard/dashboard-chats-filte
 import monitorAllUserState from './slices/monitor/monitor-all-agents';
 import activeTab from './slices/active-tab/active-tab';
 import optionsToFilterChats from './slices/live-chat/options-to-filter';
-import reportsQueryState from './slices/reports/reports-management';
-import reportsAgentsQueryState from './slices/reports/reports-data-agents';
 import chatContainerReviewState from './slices/dashboard/dashboard-review';
 import monitorCountAgentsAvailableState from './slices/monitor/count-agent';
 import chatToSetOnConversationIdToState from './slices/live-chat/chatset-on-conversation';
@@ -44,6 +42,8 @@ import contactsState from './slices/contacts/contacts-form';
 import contactsInfoState from './slices/contacts/contacts-info';
 import invoices from './slices/subscriptions/invoices';
 import userStatisticsState from './slices/statistics/statistics-user';
+import predefinedResponseState from './slices/configuration/configuration-predefined-response';
+import LibraryMessageState from './slices/library/library-message';
 
 const liveChat = combineReducers({
   chatsPendings,
@@ -83,10 +83,6 @@ const monitor = combineReducers({
   monitorCountAgentsAvailableState,
   infoByAgentState,
 });
-const reports = combineReducers({
-  reportsQueryState,
-  reportsAgentsQueryState,
-});
 const review = combineReducers({
   chatContainerReviewState,
 });
@@ -112,7 +108,6 @@ export const store = configureStore({
     users,
     tags,
     onboarding,
-    reports,
     monitor,
     chatsPendings,
     chatSelectedToSendId,
@@ -126,6 +121,8 @@ export const store = configureStore({
     channel,
     configurationInfo,
     subscriptionsInfo,
+    predefinedResponseState,
+    LibraryMessageState,
     section,
     contacts,
     invoices,

@@ -30,7 +30,10 @@ export const invoicesDataToState = createSlice({
   name: 'invoicesDataToState',
   initialState,
   reducers: {
-    setInvoicesData: (state, action: PayloadAction<InvoicesDataProps[]>) => {
+    setInvoicesData: (
+      state: { invoicesData: InvoicesDataProps[] },
+      action: PayloadAction<InvoicesDataProps[]>,
+    ) => {
       state.invoicesData = action.payload;
     },
   },

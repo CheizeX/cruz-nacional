@@ -177,7 +177,6 @@ export const ChannelsSection: FC = () => {
     setIsOpenModal(false);
     setSeletedComponent(arg);
   };
-  // socket.on("webchatScriptDone", { scriptJS, scriptCSS, div })
 
   useEffect(() => {
     socket.on('webchatScriptDone', (script: IPropsScripts) => {

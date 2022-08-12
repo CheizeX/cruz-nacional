@@ -6,9 +6,9 @@ storiesOf('Ailalia/Templates/Monitor/MonitorFirstSection', module).add(
   () => {
     return (
       <MonitorFirstSection
+        setOptionFilter={() => null}
         setIsOpenModal={() => null}
         totalChats={0}
-        setClientIdConversation={() => null}
         handleSearchChatToday={() => null}
         orderByInteraction={false}
         setOrderByInteraction={() => null}
@@ -21,7 +21,6 @@ storiesOf('Ailalia/Templates/Monitor/MonitorFirstSection', module).add(
         filterStatus={() => {}}
         filterAgents={() => {}}
         filterChannels={() => {}}
-        onHandleToggle={() => {}}
         resetHandle={() => {}}
       />
     );

@@ -163,15 +163,18 @@ export const StyledInfoUsersSection = styled.div`
   }
 `;
 export const StyledInfoUsersBySupOrAgent = styled.div`
-  /* border: 1px solid ${({ theme }) => theme.Colors.grays[1]} */
   height: 100%;
   width: 49.4%;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.Colors.grays[9]};
   display: flex;
+  & > :first-child {
+    & * {
+      color: white;
+    }
+  }
 `;
 export const StyledInfoNameAndIcon = styled.div`
-  /* border-bottom: 3px solid ${({ theme }) => theme.Colors.grays[5]}; */
   border-right: 2px dashed ${({ theme }) => theme.Colors.grays[10]};
   height: 100%;
   width: 60px;
@@ -180,14 +183,19 @@ export const StyledInfoNameAndIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  & :hover {
+    & > svg {
+      transition: 0.5s;
+      fill: ${({ theme }) => theme.Colors.purples[3]};
+    }
+  }
   & > svg {
     height: 100%;
-    fill: ${({ theme }) => theme.Colors.green[1]};
+    fill: ${({ theme }) => theme.Colors.purples[2]};
   }
 `;
 
 export const StyledUsersAvailableInfo = styled.span`
-  /* border-bottom: 3px solid ${({ theme }) => theme.Colors.grays[5]}; */
   height: 100%;
   width: 100%;
   border-top-left-radius: 10px;

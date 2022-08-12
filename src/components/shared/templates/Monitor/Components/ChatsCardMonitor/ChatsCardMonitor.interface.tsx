@@ -5,5 +5,5 @@ export interface ICardProps {
   number?: number;
   name: string;
   icon: string;
-  setFilterChat: React.Dispatch<React.SetStateAction<string>>;
+  setFilterChat: (arg: string) => void;
 }

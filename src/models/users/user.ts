@@ -34,4 +34,5 @@ export type DecodedToken = {
   _id: string;
   companyId: string;
   soundEnabled: boolean;
+  tagFilter: string;
 };

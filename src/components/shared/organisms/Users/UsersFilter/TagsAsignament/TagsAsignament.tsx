@@ -41,7 +41,6 @@ export const TagsAsignament: FC<IAsignationProps> = ({
         {dataFilterTags?.map(({ name, color, _id }) => (
           <ContainerChecked key={_id} color={color}>
             <Checkbox
-              isTransparent
               checked={checkedAsignationTags?.indexOf(name) !== -1}
               onClick={() => handleToggleTags(name)}
             />

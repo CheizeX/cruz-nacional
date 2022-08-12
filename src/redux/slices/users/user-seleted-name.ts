@@ -13,7 +13,10 @@ export const userSeletedFirstNameStore = createSlice({
   name: 'currentByUserFirstNameState',
   initialState,
   reducers: {
-    setByUserFirstName: (state, action: PayloadAction<string>) => {
+    setByUserFirstName: (
+      state: { currentByUserFirstName: string },
+      action: PayloadAction<string>,
+    ) => {
       state.currentByUserFirstName = action.payload;
     },
   },

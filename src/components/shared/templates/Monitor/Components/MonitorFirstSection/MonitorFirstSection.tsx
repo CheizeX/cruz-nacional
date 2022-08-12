@@ -13,9 +13,18 @@ import {
 import { IFirstSetionProps } from './MonitorFirstSection.interface';
 import { ChatsCardMonitor } from '../ChatsCardMonitor/ChatsCardMonitor';
 import useLocalStorage from '../../../../../../hooks/use-local-storage';
-import { useAppSelector } from '../../../../../../redux/hook/hooks';
-import { Channels, ChatStatus } from '../../../../../../models/chat/chat';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../redux/hook/hooks';
+import { Channels, Chat, ChatStatus } from '../../../../../../models/chat/chat';
 import { ContainerInput } from '../../../../molecules/Input/ContainerInput';
+import { TooltipPosition } from '../../../../atoms/Tooltip/tooltip.interface';
+import { Tooltip } from '../../../../atoms/Tooltip/Tooltip';
+import { readChat } from '../../../../../../api/chat';
+import { setInfoByChat } from '../../../../../../redux/slices/monitor/monitor-chats';
+import { useToastContext } from '../../../../molecules/Toast/useToast';
+import { Toast } from '../../../../molecules/Toast/Toast.interface';
 
 export const MonitorFirstSection: FC<IFirstSetionProps> = ({
   onChange,
@@ -28,21 +37,41 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
   byChannels,
   IDAgents,
   orderByInteraction,
-  onHandleToggle,
   resetHandle,
   setFilterChat,
   handleSearchChatToday,
   setOrderByInteraction,
-  setClientIdConversation,
   setIsOpenModal,
+  setOptionFilter,
   totalChats,
 }) => {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+  const showAlert = useToastContext();
   const [timeChat, setTimeChat] = useState(Date.now());
   const [accessToken] = useLocalStorage('AccessToken', '');
 
-  const { countOnConversation, countPause, countPending, countFinished } =
-    useAppSelector((state) => state.monitor.monitorTodayChatState);
+  const { chatsToday } = useAppSelector(
+    (state) => state.monitor.monitorTodayChatState,
+  );
+
+  // funcion que trae un solo chat por id
+  const getChat = async (id: string) => {
+    try {
+      const response = await readChat(id);
+      if (response.success === false) {
+        dispatch(setInfoByChat({} as Chat));
+      } else {
+        dispatch(setInfoByChat(response));
+        setIsOpenModal(true);
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'ERROR',
+        message: `${err}`,
+      });
+    }
+  };
 
   const handleStatus = (status: string, pause: boolean) => {
     if (ChatStatus.ON_CONVERSATION === status && pause === false) {
@@ -61,9 +90,14 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
     setOrderByInteraction(!orderByInteraction);
   };
 
-  const handleOption = async (ClientId: string) => {
-    setClientIdConversation(ClientId);
-    setIsOpenModal(true);
+  const handleFilterCard = (arg: string) => {
+    setOptionFilter(false);
+    setFilterChat(arg);
+  };
+
+  const handleResetAllFilters = () => {
+    setOptionFilter(false);
+    setFilterChat('');
   };
 
   useEffect(() => {
@@ -72,15 +106,18 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
     }, 10000);
     return () => clearInterval(intervalToGetActualTime);
   }, []);
+
   return (
     <StyledMonitorFirstSection>
       <StyledHeaderFirstSection>
         <span>
           <button
             type="button"
-            onClick={() => setFilterChat('')}
+            onClick={() => handleResetAllFilters()}
             name="Todos los Chats Hoy">
-            <Text color="black">Chats de hoy</Text>
+            <Tooltip text="Todos los chats" position={TooltipPosition.left}>
+              <Text color="black">Chats de hoy</Text>
+            </Tooltip>
           </button>
           <div>{totalChats}</div>
         </span>
@@ -109,8 +146,9 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
               statusAgent={statusAgent}
               byChannels={byChannels}
               IDAgents={IDAgents}
-              onHandleToggle={onHandleToggle}
               resetHandle={resetHandle}
+              setOptionFilter={setOptionFilter}
+              setFilterChat={setFilterChat}
             />
           </div>
         </div>
@@ -119,31 +157,51 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
         <WrapperCard>
           <ChatsCardMonitor
             name="Pendiente"
-            number={countPending}
+            number={
+              chatsToday &&
+              chatsToday.filter(
+                (item) => item.status === ChatStatus.ASSIGNMENT_PENDING,
+              ).length
+            }
             position="ASSIGNMENT_PENDING"
             icon="/icons/user_question.svg"
-            setFilterChat={setFilterChat}
+            setFilterChat={handleFilterCard}
           />
           <ChatsCardMonitor
             name="En Conversación"
-            number={countOnConversation}
+            number={
+              chatsToday &&
+              chatsToday.filter(
+                (item) => item.status === ChatStatus.ON_CONVERSATION,
+              ).length
+            }
             position="ON_CONVERSATION"
             icon="/icons/en-conversacion.svg"
-            setFilterChat={setFilterChat}
+            setFilterChat={handleFilterCard}
           />
           <ChatsCardMonitor
             name="Chats en Pausa"
-            number={countPause}
+            number={
+              chatsToday &&
+              chatsToday.filter(
+                (item) =>
+                  item.status === ChatStatus.ON_CONVERSATION && item.isPaused,
+              ).length
+            }
             position="ON_PAUSE"
             icon="/icons/pause.svg"
-            setFilterChat={setFilterChat}
+            setFilterChat={handleFilterCard}
           />
           <ChatsCardMonitor
             name="Finalizadas"
-            number={countFinished}
+            number={
+              chatsToday &&
+              chatsToday.filter((item) => item.status === ChatStatus.FINISHED)
+                .length
+            }
             position="FINISHED"
             icon="/icons/like.svg"
-            setFilterChat={setFilterChat}
+            setFilterChat={handleFilterCard}
           />
         </WrapperCard>
         <WrapperAgents>
@@ -174,13 +232,14 @@ export const MonitorFirstSection: FC<IFirstSetionProps> = ({
                   index={index}
                   position={status}
                   isColorPaused={isPaused}
-                  onClick={() => handleOption(_id)}>
+                  onClick={() => getChat(_id)}>
                   <div>
                     <SVGIcon
                       iconFile={`/icons/${
-                        channel === Channels.CHAT_API || channel === 'WhatsApp'
+                        channel === Channels.CHAT_API ||
+                        channel === Channels.WHATSAPP
                           ? 'whatsapp'
-                          : channel.toLocaleLowerCase()
+                          : channel?.toLocaleLowerCase()
                       }.svg`}
                     />
                   </div>

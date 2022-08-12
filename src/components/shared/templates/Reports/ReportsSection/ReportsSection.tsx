@@ -1,26 +1,18 @@
-import { FC, useState, useEffect, useCallback } from 'react';
+import { FC, useState, useEffect } from 'react';
 import axios from 'axios';
 import { IType } from '../Components/LeftPanelReports/LeftPanel.interface';
 import { LeftPanelReports } from '../Components/LeftPanelReports/LeftPanelReports';
 import { RightPanelReports } from '../Components/RightPanelReports/RightPanelReports';
 import { StyledWrapperReports } from './ReportsSection.styled';
-import { readingUsers } from '../../../../../api/users';
-import { UserStatus } from '../../../../../models/users/status';
-import { useAppDispatch } from '../../../../../redux/hook/hooks';
-import { setDataAgents } from '../../../../../redux/slices/reports/reports-data-agents';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Channels, Chat, ChatStatus } from '../../../../../models/chat/chat';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
 import { baseRestApi } from '../../../../../api/base';
-import { setDataReports } from '../../../../../redux/slices/reports/reports-management';
-import { UserRole } from '../../../../../models/users/role';
-import { User } from '../../../../../models/users/user';
 import { ModalMolecule } from '../../../molecules/Modal/Modal';
 import { SectionConversationInReports } from '../Components/SectionConversationInReports/SectionConversationInReports';
 
 export const ReportsSection: FC = () => {
   const showAlert = useToastContext();
-  const dispatch = useAppDispatch();
   const [dateStart, setDateStart] = useState<Date | null>(null);
   const [dateEnd, setDateEnd] = useState<Date | null>(null);
   const [types, setTypes] = useState(IType.TODOS);
@@ -46,10 +38,6 @@ export const ReportsSection: FC = () => {
   const onChangeReports = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchReports(event.target.value);
   };
-
-  // const { datsReports } = useAppSelector(
-  //   (state) => state.reports.reportsQueryState,
-  // );
 
   const chatConversationInReports =
     allData && allData.filter((chat: Chat) => chat._id === clientIdInReports);
@@ -87,26 +75,6 @@ export const ReportsSection: FC = () => {
     setFilterAsignation(newCheckedAsignation);
   };
 
-  const getInfoAgents = useCallback(async () => {
-    try {
-      const data = await readingUsers(UserStatus.ALL);
-      if (data.success === false) {
-        dispatch(setDataAgents([]));
-      } else {
-        const agentAsignation = data?.filter(
-          (item: User) => item.role === UserRole.AGENT,
-        );
-        dispatch(setDataAgents(agentAsignation));
-      }
-    } catch (err) {
-      showAlert?.addToast({
-        alert: Toast.ERROR,
-        title: 'ERROR',
-        message: `${err}`,
-      });
-    }
-  }, [dispatch]);
-
   const responseChannels = filterChannel.map(
     (item) =>
       (item === 11 ? Channels.WHATSAPP : null) ||
@@ -120,6 +88,32 @@ export const ReportsSection: FC = () => {
   );
   const responseByAgents = filterAsignation.map((item) => item);
 
+  const handleReports = async () => {
+    setSearchReports('');
+    if (dateStart && dateEnd) {
+      const queryParams = `${
+        process.env.NEXT_PUBLIC_REST_API_URL
+      }/chats/getFile/csv/${dateStart?.toISOString()}/${dateEnd?.toISOString()}?channels=${responseChannels}&states=${responseStatus}&agents=${responseByAgents}&process=read&extension=&limit=100&skip=${skip}`;
+      try {
+        const response = await baseRestApi.get(queryParams);
+        if (response.success === false) {
+          setAllData([]);
+        } else {
+          setAllData(response.chats);
+          setIsHasMore(response.chats);
+
+          setTotal(response.total);
+        }
+      } catch (err) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: 'ERROR',
+          message: `${err}`,
+        });
+      }
+    }
+  };
+
   const handleToggle = async () => {
     setSearchReports('');
     if (dateStart && dateEnd) {
@@ -129,11 +123,10 @@ export const ReportsSection: FC = () => {
       try {
         const response = await baseRestApi.get(queryParams);
         if (response.success === false) {
-          dispatch(setDataReports([]));
+          setAllData([]);
         } else {
-          dispatch(setDataReports(response.chats));
           setAllData((prevData) => prevData.concat(response.chats));
-          setIsHasMore(skip < response.total);
+          setIsHasMore(skip <= response.total);
           setTotal(response.total);
         }
       } catch (err) {
@@ -199,16 +192,6 @@ export const ReportsSection: FC = () => {
       });
     }
   };
-  // const dataFilterReports = useMemo(() => {
-  //   if (!searchReports) return datsReports;
-  //   return datsReports.filter(
-  //     (item) =>
-  //       item.client.name.toLowerCase().includes(searchReports.toLowerCase()) ||
-  //       item.assignedAgent?.name
-  //         .toLocaleLowerCase()
-  //         .includes(searchReports.toLowerCase()),
-  //   );
-  // }, [datsReports, searchReports]);
 
   const handleReset = () => {
     setFilterState([]);
@@ -217,14 +200,11 @@ export const ReportsSection: FC = () => {
     setAllData([]);
     setDateStart(null);
     setDateEnd(null);
-    dispatch(setDataReports([]));
     setTotal(0);
     setSkip(0);
     setSearchReports('');
   };
-  useEffect(() => {
-    getInfoAgents();
-  }, [getInfoAgents]);
+
   return (
     <StyledWrapperReports>
       <LeftPanelReports
@@ -240,7 +220,7 @@ export const ReportsSection: FC = () => {
         dateEnd={dateEnd}
         onChangeStart={onChangeStart}
         onChangeEnd={onChangeEnd}
-        handleToggle={handleToggle}
+        handleToggle={handleReports}
         handleReset={handleReset}
       />
       <RightPanelReports
@@ -253,7 +233,7 @@ export const ReportsSection: FC = () => {
         isHasMore={isHasMore}
         total={total}
         handleSearch={handleSearch}
-        handleToggle={handleToggle}
+        handleToggle={handleReports}
         isSearch={searchReports}
         setAllData={setAllData}
       />
@@ -266,5 +246,3 @@ export const ReportsSection: FC = () => {
     </StyledWrapperReports>
   );
 };
-
-// TODO= AGREGAR UNA COLUMNA DE PACK

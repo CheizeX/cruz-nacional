@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Checkbox } from '../../../../atoms/Checkbox/Checkbox';
 import { SVGIcon } from '../../../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../../../atoms/Text/Text';
-import { Channels } from '../../../Monitor/Components/FilterChannels/FilterChannels';
+import { DataChannel } from '../../../Monitor/Components/FilterChannels/FilterChannels';
 import {
   StyledWrapperCheckedChannel,
   StyledSearchByChannel,
@@ -15,7 +15,7 @@ export const SearchByChannel: FC<ISearchByChannel> = ({
 }) => {
   return (
     <StyledSearchByChannel>
-      {Channels?.map(({ id, name, icon }) => (
+      {DataChannel?.map(({ id, name, icon }) => (
         <StyledWrapperCheckedChannel
           checked={filterChannel.indexOf(id) !== -1}
           key={id}>

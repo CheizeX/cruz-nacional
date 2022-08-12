@@ -3,6 +3,6 @@ export interface FilterAgentsStateProps {
   position?: string;
 }
 export interface FilterByState {
-  stateByAgent: number[];
-  filterByState: (arg: number) => void;
+  stateByAgent: string[];
+  filterByState: (arg: string) => void;
 }

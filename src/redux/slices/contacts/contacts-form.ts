@@ -18,7 +18,10 @@ export const ContactsStore = createSlice({
   name: 'contactsState',
   initialState,
   reducers: {
-    setChannelContacts: (state, action: PayloadAction<IPropsChannel[]>) => {
+    setChannelContacts: (
+      state: { dataChannel: IPropsChannel[] },
+      action: PayloadAction<IPropsChannel[]>,
+    ) => {
       state.dataChannel = action.payload;
     },
   },

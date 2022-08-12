@@ -41,6 +41,7 @@ import {
 import {
   setSortedByLastDate,
   setSortedByFirstDate,
+  setUnreadedChatsOnConversation,
 } from '../../../../../../redux/slices/live-chat/on-conversation-chats';
 import {
   setChatsIdChannel,
@@ -84,10 +85,13 @@ export const InConversationChatItem: FC<
   const handleResetNoViewedChats = useCallback(
     async (id: string) => {
       try {
-        await baseRestApi.patch(
+        const response = await baseRestApi.patch(
           `${process.env.NEXT_PUBLIC_REST_API_URL}/chats/resetUnreadMessages/${id}`,
           {},
         );
+        if (response) {
+          dispatch(setUnreadedChatsOnConversation(response));
+        }
       } catch (error) {
         showAlert?.addToast({
           alert: Toast.ERROR,
@@ -96,7 +100,7 @@ export const InConversationChatItem: FC<
         });
       }
     },
-    [showAlert],
+    [dispatch, showAlert],
   );
 
   const handleSendMessageToUser = useCallback(
@@ -141,21 +145,21 @@ export const InConversationChatItem: FC<
               //   chatsOnConversation),
               //-------------------------------------------------------------------
               // validacion si existe el name o clientId en los chats en Conversación
-              user.client.name
+              user.client?.name
                 .toLowerCase()
                 .includes(searchByName.toLowerCase()) ||
-              user.client.clientId.replace(/[,-]/g, '').includes(searchByName),
+              user.client?.clientId.replace(/[,-]/g, '').includes(searchByName),
           )
           .filter((user) => (showOnlyPausedChats ? user.isPaused : user))
           .map((chat: Chat) => (
             <StyledInConversationWrapper
-              focusedItem={chat.client.clientId === userSelected}
+              focusedItem={chat.client?.clientId === userSelected}
               pausedItem={chat.isPaused}
               key={chat.createdAt.toString()}
               trafficLight={chat.trafficLight}
               onClick={() =>
                 handleSendMessageToUser(
-                  chat.client.clientId,
+                  chat.client?.clientId,
                   chat.channel,
                   chat._id,
                 )
@@ -163,10 +167,13 @@ export const InConversationChatItem: FC<
               <StyledInConversationChatItem>
                 <StyledClientAndAgentAvatars>
                   {chat.isPaused && <SVGIcon iconFile="/icons/pause.svg" />}
-                  {chat.isPaused === false && chat.client.profilePic && (
-                    <img src={chat.client.profilePic} alt={chat.client.name} />
+                  {chat.isPaused === false && chat.client?.profilePic && (
+                    <img
+                      src={chat.client?.profilePic}
+                      alt={chat.client?.name}
+                    />
                   )}
-                  {chat.isPaused === false && !chat.client.profilePic && (
+                  {chat.isPaused === false && !chat.client?.profilePic && (
                     <SVGIcon iconFile="/icons/user.svg" />
                   )}
                   {chat.channel === Channels.WHATSAPP && (
@@ -193,10 +200,16 @@ export const InConversationChatItem: FC<
                 </StyledClientAndAgentAvatars>
                 <StyledNameAndDialog>
                   <Text>
-                    {chat.client.name.substring(0, 16) ||
-                      chat.client.clientId.substring(0, 16)}
+                    {chat.client?.name.substring(0, 16) ||
+                      chat.client?.clientId.substring(0, 16)}
                   </Text>
                   <Text>
+                    {/* {chat.messages &&
+                      chat.messages[chat.messages.length - 1].content.substring(
+                        0,
+                        14,
+                      )}
+                    ... */}
                     {chat.messages &&
                       chat.messages[chat.messages.length - 1].contentType ===
                         ContentType.TEXT &&
@@ -211,7 +224,7 @@ export const InConversationChatItem: FC<
                       chat.messages[chat.messages.length - 1].contentType ===
                         ContentType.INTERACTIVE_LIST &&
                       chat.messages[chat.messages.length - 1].content.body}
-                    ...
+                    {/* ... */}
                   </Text>
                 </StyledNameAndDialog>
                 <StyledTimeAndState>

@@ -14,7 +14,10 @@ export const onboardingStore = createSlice({
   name: 'onboardingState',
   initialState,
   reducers: {
-    setOnboardingStatus: (state, action: PayloadAction<CreateAccountStep>) => {
+    setOnboardingStatus: (
+      state: { onboardingStep: CreateAccountStep },
+      action: PayloadAction<CreateAccountStep>,
+    ) => {
       state.onboardingStep = action.payload;
     },
   },

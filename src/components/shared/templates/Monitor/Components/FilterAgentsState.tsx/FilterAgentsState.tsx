@@ -45,14 +45,14 @@ export const FilterAgentsState: FC<FilterAgentsStateProps & FilterByState> = ({
 }) => {
   return (
     <>
-      {AgentStatus?.map(({ id, name, icon, position }) => (
+      {AgentStatus?.map(({ id, name, icon, position, status }) => (
         <StyledWrapperCheckedAgent
           position={position}
-          checkedAgents={stateByAgent.indexOf(id) !== -1}
+          checkedAgents={stateByAgent.indexOf(status) !== -1}
           key={id}>
           <Checkbox
-            checked={stateByAgent.indexOf(id) !== -1}
-            onClick={() => filterByState(id)}
+            checked={stateByAgent.indexOf(status) !== -1}
+            onClick={() => filterByState(status)}
           />
           <SVGIcon iconFile={`/icons/${icon}.svg`} />
           <Text color="black">{name}</Text>
