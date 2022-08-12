@@ -192,9 +192,9 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
       userDataInState.status === UserStatus.CALL
         ? 3
         : userDataInState.status === UserStatus.BATHROOM
-        ? 1
-        : userDataInState.status === UserStatus.LUNCH
         ? 2
+        : userDataInState.status === UserStatus.LUNCH
+        ? 1
         : 0;
     setStatusChecked(statusAgent);
     setActivoChecked(numberStatus);
