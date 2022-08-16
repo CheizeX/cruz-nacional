@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable consistent-return */
 import { FC } from 'react';
 import { SVGIcon } from '../../atoms/SVGIcon/SVGIcon';
 import { Text } from '../../atoms/Text/Text';
@@ -10,7 +8,11 @@ import {
   StyledButton,
   StyledRadio,
 } from './DropdownStatus.styled';
-import { IPropsDropdownStatus } from './DropdownStatus.interface';
+import {
+  IPropsDropdownStatus,
+  IPropsSingleStatus,
+  IPropsStatusDrop,
+} from './DropdownStatus.interface';
 import useDisplayElementOrNot from '../../../../hooks/use-display-element-or-not';
 import { useAppSelector } from '../../../../redux/hook/hooks';
 import { StatusAgent } from '../../../../models/users/status';
@@ -30,42 +32,25 @@ export const DropdownStatus: FC<IPropsDropdownStatus> = ({
     setIsComponentVisible(!isComponentVisible);
   };
   const statusDropdown = () => {
-    if (companyId !== '62a3c8c92ca8cd7252a24155') {
-      if (statusChecked === StatusAgent.AVAILABLE) {
-        return 'Disponible';
-      }
-      if (statusChecked === StatusAgent.LUNCH) {
-        return 'En Pausa - Almuerzo';
-      }
-      if (statusChecked === StatusAgent.BATHROOM) {
-        return 'En Pausa - Baño';
-      }
-      if (statusChecked === StatusAgent.CALL) {
-        return 'En Pausa - Llamado';
-      }
-    } else {
-      if (statusChecked === StatusAgent.AVAILABLE) {
-        return 'Disponible';
-      }
-      if (statusChecked === StatusAgent.LUNCH) {
-        return 'Almuerzo';
-      }
-      if (statusChecked === StatusAgent.BREAK) {
-        return 'Break';
-      }
-      if (statusChecked === StatusAgent.BATHROOM) {
-        return 'WC';
-      }
-      if (statusChecked === StatusAgent.PAUSES) {
-        return 'Pausas Activas';
-      }
-      if (statusChecked === StatusAgent.ADMINISTRATIVE) {
-        return 'Labores Administrativas';
-      }
-      if (statusChecked === StatusAgent.END) {
-        return 'Fin de Jornada';
-      }
+    const singleData: IPropsSingleStatus = {
+      AVAILABLE: 'Disponible',
+      LUNCH: 'En Pausa - Almuerzo',
+      BATHROOM: 'En Pausa - Baño',
+      CALL: 'En Pausa - Llamado',
+    };
+    const data: IPropsStatusDrop = {
+      AVAILABLE: 'Disponible',
+      LUNCH: 'Almuerzo',
+      BREAK: 'Break',
+      BATHROOM: 'WC',
+      PAUSES: 'Pausas Activas',
+      ADMINISTRATIVE: 'Labores Administrativas',
+      END: 'Fin de Jornada',
+    };
+    if (companyId === '62a3c8c92ca8cd7252a24155') {
+      return data[statusChecked];
     }
+    return singleData[statusChecked];
   };
 
   return (

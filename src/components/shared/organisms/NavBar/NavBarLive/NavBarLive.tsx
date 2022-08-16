@@ -1,7 +1,4 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable jsx-a11y/media-has-caption */
-/* eslint-disable no-nested-ternary */
-import React, { FC, useState, useEffect, useCallback } from 'react';
+import React, { FC, useState, useEffect, useCallback, useContext } from 'react';
 import { IoIosWarning } from 'react-icons/io';
 // import { FaBellSlash } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
@@ -52,6 +49,7 @@ import { getGeneralConfigurationData } from '../../../../../redux/slices/configu
 import { TooltipPosition } from '../../../atoms/Tooltip/tooltip.interface';
 import { DropdownStatus } from '../../DropdownStatus/DropdownStatus';
 import { Tooltip } from '../../../atoms/Tooltip/Tooltip';
+import { websocketContext } from '../../../../../chat';
 
 export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   componentsSection,
@@ -68,6 +66,8 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   const { signOut } = useAuth();
   const [accessToken] = useLocalStorage('AccessToken', '');
   const { decodedToken } = useJwt(accessToken);
+  const socket: any = useContext(websocketContext);
+
   const { userDataInState }: any = useAppSelector(
     (state) => state.userAuthCredentials,
   );
@@ -89,7 +89,9 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
     (item) => item.trafficLight === ITrafficLight.RED,
   ).length;
   // Manejo del dropdown de disponibilidad
-  const [statusChecked, setStatusChecked] = useState<string>('');
+  const [statusChecked, setStatusChecked] = useState<string>(
+    StatusAgent.AVAILABLE,
+  );
   const [myAccount, setMyAccount] = React.useState<number>(0);
 
   const handleClickStatus = async (data: string) => {
@@ -108,11 +110,13 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
 
   const readByAgent = useCallback(async () => {
     try {
-      if (decodedToken) {
-        const dataUser = decodedToken as DecodedToken;
-        const response = await readUser(dataUser._id);
-        dispatch(setUserDataInState(response as DecodedToken));
-      }
+      socket.on('connect', async () => {
+        if (decodedToken) {
+          const dataUser = decodedToken as DecodedToken;
+          const response = await readUser(dataUser._id);
+          dispatch(setUserDataInState(response as DecodedToken));
+        }
+      });
     } catch (error) {
       showAlert?.addToast({
         alert: Toast.ERROR,
@@ -173,8 +177,10 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   };
 
   useEffect(() => {
-    setStatusChecked(userDataInState.status);
-  }, [userDataInState, decodedToken]);
+    if (userDataInState.status !== undefined) {
+      setStatusChecked(userDataInState.status);
+    }
+  }, []);
 
   useEffect(() => {
     if (!localStorage.getItem('AccessToken')) {

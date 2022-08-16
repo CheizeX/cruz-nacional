@@ -16,7 +16,6 @@ const initialState: IChatsTransferSlice = {
 
 export const chatsTransferStore = createSlice({
   name: 'chatsTodayTransferState',
-
   initialState,
   reducers: {
     setChatsTransfer: (

@@ -1,14 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  FC,
-  useState,
-  useCallback,
-  useEffect,
-  useContext,
-  // useRef,
-} from 'react';
+import React, { FC, useState, useCallback, useEffect, useContext } from 'react';
 import { ChatsList } from '../Components/ChatsList/ChatsList';
 import { ChatsViewNoSelected } from '../Components/ChatsViewNoSelected/ChatsViewNoSelected';
 import { ChatsViewSelectedToConfirm } from '../Components/ChatsViewSelectedToConfirm/ChatsViewSelectedToConfirm';
@@ -31,11 +22,9 @@ import { PauseChat } from '../Components/PauseChat/PauseChat';
 import { ReloadChat } from '../Components/ReloadChat/ReloadChat';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
+import { useAppDispatch } from '../../../../../redux/hook/hooks';
 import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../../../../redux/hook/hooks';
-import {
+  removeOneChatPending,
   setChatsPendings,
   setOneChatPending,
 } from '../../../../../redux/slices/live-chat/pending-chats';
@@ -76,13 +65,6 @@ export const ChatsSection: FC<
   const showAlert = useToastContext();
 
   const dispatch = useAppDispatch();
-
-  const { chatsPendings } = useAppSelector(
-    (state) => state.liveChat.chatsPendings,
-  );
-  // const { generalConfigurationData }: any = useAppSelector(
-  //   (state) => state.configurationInfo,
-  // );
 
   const [sortedChats, setSortedChats] = useState<boolean>(false);
   const [showOnlyPausedChats, setShowOnlyPausedChats] =
@@ -185,11 +167,6 @@ export const ChatsSection: FC<
   // Setea los mensajes que ingresan a PENDIENTES.
   const getNewPendingMessage = useCallback(async () => {
     socket?.on('pendingLiveChat', async (data: Chat) => {
-      // const chatInPending = chatsPendings.some((chat) => chat._id === data._id);
-      // console.log('entro pendiente', chatInPending);
-      //   if(activeSound && audioPending) {
-      //     console.log('entro pendiente');
-      //     await audioPending.play();
       dispatch(setOneChatPending(data));
     });
     // });
@@ -198,13 +175,6 @@ export const ChatsSection: FC<
   // Setea los mensajes que ingresan a EN CONVERSACIÓN.
   const getNewOnConversationMessage = useCallback(async () => {
     socket?.on('onConversationLiveChat', async (data: Chat) => {
-      // if (activeSound && audioConversation.current) {
-      //   if (userDataInState.soundEnabled) {
-      //     audioConversation.current.play();
-      //   } else {
-      //     audioConversation.current.pause();
-      //   }
-      // }
       dispatch(setOneChatOnConversation(data));
     });
   }, []);
@@ -212,9 +182,7 @@ export const ChatsSection: FC<
   // Setea los mensajes PENDIENTES que ingresan a EN CONVERSACIÓN.
   const setPendingToOnconversation = useCallback(async () => {
     socket?.on('assignedAgent', async (data: string) => {
-      dispatch(
-        setChatsPendings(chatsPendings.filter((chat) => chat._id !== data)),
-      );
+      dispatch(removeOneChatPending(data));
     });
   }, []);
 

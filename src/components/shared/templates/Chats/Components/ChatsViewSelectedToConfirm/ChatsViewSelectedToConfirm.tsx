@@ -195,6 +195,7 @@ export const ChatsViewSelectedToConfirm: FC<
     ) {
       setChatInputDialogue('');
       try {
+        setSendingMessage(true);
         const response = await baseRestApi.patch(
           `${
             chatToTalkWithUser?.channel === Channels.WHATSAPP
@@ -205,17 +206,18 @@ export const ChatsViewSelectedToConfirm: FC<
           }`,
           bodyObjectForEnterOrClick,
         );
-        if (response.messages.length > 0) {
+        if (response.messages) {
           dispatch(setOneChatOnConversation(response));
-          setChatInputDialogue('');
         }
       } catch (error) {
         showAlert?.addToast({
           alert: Toast.ERROR,
           title: 'ERROR',
-          message: `INIT-CONVERSATION-ERROR ${error}`,
+          message: `ERROR AL ENVIAR MENSAJE ${error}`,
         });
       }
+      setChatInputDialogue('');
+      setSendingMessage(false);
     }
   };
 
@@ -240,9 +242,10 @@ export const ChatsViewSelectedToConfirm: FC<
       showAlert?.addToast({
         alert: Toast.ERROR,
         title: 'ERROR',
-        message: `INIT-CONVERSATION-ERROR ${error}`,
+        message: `ERROR AL ENVIAR MENSAJE ${error}`,
       });
     }
+    setChatInputDialogue('');
     setSendingMessage(false);
   };
 

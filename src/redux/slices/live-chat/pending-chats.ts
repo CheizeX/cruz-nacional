@@ -20,6 +20,7 @@ export const chatsPendingsToState = createSlice({
     ) => {
       state.chatsPendings = action.payload;
     },
+
     setOneChatPending: (
       state: { chatsPendings: Chat[] },
       action: PayloadAction<Chat>,
@@ -42,12 +43,22 @@ export const chatsPendingsToState = createSlice({
         state.chatsPendings = [action.payload, ...state.chatsPendings];
       }
     },
+    removeOneChatPending: (
+      state: { chatsPendings: Chat[] },
+      action: PayloadAction<string>,
+    ) => {
+      state.chatsPendings = state.chatsPendings.filter(
+        (chat) => chat._id !== action.payload,
+      );
+    },
+
     setSortedByFirstDate: (state: { chatsPendings: any[] }) => {
       state.chatsPendings = state.chatsPendings.sort(
         (a: { createdAt: number }, b: { createdAt: number }) =>
           a.createdAt > b.createdAt ? 1 : -1,
       );
     },
+
     setSortedByLastDate: (state: { chatsPendings: any[] }) => {
       state.chatsPendings = state.chatsPendings.sort(
         (a: { createdAt: number }, b: { createdAt: number }) =>
@@ -60,7 +71,7 @@ export const chatsPendingsToState = createSlice({
 export const {
   setChatsPendings,
   setOneChatPending,
-  // removeChatPending,
+  removeOneChatPending,
   setSortedByFirstDate,
   setSortedByLastDate,
 } = chatsPendingsToState.actions;

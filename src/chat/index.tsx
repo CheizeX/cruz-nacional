@@ -10,9 +10,6 @@ export const WebsocketProvider: FC = ({ children }) => {
   const [socket, setSocket] = useState<any>(null);
   const [accessToken] = useLocalStorage('AccessToken', '');
   const { decodedToken }: any = useJwt(accessToken);
-  // const { userDataInState } = useAppSelector(
-  //   (state) => state.userAuthCredentials,
-  // );
 
   useEffect(() => {
     const socketConnection = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? '');
