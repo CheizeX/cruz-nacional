@@ -18,7 +18,7 @@ export const StyledDropdownStatus = styled.div<IPropsWraperDropdownStatus>`
     border-radius: 24px;
     background: ${({ statusChecked, theme }) =>
       mySelector(
-        statusChecked === 'Disponible' || statusChecked === 'Activo',
+        statusChecked === 'AVAILABLE',
         theme.Colors.green[3],
         theme.Colors.orange[3],
       )};

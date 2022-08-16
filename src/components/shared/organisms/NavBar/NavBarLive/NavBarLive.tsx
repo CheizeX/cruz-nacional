@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState, useEffect, useCallback } from 'react';
@@ -31,12 +32,11 @@ import {
   // enabledUserSound,
   readUser,
 } from '../../../../../api/users';
-import { StatusAgent, UserStatus } from '../../../../../models/users/status';
+import { StatusAgent } from '../../../../../models/users/status';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../redux/hook/hooks';
-import { DropdownStatus } from '../../DropdownStatus/DropdownStatus';
 import {
   // setUpdateSoundEnabled,
   setUserDataInState,
@@ -46,11 +46,12 @@ import { MyAccountSidebarOrganism } from '../../MyAccountSidebar/MyAccountSideba
 import useDisplayElementOrNot from '../../../../../hooks/use-display-element-or-not';
 import { IBackOfficeProps } from '../BackOffice/NavBarBackOffice.interface';
 import useLocalStorage from '../../../../../hooks/use-local-storage';
-import { setComponentSection } from '../../../../../redux/slices/section/live-chat-section';
 import { ITrafficLight } from '../../../../../models/chat/chat';
-import { Tooltip } from '../../../atoms/Tooltip/Tooltip';
-import { TooltipPosition } from '../../../atoms/Tooltip/tooltip.interface';
+import { setComponentSection } from '../../../../../redux/slices/section/live-chat-section';
 import { getGeneralConfigurationData } from '../../../../../redux/slices/configuration/configuration-info';
+import { TooltipPosition } from '../../../atoms/Tooltip/tooltip.interface';
+import { DropdownStatus } from '../../DropdownStatus/DropdownStatus';
+import { Tooltip } from '../../../atoms/Tooltip/Tooltip';
 
 export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   componentsSection,
@@ -70,7 +71,6 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   const { userDataInState }: any = useAppSelector(
     (state) => state.userAuthCredentials,
   );
-
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
@@ -90,16 +90,10 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   ).length;
   // Manejo del dropdown de disponibilidad
   const [statusChecked, setStatusChecked] = useState<string>('');
-  const [activoCheck, setActivoChecked] = useState<number>(0);
   const [myAccount, setMyAccount] = React.useState<number>(0);
 
-  const handleClickStatus = async (
-    arg: string,
-    index: number,
-    data: string,
-  ) => {
-    setStatusChecked(arg);
-    setActivoChecked(index);
+  const handleClickStatus = async (data: string) => {
+    setStatusChecked(data);
     try {
       const response = await changeStatus({ status: data as StatusAgent });
       dispatch(setUserDataInState(response as DecodedToken));
@@ -179,25 +173,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   };
 
   useEffect(() => {
-    const statusAgent =
-      userDataInState.status === UserStatus.CALL
-        ? 'En Pausa - En llamado'
-        : userDataInState.status === UserStatus.BATHROOM
-        ? 'En Pausa - Baño'
-        : userDataInState.status === UserStatus.LUNCH
-        ? 'En Pausa - Almuerzo'
-        : 'Disponible';
-
-    const numberStatus =
-      userDataInState.status === UserStatus.CALL
-        ? 3
-        : userDataInState.status === UserStatus.BATHROOM
-        ? 1
-        : userDataInState.status === UserStatus.LUNCH
-        ? 2
-        : 0;
-    setStatusChecked(statusAgent);
-    setActivoChecked(numberStatus);
+    setStatusChecked(userDataInState.status);
   }, [userDataInState, decodedToken]);
 
   useEffect(() => {
@@ -214,7 +190,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
     dispatch(getGeneralConfigurationData());
   }, [dispatch]);
 
-  // const { generalConfigurationData } = useAppSelector(
+  // const { generalConfigurationData }: any = useAppSelector(
   //   (state) => state.configurationInfo,
   // );
 
@@ -233,12 +209,6 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                 <Text>Chats</Text>
               </BadgeMolecule>
             </ButtonSelectedComponent>
-            {/* <button type="button">
-                <BadgeMolecule>
-                  <Text>Monitor</Text>
-                  {elipsis && elipsis()}
-                </BadgeMolecule>
-              </button> */}
             <ButtonSelectedComponent
               isFocus={componentsSection === 'Contactos'}
               onClick={() => handleComponentsSection('Contactos')}>
@@ -308,7 +278,6 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
             </div>
             <DropdownStatus
               statusChecked={statusChecked}
-              activoCheck={activoCheck}
               handleClickStatus={handleClickStatus}
             />
           </div>

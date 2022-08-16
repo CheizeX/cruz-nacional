@@ -1,5 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { FC, useState, useCallback, useEffect, useContext } from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {
+  FC,
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  // useRef,
+} from 'react';
 import { ChatsList } from '../Components/ChatsList/ChatsList';
 import { ChatsViewNoSelected } from '../Components/ChatsViewNoSelected/ChatsViewNoSelected';
 import { ChatsViewSelectedToConfirm } from '../Components/ChatsViewSelectedToConfirm/ChatsViewSelectedToConfirm';
@@ -71,6 +80,9 @@ export const ChatsSection: FC<
   const { chatsPendings } = useAppSelector(
     (state) => state.liveChat.chatsPendings,
   );
+  // const { generalConfigurationData }: any = useAppSelector(
+  //   (state) => state.configurationInfo,
+  // );
 
   const [sortedChats, setSortedChats] = useState<boolean>(false);
   const [showOnlyPausedChats, setShowOnlyPausedChats] =
@@ -98,17 +110,22 @@ export const ChatsSection: FC<
   };
 
   // Variables de configuración de sonido.
+  // let activeSound: boolean;
+  // let audioConversation: React.MutableRefObject<HTMLAudioElement | null>;
+  // let audioPending: React.MutableRefObject<HTMLAudioElement | null>;
   // const activeSound = generalConfigurationData.notificationSounds?.isActive;
   // const audioConversation = useRef<HTMLAudioElement | null>(
-  //   new Audio(generalConfigurationData.notificationSounds?.conversationSound),
+  //   new Audio(generalConfigurationData?.notificationSounds?.conversationSound),
   // );
   // const audioPending = useRef<HTMLAudioElement | null>(
   //   new Audio(generalConfigurationData.notificationSounds?.pendingSound),
   // );
-
-  // ---------------------------------
+  // // ---------------------------------
   // useEffect(() => {
-  //   if (userDataInState.soundEnabled) {
+  //   if (
+  //     userDataInState.soundEnabled &&
+  //     generalConfigurationData.notificationSounds
+  //   ) {
   //     audioConversation.current = new Audio(
   //       generalConfigurationData.notificationSounds?.conversationSound,
   //     );
@@ -168,13 +185,26 @@ export const ChatsSection: FC<
   // Setea los mensajes que ingresan a PENDIENTES.
   const getNewPendingMessage = useCallback(async () => {
     socket?.on('pendingLiveChat', async (data: Chat) => {
+      // const chatInPending = chatsPendings.some((chat) => chat._id === data._id);
+      // console.log('entro pendiente', chatInPending);
+      //   if(activeSound && audioPending) {
+      //     console.log('entro pendiente');
+      //     await audioPending.play();
       dispatch(setOneChatPending(data));
     });
+    // });
   }, []);
 
   // Setea los mensajes que ingresan a EN CONVERSACIÓN.
   const getNewOnConversationMessage = useCallback(async () => {
     socket?.on('onConversationLiveChat', async (data: Chat) => {
+      // if (activeSound && audioConversation.current) {
+      //   if (userDataInState.soundEnabled) {
+      //     audioConversation.current.play();
+      //   } else {
+      //     audioConversation.current.pause();
+      //   }
+      // }
       dispatch(setOneChatOnConversation(data));
     });
   }, []);
