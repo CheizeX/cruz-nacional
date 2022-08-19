@@ -294,9 +294,6 @@ export const StyledTextName = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 140px;
-  /* font-size: 16px;
-  line-height: 20px;
-  font-weight: ${({ theme }) => theme.fontWeight[600]}; */
 `;
 export const StyledTextEmail = styled.span`
   overflow: hidden;

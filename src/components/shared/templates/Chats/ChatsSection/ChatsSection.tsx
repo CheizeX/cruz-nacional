@@ -1,5 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { FC, useState, useCallback, useEffect, useContext } from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {
+  FC,
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+} from 'react';
 import { ChatsList } from '../Components/ChatsList/ChatsList';
 import { ChatsViewNoSelected } from '../Components/ChatsViewNoSelected/ChatsViewNoSelected';
 import { ChatsViewSelectedToConfirm } from '../Components/ChatsViewSelectedToConfirm/ChatsViewSelectedToConfirm';
@@ -22,7 +31,10 @@ import { PauseChat } from '../Components/PauseChat/PauseChat';
 import { ReloadChat } from '../Components/ReloadChat/ReloadChat';
 import { useToastContext } from '../../../molecules/Toast/useToast';
 import { Toast } from '../../../molecules/Toast/Toast.interface';
-import { useAppDispatch } from '../../../../../redux/hook/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../redux/hook/hooks';
 import {
   removeOneChatPending,
   setChatsPendings,
@@ -66,6 +78,13 @@ export const ChatsSection: FC<
 
   const dispatch = useAppDispatch();
 
+  const { generalConfigurationData }: any = useAppSelector(
+    (state) => state.configurationInfo,
+  );
+  const { userDataInState }: any = useAppSelector(
+    (state) => state.userAuthCredentials,
+  );
+
   const [sortedChats, setSortedChats] = useState<boolean>(false);
   const [showOnlyPausedChats, setShowOnlyPausedChats] =
     useState<boolean>(false);
@@ -86,43 +105,48 @@ export const ChatsSection: FC<
       messageLength: number;
     },
   );
+  // Variables de configuración de sonido.
+  const soundActive = generalConfigurationData.notificationSounds?.isActive;
+  const soundInConversation =
+    generalConfigurationData.notificationSounds?.conversationSound;
+  const soundInPending =
+    generalConfigurationData.notificationSounds?.pendingSound;
+
+  const audioConversation = useRef<HTMLAudioElement | null>(
+    soundInConversation &&
+      new Audio(`/sound/notification_sound_${soundInConversation}.mp3`),
+  );
+  const audioPending = useRef<HTMLAudioElement | null>(
+    soundInPending &&
+      new Audio(`/sound/notification_sound_${soundInPending}.mp3`),
+  );
+
+  // ---------------------------------
+  useEffect(() => {
+    if (
+      userDataInState.soundEnabled &&
+      generalConfigurationData.notificationSounds &&
+      soundInConversation &&
+      soundInPending
+    ) {
+      audioConversation.current = new Audio(
+        `/sound/notification_sound_${soundInConversation}.mp3`,
+      );
+      audioPending.current = new Audio(
+        `/sound/notification_sound_${soundInPending}.mp3`,
+      );
+    } else {
+      audioConversation.current = null;
+      audioPending.current = null;
+    }
+  }, [
+    generalConfigurationData.notificationSounds?.conversationSound,
+    generalConfigurationData.notificationSounds?.pendingSound,
+  ]);
 
   const onChangeSearchName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchByName(event.target.value);
   };
-
-  // Variables de configuración de sonido.
-  // let activeSound: boolean;
-  // let audioConversation: React.MutableRefObject<HTMLAudioElement | null>;
-  // let audioPending: React.MutableRefObject<HTMLAudioElement | null>;
-  // const activeSound = generalConfigurationData.notificationSounds?.isActive;
-  // const audioConversation = useRef<HTMLAudioElement | null>(
-  //   new Audio(generalConfigurationData?.notificationSounds?.conversationSound),
-  // );
-  // const audioPending = useRef<HTMLAudioElement | null>(
-  //   new Audio(generalConfigurationData.notificationSounds?.pendingSound),
-  // );
-  // // ---------------------------------
-  // useEffect(() => {
-  //   if (
-  //     userDataInState.soundEnabled &&
-  //     generalConfigurationData.notificationSounds
-  //   ) {
-  //     audioConversation.current = new Audio(
-  //       generalConfigurationData.notificationSounds?.conversationSound,
-  //     );
-  //     audioPending.current = new Audio(
-  //       generalConfigurationData.notificationSounds?.pendingSound,
-  //     );
-  //   } else {
-  //     audioConversation.current = null;
-  //     audioPending.current = null;
-  //   }
-  // }, [
-  //   userDataInState.soundEnabled,
-  //   generalConfigurationData.notificationSounds?.conversationSound,
-  //   generalConfigurationData.notificationSounds?.pendingSound,
-  // ]);
 
   // SETEA TODOS LOS CHATS PENDIENTES CUANDO SE RENDERIZA X PRIMERA VEZ
   const getPendingChats = useCallback(async () => {
@@ -164,18 +188,61 @@ export const ChatsSection: FC<
 
   // --------------- <<< WEB SOCKET EVENTS >>> -----------------
 
+  const handleSoundEventPending = (chat: Chat) => {
+    if (
+      soundActive &&
+      userDataInState.soundEnabled &&
+      audioPending.current &&
+      chat.unreadMessages === 1
+    ) {
+      audioPending.current.play();
+    }
+  };
+
   // Setea los mensajes que ingresan a PENDIENTES.
   const getNewPendingMessage = useCallback(async () => {
     socket?.on('pendingLiveChat', async (data: Chat) => {
       dispatch(setOneChatPending(data));
+      handleSoundEventPending(data);
     });
-    // });
   }, []);
+
+  const handleSoundEvent = async (chats: Chat) => {
+    const messageByInactivity = chats.messages[chats.messages.length - 1];
+    if (
+      soundActive &&
+      userDataInState.soundEnabled &&
+      audioConversation.current &&
+      chats.unreadMessages !== 0 &&
+      messageByInactivity.from !== 'AGENT'
+    ) {
+      await audioConversation.current.play();
+    }
+  };
+
+  const handleEventAssignedChat = async () => {
+    if (
+      soundActive &&
+      userDataInState.soundEnabled &&
+      audioConversation.current
+    ) {
+      await audioConversation.current.play();
+    }
+  };
 
   // Setea los mensajes que ingresan a EN CONVERSACIÓN.
   const getNewOnConversationMessage = useCallback(async () => {
     socket?.on('onConversationLiveChat', async (data: Chat) => {
       dispatch(setOneChatOnConversation(data));
+      await handleSoundEvent(data);
+    });
+  }, []);
+
+  // Solo para Salud Total --- Evento que se ejecuta cuando llega un nuevo mensaje por asignación automáticamente
+  const getAutomaticAssignedChat = useCallback(async () => {
+    socket?.on('automaticAssignedChat', async (chat: Chat) => {
+      dispatch(setOneChatOnConversation(chat));
+      handleEventAssignedChat();
     });
   }, []);
 
@@ -220,6 +287,7 @@ export const ChatsSection: FC<
     setPendingToOnconversation();
     getNewChatFinishedByInactivity();
     wsClosePreviousSession();
+    getAutomaticAssignedChat();
   }, [socket]);
 
   return (

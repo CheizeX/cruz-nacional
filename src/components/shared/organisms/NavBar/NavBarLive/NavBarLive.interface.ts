@@ -17,3 +17,8 @@ export interface INavBarContainer {
 export interface INavBar {
   componentsSection: string;
 }
+
+// export interface IPropsSoundLiveChat {
+//   audioConversation: React.MutableRefObject<HTMLAudioElement | null>;
+//   audioPending: React.MutableRefObject<HTMLAudioElement | null>;
+// }

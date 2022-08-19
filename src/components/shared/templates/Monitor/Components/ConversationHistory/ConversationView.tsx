@@ -147,7 +147,21 @@ export const ConversationView: FC<IConvertsationHistory> = ({
   return (
     <StyledConversationHistory>
       <StyledHeaderConversationHistory>
-        <Text>Conversación</Text>
+        <div>
+          <Text>
+            Cliente:{' '}
+            {chatConversationView?.client?.name
+              .slice(0, 1)
+              .toUpperCase()
+              .concat(
+                chatConversationView?.client?.name.slice(
+                  1,
+                  chatConversationView?.client?.name.length - 1,
+                ),
+              )}
+          </Text>
+          <Text>Contacto: {chatConversationView?.client?.clientId}</Text>
+        </div>
         <div>
           <div>
             <WrapperSearchHistory>
@@ -251,6 +265,12 @@ export const ConversationView: FC<IConvertsationHistory> = ({
         </div>
         <div>
           <Text>Mensajes</Text>
+          {/* <div>
+            <Text>
+              {chatConversationView.client.name}{' - '}
+              {chatConversationView.client.clientId}
+            </Text>
+          </div> */}
           <div>
             <div>
               <SectionContainerConversationView>

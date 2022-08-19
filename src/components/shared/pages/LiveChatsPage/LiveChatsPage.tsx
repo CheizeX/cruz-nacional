@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useJwt } from 'react-jwt';
 import { NavBarLive } from '../../organisms/NavBar/NavBarLive/NavBarLive';
@@ -17,7 +17,11 @@ import { UserRole } from '../../../../models/users/role';
 import { Loader } from '../../atoms/Loader/Loader';
 import { ContactsSetion } from '../../templates/Contacts/ContactsSection/ContactsSection';
 import { LibrarySection } from '../../templates/Library/LibrarySection/LibrarySection';
-// import { getGeneralConfigurationData } from '../../../../redux/slices/configuration/configuration-info';
+import { setUserDataInState } from '../../../../redux/slices/auth/user-credentials';
+import { readUser } from '../../../../api/users';
+import { DecodedToken } from '../../../../models/users/user';
+import { useToastContext } from '../../molecules/Toast/useToast';
+import { Toast } from '../../molecules/Toast/Toast.interface';
 
 export const LiveChatsPage: FC<
   UploadableFile & FilterChannelsProps & FilterChannel & IBackOfficeProps
@@ -35,6 +39,7 @@ export const LiveChatsPage: FC<
 }) => {
   const { push } = useRouter();
   const dispatch = useAppDispatch();
+  const showAlert = useToastContext();
   const [accessToken] = useLocalStorage('AccessToken', '');
 
   const [activeByDefaultTab, setActiveByDefaultTab] = useState<number>(0);
@@ -49,6 +54,22 @@ export const LiveChatsPage: FC<
     (state) => state.section.componentsSectionState,
   );
 
+  const readByAgent = useCallback(async () => {
+    try {
+      if (decodedToken) {
+        const dataUser = decodedToken as DecodedToken;
+        const response = await readUser(dataUser._id);
+        dispatch(setUserDataInState(response as DecodedToken));
+      }
+    } catch (error) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: 'Error',
+        message: `${error}`,
+      });
+    }
+  }, [decodedToken]);
+
   useEffect(() => {
     if (!accessToken) {
       push('/');
@@ -62,6 +83,10 @@ export const LiveChatsPage: FC<
     }
   }, [accessToken, decodedToken, dispatch, push]);
 
+  useEffect(() => {
+    readByAgent();
+  }, [readByAgent]);
+
   return (
     <>
       {decodedToken && decodedToken.role === UserRole.AGENT ? (
@@ -72,26 +97,27 @@ export const LiveChatsPage: FC<
             bellIcon={() => <SVGIcon iconFile="/icons/bell.svg" />}
             componentsSection={componentsSection}
           />
-          {componentsSection === 'Chat' && (
-            <ChatsSection
-              checkedTags={checkedTags}
-              setCheckedTags={setCheckedTags}
-              handleCleanChannels={handleCleanChannels}
-              selectedChannels={selectedChannels}
-              setSelectedChannels={setSelectedChannels}
-              setActiveByDefaultTab={setActiveByDefaultTab}
-              activeByDefaultTab={activeByDefaultTab}
-              setUserSelected={setUserSelected}
-              userSelected={userSelected}
-              channel={channel}
-              emojisDisplayed
-              setEmojisDisplayed={() => {}}
-              id={id}
-              file={file}
-              errors={errors}
-              setChatInputDialogue={() => {}}
-            />
-          )}
+          {componentsSection === 'Chat' &&
+            userDataInState.soundEnabled !== undefined && (
+              <ChatsSection
+                checkedTags={checkedTags}
+                setCheckedTags={setCheckedTags}
+                handleCleanChannels={handleCleanChannels}
+                selectedChannels={selectedChannels}
+                setSelectedChannels={setSelectedChannels}
+                setActiveByDefaultTab={setActiveByDefaultTab}
+                activeByDefaultTab={activeByDefaultTab}
+                setUserSelected={setUserSelected}
+                userSelected={userSelected}
+                channel={channel}
+                emojisDisplayed
+                setEmojisDisplayed={() => {}}
+                id={id}
+                file={file}
+                errors={errors}
+                setChatInputDialogue={() => {}}
+              />
+            )}
           {componentsSection === 'Contactos' && (
             <ContactsSetion
               setActiveByDefaultTab={setActiveByDefaultTab}

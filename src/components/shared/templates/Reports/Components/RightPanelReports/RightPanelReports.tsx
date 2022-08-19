@@ -15,6 +15,7 @@ import { SearchForChats } from '../SearchForChats/SearchForChats';
 import { IPropsRightReport } from './RightReports.interface';
 import useDisplayElementOrNot from '../../../../../../hooks/use-display-element-or-not';
 import { BadgeMolecule } from '../../../../molecules/Badge/Badge';
+// import { IntearctionAagent } from '../AgentInteraction/AgentInteraction';
 
 export const RightPanelReports: FC<IPropsRightReport> = ({
   handleDownload,
@@ -30,9 +31,6 @@ export const RightPanelReports: FC<IPropsRightReport> = ({
   isHasMore,
   total,
 }) => {
-  // const { datsReports } = useAppSelector(
-  //   (state) => state.reports.reportsQueryState,
-  // );
   const { ref, isComponentVisible, setIsComponentVisible } =
     useDisplayElementOrNot(false);
   const [isFocus, setIsFocus] = useState<boolean>(false);
@@ -109,6 +107,7 @@ export const RightPanelReports: FC<IPropsRightReport> = ({
           ) : null}
         </div>
       </StyledHeaderRightPanel>
+      {/* <IntearctionAagent /> */}
       {datsReports.length > 0 ? (
         <SearchForChats
           setSkip={setSkip}

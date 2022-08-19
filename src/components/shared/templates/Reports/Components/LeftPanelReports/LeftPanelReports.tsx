@@ -101,8 +101,8 @@ export const LeftPanelReports: FC<ILeftPanel & IPropsLeftPanel> = ({
       <StyledLeftBody types={types}>
         <div>
           <StyledChatBot types={types}>
-            <button type="button" onClick={() => setTypes(IType.TODOS)}>
-              Todos
+            <button type="button" onClick={() => setTypes(IType.CHATS)}>
+              Chats
             </button>
             <button type="button" onClick={() => setTypes(IType.AGENTS)}>
               {' '}
@@ -135,64 +135,68 @@ export const LeftPanelReports: FC<ILeftPanel & IPropsLeftPanel> = ({
             ) : null}
           </div>
         </StyledFocused>
-        <StyledFocused focused={openChannel} types={types}>
-          <button type="button" onClick={handleClickChannel}>
+        {types !== IType.AGENTS && (
+          <StyledFocused focused={openChannel} types={types}>
+            <button type="button" onClick={handleClickChannel}>
+              <div>
+                <Text>Canal</Text>
+                {filterChannel.length > 0 ? (
+                  <StyledCount>{filterChannel.length}</StyledCount>
+                ) : null}
+              </div>
+              {openChannel ? (
+                <SVGIcon iconFile="/icons/chevron-square-up.svg" />
+              ) : (
+                <SVGIcon iconFile="/icons/chevron-square-down.svg" />
+              )}
+            </button>
             <div>
-              <Text>Canal</Text>
-              {filterChannel.length > 0 ? (
-                <StyledCount>{filterChannel.length}</StyledCount>
+              {openChannel ? (
+                <SearchByChannel
+                  filterChannel={filterChannel}
+                  filterByChannel={filterByChannel}
+                />
               ) : null}
             </div>
-            {openChannel ? (
-              <SVGIcon iconFile="/icons/chevron-square-up.svg" />
-            ) : (
-              <SVGIcon iconFile="/icons/chevron-square-down.svg" />
-            )}
-          </button>
-          <div>
-            {openChannel ? (
-              <SearchByChannel
-                filterChannel={filterChannel}
-                filterByChannel={filterByChannel}
-              />
-            ) : null}
-          </div>
-        </StyledFocused>
-        <StyledFocused focused={openState} types={types}>
-          <button
-            type="button"
-            disabled={types === IType.CHATBOT}
-            onClick={handleClickState}>
-            <div>
-              <Text>Estado</Text>
-              {filterState.length > 0 ? (
-                <StyledCount>{filterState.length}</StyledCount>
+          </StyledFocused>
+        )}
+        {types !== IType.AGENTS && (
+          <StyledFocused focused={openState} types={types}>
+            <button
+              type="button"
+              disabled={types === IType.CHATBOT}
+              onClick={handleClickState}>
+              <div>
+                <Text>Estado</Text>
+                {filterState.length > 0 ? (
+                  <StyledCount>{filterState.length}</StyledCount>
+                ) : (
+                  ''
+                )}
+              </div>
+              {openState ? (
+                <SVGIcon iconFile="/icons/chevron-square-up.svg" />
               ) : (
-                ''
+                <SVGIcon iconFile="/icons/chevron-square-down.svg" />
               )}
+            </button>
+            <div>
+              {openState ? (
+                <SearchByState
+                  filterState={filterState}
+                  filterByState={filterByState}
+                />
+              ) : null}
             </div>
-            {openState ? (
-              <SVGIcon iconFile="/icons/chevron-square-up.svg" />
-            ) : (
-              <SVGIcon iconFile="/icons/chevron-square-down.svg" />
-            )}
-          </button>
-          <div>
-            {openState ? (
-              <SearchByState
-                filterState={filterState}
-                filterByState={filterByState}
-              />
-            ) : null}
-          </div>
-        </StyledFocused>
+          </StyledFocused>
+        )}
         <StyledFocused focused={openSearchByAsignation} types={types}>
           <button
             type="button"
             disabled={types === IType.CHATBOT}
             onClick={handleClickAsignation}>
             <div>
-              <Text>Asignación</Text>
+              <Text>Agentes</Text>
               {filtersAsignation.length > 0 ? (
                 <StyledCount>{filtersAsignation.length}</StyledCount>
               ) : null}

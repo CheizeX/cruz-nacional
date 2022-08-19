@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect, useCallback, useContext } from 'react';
 import { IoIosWarning } from 'react-icons/io';
-// import { FaBellSlash } from 'react-icons/fa';
+import { FaBellSlash } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { useJwt } from 'react-jwt';
 import { BadgeMolecule } from '../../../molecules/Badge/Badge';
@@ -22,11 +22,10 @@ import {
   StyledWarning,
   StyledClose,
 } from './NavBarLive.styled';
-import { INavBar, INavBarLiveProps } from './NavBarLive.interface';
 import { useAuth } from '../../../../../hooks/auth';
 import {
   changeStatus,
-  // enabledUserSound,
+  enabledUserSound,
   readUser,
 } from '../../../../../api/users';
 import { StatusAgent } from '../../../../../models/users/status';
@@ -35,7 +34,7 @@ import {
   useAppSelector,
 } from '../../../../../redux/hook/hooks';
 import {
-  // setUpdateSoundEnabled,
+  setUpdateSoundEnabled,
   setUserDataInState,
 } from '../../../../../redux/slices/auth/user-credentials';
 import { DecodedToken } from '../../../../../models/users/user';
@@ -50,6 +49,7 @@ import { TooltipPosition } from '../../../atoms/Tooltip/tooltip.interface';
 import { DropdownStatus } from '../../DropdownStatus/DropdownStatus';
 import { Tooltip } from '../../../atoms/Tooltip/Tooltip';
 import { websocketContext } from '../../../../../chat';
+import { INavBar, INavBarLiveProps } from './NavBarLive.interface';
 
 export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   componentsSection,
@@ -74,9 +74,9 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
   const { chatsOnConversation } = useAppSelector(
     (state) => state.liveChat.chatsOnConversation,
   );
-  // const { generalConfigurationData } = useAppSelector(
-  //   (state) => state.configurationInfo,
-  // );
+  const { generalConfigurationData } = useAppSelector(
+    (state) => state.configurationInfo,
+  );
 
   // Manejo de semaforo
   const chatNeutro = chatsOnConversation?.filter(
@@ -126,26 +126,26 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
     }
   }, [decodedToken]);
 
-  // const handleSoundEnabled = async () => {
-  //   try {
-  //     const response = await enabledUserSound();
-  //     if (response.success === false) {
-  //       showAlert?.addToast({
-  //         alert: Toast.ERROR,
-  //         title: '¡Upps!',
-  //         message: `Ocurrio un error al activar el sonido`,
-  //       });
-  //     } else {
-  //       dispatch(setUpdateSoundEnabled(response));
-  //     }
-  //   } catch (err) {
-  //     showAlert?.addToast({
-  //       alert: Toast.ERROR,
-  //       title: '¡Upps!',
-  //       message: `${err}`,
-  //     });
-  //   }
-  // };
+  const handleSoundEnabled = async () => {
+    try {
+      const response = await enabledUserSound();
+      if (response.success === false) {
+        showAlert?.addToast({
+          alert: Toast.ERROR,
+          title: '¡Upps!',
+          message: `Ocurrio un error al activar el sonido`,
+        });
+      } else {
+        dispatch(setUpdateSoundEnabled(response));
+      }
+    } catch (err) {
+      showAlert?.addToast({
+        alert: Toast.ERROR,
+        title: '¡Upps!',
+        message: `${err}`,
+      });
+    }
+  };
 
   const profilePicture =
     userDataInState?.urlAvatar && userDataInState?.urlAvatar !== undefined
@@ -190,15 +190,11 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
 
   useEffect(() => {
     readByAgent();
-  }, [decodedToken]);
+  }, [readByAgent]);
 
   useEffect(() => {
     dispatch(getGeneralConfigurationData());
-  }, [dispatch]);
-
-  // const { generalConfigurationData }: any = useAppSelector(
-  //   (state) => state.configurationInfo,
-  // );
+  }, []);
 
   return (
     <>
@@ -271,7 +267,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                 src="https://rest-ailalia.ngrok.io/rest/v1/api/settings/notificationSounds?sound=6"
                 controls
               /> */}
-              {/* {generalConfigurationData.notificationSounds?.isActive &&
+              {generalConfigurationData.notificationSounds?.isActive &&
                 (userDataInState && userDataInState?.soundEnabled ? (
                   <button type="button" onClick={handleSoundEnabled}>
                     <SVGIcon iconFile="/icons/bell-sound-dark.svg" />
@@ -280,7 +276,7 @@ export const NavBarLive: FC<INavBarLiveProps & IBackOfficeProps & INavBar> = ({
                   <button type="button" onClick={handleSoundEnabled}>
                     <FaBellSlash />
                   </button>
-                ))} */}
+                ))}
             </div>
             <DropdownStatus
               statusChecked={statusChecked}

@@ -18,15 +18,32 @@ export const StyledHeaderConversationHistory = styled.div`
   padding: 0 20px;
   max-width: 642px;
   border-bottom: 1px solid ${({ theme }) => theme.Colors.grays[8]};
-  & > span {
-    color: ${({ theme }) => theme.Colors.grays[1]};
-    font-weight: ${({ theme }) => theme.fontWeight[600]};
-    font-size: ${({ theme }) => theme.fontSize[14]};
-    line-height: 14px;
-  }
-  & > div {
+  & > :first-child {
     display: flex;
-    width: 258px;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    max-height: 36px;
+    align-items: space-between;
+    & > span {
+      color: ${({ theme }) => theme.Colors.grays[1]};
+      font-weight: ${({ theme }) => theme.fontWeight[600]};
+      font-size: ${({ theme }) => theme.fontSize[14]};
+      line-height: 14px;
+      display: flex;
+      justify-content: start;
+    }
+    & > div {
+      background-color: ${({ theme }) => theme.Colors.green[3]};
+      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      margin: 0 8px;
+    }
+  }
+  & > :last-child {
+    display: flex;
+    width: 212px;
     height: 100%;
     align-items: center;
     justify-content: space-between;
@@ -126,6 +143,11 @@ export const StyledBodyConversationHistory = styled.div`
       display: flex;
       justify-content: start;
       margin-left: 20px;
+    }
+    & > :nth-child(2) {
+      & > span {
+        color: ${({ theme }) => theme.Colors.grays[3]};
+      }
     }
   }
 `;

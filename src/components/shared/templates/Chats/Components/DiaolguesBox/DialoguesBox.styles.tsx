@@ -6,7 +6,6 @@ import {
   StyledOnConversationWrapperProps,
 } from '../../ChatsSection/ChatsSection.interface';
 import { StyledClientAndAgentAvatars } from '../PendingsChatItem/PendingsChatItem.styles';
-// import { StyledOnConversationWrapperProps } from '../../ChatsSection/ChatsSection.interface';
 
 export const StyledDialoguesContainer = styled.div`
   width: 100%;

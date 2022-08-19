@@ -2,6 +2,7 @@ export enum IType {
   CHATBOT = 'CHATBOT',
   AGENTS = 'AGENTS',
   TODOS = 'TODOS',
+  CHATS = 'CHATS',
 }
 
 export interface IPropsLeftPanel {
